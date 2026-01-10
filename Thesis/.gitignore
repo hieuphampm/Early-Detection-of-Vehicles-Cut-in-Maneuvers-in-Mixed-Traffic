@@ -1,4 +1,6 @@
 *.aux
 *.log
 *.synctex.gz
+*.blg
+*.toc
 */images/

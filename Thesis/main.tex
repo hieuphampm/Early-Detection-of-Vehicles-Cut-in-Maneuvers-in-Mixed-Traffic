@@ -1,0 +1,204 @@
+\documentclass[12pt,a4paper]{article}
+
+% ================== ENCODING & LANGUAGE ==================
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+
+% ================== FONT ==================
+\usepackage{mathptmx} % Times New Roman
+
+% ================== PAGE ==================
+\usepackage{geometry}
+\geometry{
+	left=3cm,
+	right=2cm,
+	top=2cm,
+	bottom=2cm
+}
+
+% ================== GRAPHICS & DRAW ==================
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{amssymb}
+
+% ================== OTHER ==================
+\usepackage{indentfirst}
+\setlength{\parindent}{15pt}
+
+% ================== FORMAT ==================
+\usepackage{titlesec}
+\titleformat{name=\section,numberless}
+{\centering\bfseries\Large}
+{}{0pt}{}
+
+
+% ========================================================
+\begin{document}
+	\thispagestyle{empty}
+	
+	% ================== BORDER ==================
+	\begin{tikzpicture}[remember picture, overlay]
+		% Viền ngoài
+		\draw[line width=1pt]
+		($(current page.north west)+(1.5cm,-1.5cm)$)
+		rectangle
+		($(current page.south east)+(-1.5cm,1.5cm)$);
+		
+		% Viền trong
+		\draw[line width=0.5pt]
+		($(current page.north west)+(1.7cm,-1.7cm)$)
+		rectangle
+		($(current page.south east)+(-1.7cm,1.7cm)$);
+	\end{tikzpicture}
+	
+	\vspace*{1cm}
+	
+	% ================== CONTENT ==================
+	\begin{center}
+		
+		% ---------- LOGO ----------
+		\includegraphics[width=3cm]{images/logo.png}\\[0.8cm]
+		
+		% ---------- UNIVERSITY ----------
+		{\bfseries
+			TRƯỜNG ĐẠI HỌC QUẢN LÝ VÀ CÔNG NGHỆ\\
+			THÀNH PHỐ HỒ CHÍ MINH
+		}\\[0.5cm]
+		
+		{\bfseries KHOA CÔNG NGHỆ}\\[2cm]
+		
+		% ---------- TYPE ----------
+		{\bfseries\Large
+		KHÓA LUẬN TỐT NGHIỆP
+		}\\[1.5cm]
+		
+		% ---------- TITLE ----------
+		{\bfseries\fontsize{16}{20}\selectfont
+			DỰ ĐOÁN Ý ĐỊNH VÀ PHÁT HIỆN SỚM HÀNH VI\\
+			CHUYỂN LÀN CẮT MẶT CỦA PHƯƠNG TIỆN\\
+			THAM GIA GIAO THÔNG TỪ DỮ LIỆU\\
+			CAMERA HÀNH TRÌNH
+		}\\[2cm]
+		
+	\end{center}
+	
+	% ---------- INFO ----------
+	\hspace{2.5cm}
+	\begin{tabular}{l l}
+		\textbf{Họ và tên sinh viên 1} & : PHẠM PHƯỚC MINH HIẾU \\[0.2cm]
+		\textbf{Mã số sinh viên}     & : 2201700085 \\[0.2cm]
+		\textbf{Họ và tên sinh viên 2} & : CAO SỸ SIÊU \\[0.2cm]
+		\textbf{Mã số sinh viên}     & : 2201700170 \\[0.2cm]
+		\textbf{Ngành đào tạo}      & : CÔNG NGHỆ THÔNG TIN \\[0.2cm]
+		\textbf{Khóa}               & : K2022 \\[0.2cm]
+		\textbf{Giảng viên hướng dẫn} & : Th.S Huỳnh Lê Phú Trung
+	\end{tabular}
+	
+	\vfill
+	
+	% ---------- FOOT ----------
+	\begin{center}
+		\textit{Thành phố Hồ Chí Minh, tháng \dots\ năm 2026}
+	\end{center}
+	
+	% ======================================================
+	% LỜI CAM ĐOAN
+	% ======================================================
+	\newpage
+	\thispagestyle{empty}
+	
+	\section*{LỜI CAM ĐOAN}
+	
+	Chúng tôi xin cam đoan đồ án tốt nghiệp với đề tài "Dự đoán ý định và phát hiện sớm hành vi chuyển làn cắt mặt của phương tiện tham gia giao thông từ dữ liệu camera hành trình" là công trình nghiên cứu của riêng nhóm chúng tôi, được thực hiện dưới sự hướng dẫn khoa học của Thạc sĩ Huỳnh Lê Phú Trung.
+	
+	Các số liệu, kết quả nghiên cứu và mã nguồn mô hình (YOLO, LSTM,...) được trình bày trong đồ án là trung thực và chưa từng được công bố trong bất kỳ công trình nào khác. Các thông tin tham khảo, tài liệu, hình ảnh và cơ sở lý thuyết trích dẫn từ các nghiên cứu trước đây đều được ghi rõ nguồn gốc trong danh mục tài liệu tham khảo.
+	
+	Chúng tôi xin chịu hoàn toàn trách nhiệm về tính trung thực và bản quyền của đồ án này.
+	
+	\vspace{1cm}
+	
+	\begin{flushright}
+		\begin{tabular}{c}
+			\textnormal{Họ và tên tác giả} \\
+			\textnormal{Chữ ký} \\[2.5cm]
+			\textbf{Phạm Phước Minh Hiếu} \\[2.5cm]
+			\textbf{Cao Sỹ Siêu}
+		\end{tabular}
+	\end{flushright}
+	
+	% ======================================================
+	% LỜI CẢM ƠN
+	% ======================================================
+	\newpage
+	\thispagestyle{empty}
+	
+	\section*{LỜI CẢM ƠN}	
+	
+	Để hoàn thành khóa luận tốt nghiệp này, tôi xin gửi lời tri ân sâu sắc nhất đến những người đã luôn hỗ trợ, động viên và hướng dẫn chúng tôi trong suốt quá trình nghiên cứu.
+	
+	Trước hết, chúng tôi xin bày tỏ lòng biết ơn chân thành và sâu sắc nhất tới Thạc sĩ Huỳnh Lê Phú Trung. Thầy đã tận tình định hướng đề tài, chia sẻ những kiến thức quý báu về Trí tuệ nhân tạo và Thị giác máy tính, cũng như đưa ra những nhận xét khắt khe nhưng đầy tâm huyết giúp chúng tôi hoàn thiện phương pháp "Dự đoán ý định và phát hiện hành vi" trong điều kiện giao thông phức tạp.
+	
+	Chúng tôi xin gửi lời cảm ơn đến Ban Giám hiệu và quý Thầy, Cô khoa Công nghệ. Những kiến thức nền tảng vững chắc mà quý Thầy Cô truyền đạt trong suốt những năm học qua chính là hành trang vô giá để tôi có thể thực hiện đồ án này.
+	
+	Cuối cùng, chúng tôi xin cảm ơn gia đình, bạn bè đã luôn ở bên cạnh động viên tinh thần và hỗ trợ tôi trong những giai đoạn khó khăn nhất của quá trình thu thập dữ liệu và huấn luyện mô hình.
+	
+	Mặc dù đã rất nỗ lực, nhưng do hạn chế về thời gian và kinh nghiệm thực tế, đồ án khó tránh khỏi những thiếu sót. Chúng tôi rất mong nhận được những ý kiến đóng góp quý báu của quý Thầy Cô và các bạn để đề tài được hoàn thiện và phát triển hơn nữa trong tương lai.
+	
+	Chúng tôi xin chân thành cảm ơn!
+	
+	\vspace{1cm}
+	
+	\begin{flushright}
+		\begin{tabular}{c}
+			\textnormal{Họ và tên tác giả} \\
+			\textnormal{Chữ ký} \\[2.5cm]
+			\textbf{Phạm Phước Minh Hiếu} \\[2.5cm]
+			\textbf{Cao Sỹ Siêu}
+		\end{tabular}
+	\end{flushright}
+	
+	% ======================================================
+	% LỜI NHẬN XÉT CỦA GVHD 
+	% ======================================================
+	\input{comments/gvhd_comment}
+	
+	% ======================================================
+	% LỜI NHẬN XÉT CỦA GVPB 
+	% ======================================================
+	\input{comments/gvpb_comment}
+	
+	% ======================================================
+	% MỤC LỤC
+	% ======================================================
+	\newpage
+	\pagenumbering{arabic}
+	\tableofcontents
+	
+	% ======================================================
+	% NỘI DUNG
+	% ======================================================
+	\newpage
+	% ================== ABSTRACT ==================
+	\section{Giới thiệu}
+	Trong môi trường giao thông hỗn hợp, hành vi tạt đầu (cut-in) đột ngột của xe máy là một trong những nguyên nhân hàng đầu gây ra va chạm cho ô tô. Các hệ thống hỗ trợ lái xe (ADAS) hiện nay, chủ yếu dựa trên cảm biến vật lý hoặc hồi quy quỹ đạo, thường gặp hạn chế về độ trễ và khả năng dự đoán các chuyển động phi tuyến tính phức tạp. Để giải quyết vấn đề này, đề tài đề xuất một phương pháp phát hiện sớm hành vi tạt đầu dựa trên dự đoán ý định sử dụng dữ liệu video từ camera hành trình. Thay vì cố gắng tái tạo quỹ đạo di chuyển chính xác, nghiên cứu mô hình hóa bài toán dưới dạng phân loại chuỗi thời gian với ba nhóm hành vi: giữ làn, tạt đầu và rẽ xa. Hệ thống đề xuất tích hợp mô hình phát hiện vật thể YOLO, thuật toán theo dõi đa đối tượng và mạng nơ-ron hồi quy (LSTM) để phân tích chuỗi đặc trưng logic. Đặc biệt, nghiên cứu khai thác sự biến thiên của tỷ lệ khung hình (Aspect Ratio) kết hợp với vận tốc phương ngang như một dấu hiệu sớm (early indicator) để nhận diện động tác nghiêng xe trước khi chuyển hướng.
+	
+	\subsection{Đặt vấn đề}
+	\subsection{Tính cấp thiết của đề tài}
+	\subsection{Mục tiêu nghiên cứu}
+	
+	\section{Nghiên cứu liên quan}
+	\section{Phương pháp nghiên cứu}
+	\section{Kết quả nghiên cứu}
+	\section{Kết luận và hướng phát triển}
+	
+	% ================== REFERENCES =================
+	\section{Tài liệu tham khảo}
+	\begingroup
+	\renewcommand{\section}[2]{}  
+	\bibliographystyle{ieeetr}
+	\bibliography{references}
+	\endgroup
+	
+\end{document}
