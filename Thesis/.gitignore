@@ -4,3 +4,7 @@
 *.blg
 *.toc
 */images/
+*.fdb_latexmk
+*.fls
+*.lof
+*.lot
