@@ -1,3 +1,24 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{1}
+
+\bibitem{Hidayatullah2025YOLOv8TY}
+P.~Hidayatullah, N.~Syakrani, M.~R. Sholahuddin, T.~Gelar, and R.~Tubagus,
+  ``Yolov8 to yolo11: A comprehensive architecture in-depth comparative
+  review,'' {\em ArXiv}, vol.~abs/2501.13400, 2025.
+
+\bibitem{Lefvre2014ASO}
+S.~Lef{\`e}vre, D.~Vasquez, and C.~Laugier, ``A survey on motion prediction and
+  risk assessment for intelligent vehicles,'' {\em ROBOMECH Journal}, vol.~1,
+  2014.
+
+\bibitem{Zeng2025TrajectoryPF}
+L.~Zeng, F.~Chen, J.~Li, H.~Wang, Y.~Li, and Z.~Zhai, ``Trajectory prediction
+  for powered two-wheelers in mixed traffic scenes: An enhanced social-gat
+  approach,'' {\em Systems}, 2025.
+
+\bibitem{Mozaffari2020DeepLV}
+S.~Mozaffari, O.~Y. Al-Jarrah, M.~Dianati, P.~Jennings, and A.~Mouzakitis,
+  ``Deep learning-based vehicle behavior prediction for autonomous driving
+  applications: A review,'' {\em IEEE Transactions on Intelligent
+  Transportation Systems}, vol.~23, pp.~33--47, 2020.
 
 \end{thebibliography}
