@@ -5,6 +5,12 @@ P.~Hidayatullah, N.~Syakrani, M.~R. Sholahuddin, T.~Gelar, and R.~Tubagus,
   ``Yolov8 to yolo11: A comprehensive architecture in-depth comparative
   review,'' {\em ArXiv}, vol.~abs/2501.13400, 2025.
 
+\bibitem{Lv2023DETRsBY}
+W.~Lv, S.~Xu, Y.~Zhao, G.~Wang, J.~Wei, C.~Cui, Y.~Du, Q.~Dang, and Y.~Liu,
+  ``Detrs beat yolos on real-time object detection,'' {\em 2024 IEEE/CVF
+  Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pp.~16965--16974, 2023.
+
 \bibitem{Lefvre2014ASO}
 S.~Lef{\`e}vre, D.~Vasquez, and C.~Laugier, ``A survey on motion prediction and
   risk assessment for intelligent vehicles,'' {\em ROBOMECH Journal}, vol.~1,
@@ -115,5 +121,15 @@ D.~He, M.~Zhao, and Z.~Wang, ``Vehicle driving intent recognition based on
 C.~Chen, J.~Guo, C.~Guo, C.~Chen, Y.~Zhang, and J.~Wang, ``Adaptive cruise
   control for cut-in scenarios based on model predictive control algorithm,''
   {\em Applied Sciences}, 2021.
+
+\bibitem{Branson2010VisualRW}
+S.~Branson, C.~Wah, F.~Schroff, B.~Babenko, P.~Welinder, P.~Perona, and S.~J.
+  Belongie, ``Visual recognition with humans in the loop,'' in {\em European
+  Conference on Computer Vision}, 2010.
+
+\bibitem{Shneiderman2020HumanCenteredAI}
+B.~Shneiderman, ``Human-centered artificial intelligence: Reliable, safe \&
+  trustworthy,'' {\em International Journal of Human–Computer Interaction},
+  vol.~36, pp.~495 -- 504, 2020.
 
 \end{thebibliography}

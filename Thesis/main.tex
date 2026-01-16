@@ -6,7 +6,7 @@
 \usepackage[vietnamese]{babel}
 
 % ================== FONT ==================
-\usepackage{mathptmx} % Times New Roman
+\usepackage{mathptmx} 
 
 % ================== PAGE ==================
 \usepackage{geometry}
@@ -204,7 +204,7 @@
 	\section{Tóm tắt}
 	Trong môi trường giao thông hỗn hợp, hành vi tạt đầu đột ngột của xe máy là một trong những nguyên nhân hàng đầu gây ra va chạm cho ô tô. Các hệ thống hỗ trợ lái xe (ADAS) hiện nay, thường dựa trên mô hình vật lý hoặc hồi quy quỹ đạo, gặp nhiều hạn chế về độ trễ và khả năng hội tụ khi đối mặt với các chuyển động phi tuyến tính phức tạp. Để giải quyết vấn đề này, đề tài đề xuất phương pháp phát hiện sớm dựa trên dự đoán ý định, chuyển đổi bài toán từ hồi quy tọa độ sang phân loại chuỗi thời gian với ba nhóm hành vi: giữ làn, tạt đầu và rẽ xa.
 		
-	Kiến trúc hệ thống tích hợp mạng nơ-ron hồi quy (LSTM) để phân tích chuỗi đặc trưng logic hình học, đặc biệt khai thác sự biến thiên của tỷ lệ khung hình như một dấu hiệu sớm để nhận diện động tác nghiêng xe trước khi chuyển hướng. Bên cạnh đó, nghiên cứu thực hiện đánh giá so sánh thực nghiệm giữa các kiến trúc YOLO làm nền tảng nhận diện đầu vào \cite{Hidayatullah2025YOLOv8TY}. Kết quả thực nghiệm cho thấy hướng tiếp cận phân loại ý định đạt độ tin cậy cao hơn đáng kể so với phương pháp hồi quy truyền thống trong bối cảnh dữ liệu nhiễu. Đồng thời, việc lựa chọn phiên bản YOLO tối ưu giúp hệ thống giảm thiểu độ trễ xử lý, đảm bảo khả năng cảnh báo sớm từ 1.5 đến 2 giây trên các thiết bị cấu hình giới hạn.
+	Kiến trúc hệ thống tích hợp mạng nơ-ron hồi quy (LSTM) để phân tích chuỗi đặc trưng logic hình học, đặc biệt khai thác sự biến thiên của tỷ lệ khung hình như một dấu hiệu sớm để nhận diện động tác nghiêng xe trước khi chuyển hướng. Bên cạnh đó, nghiên cứu thực hiện đánh giá so sánh thực nghiệm giữa các kiến trúc YOLO làm nền tảng nhận diện đầu vào \cite{Hidayatullah2025YOLOv8TY,Lv2023DETRsBY}. Kết quả thực nghiệm cho thấy hướng tiếp cận phân loại ý định đạt độ tin cậy cao hơn đáng kể so với phương pháp hồi quy truyền thống trong bối cảnh dữ liệu nhiễu. Đồng thời, việc lựa chọn phiên bản YOLO tối ưu giúp hệ thống giảm thiểu độ trễ xử lý, đảm bảo khả năng cảnh báo sớm từ 1.5 đến 2 giây trên các thiết bị cấu hình giới hạn.
 	
 	\section{Giới thiệu}
 	\subsection{Bối cảnh và Đặt vấn đề}
@@ -268,6 +268,80 @@
 	
 	
 	\section{Phương pháp nghiên cứu}
+	
+	\subsection{Quy trình Xây dựng \& Xử lý Dữ liệu}
+	Để giải quyết thách thức về khối lượng dữ liệu lớn và giảm thiểu chi phí nhân lực cho việc gán nhãn thủ công, đề tài đề xuất quy trình xử lý dữ liệu hai giai đoạn theo cơ chế "Human-in-the-loop" \cite{Branson2010VisualRW}. Quy trình này tận dụng một mô hình máy học sơ khởi để tự động đề xuất nhãn, chuyển vai trò của con người từ "người dán nhãn" sang "người kiểm định". Cách tiếp cận này không chỉ tối ưu hóa hiệu suất mà còn đảm bảo tính tin cậy và độ chính xác của bộ dữ liệu cuối cùng theo nguyên tắc AI lấy con người làm trung tâm \cite{Shneiderman2020HumanCenteredAI}
+	
+	Sơ đồ tổng quan quy trình được mô tả như sau:
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=\linewidth]{images/data_pipeline.png} 
+		\caption{Sơ đồ tổng quan quy trình xây dựng dữ liệu hai giai đoạn}
+		\label{fig:data_pipeline}
+	\end{figure}
+	\subsubsection*{Giai đoạn 1: Khởi tạo Mô hình Hỗ trợ}
+	Mục tiêu cốt lõi của giai đoạn này là giải quyết bài toán Cold Start khi chưa có bất kỳ sự hỗ trợ nào từ máy học. Tại đây, một tập dữ liệu nhỏ được thiết lập để huấn luyện mô hình sơ khởi ($M_{assist}$) sẽ đóng vai trò là công cụ tăng tốc cho giai đoạn sau.
+	
+	\paragraph{Bước 1: Chọn mẫu và Gán nhãn thủ công:} Thay vì gán nhãn toàn bộ dữ liệu ngay từ đầu, quy trình bắt đầu bằng việc trích xuất khoảng 10-15\% tổng số lượng khung hình từ dữ liệu thô ($D_{raw}$) để tạo thành thành tập dữ liệu $D_{seed}$.
+	
+	\begin{itemize}
+		\item \textbf{Tiêu chuẩn gán nhãn:} Tập $D_{seed}$ được gán nhãn thủ công với độ chính xác cao. Người thực hiện xác định chính xác Bounding Box của phương tiện và phân loại nhãn(Lane keeping, Moving away, Cut in) như minh họa hình~\ref{fig:labeling}.
+		\item \textbf{Công cụ:} Sử dụng công cụ CVAT để thực hiện thao tác này nhằm đảm bảo định dạng đầu ra chuẩn YOLO.
+	\end{itemize}
+	
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=12cm,height=6cm,keepaspectratio]{images/labeling.png}
+		\caption{Minh họa gán nhãn đối tượng trong bài toán}
+		\label{fig:labeling}
+	\end{figure}
+	
+	\paragraph{Bước 2: Huấn luyện Mô hình Sơ khởi:} Sử dụng tập $D_{seed}$ để huấn luyện mô hình YOLOv8 (nano version).
+	\begin{itemize}
+		\item \textbf{Chiến lược:} Áp dụng kỹ thuật Transfer Learning từ trọng số COCO để giúp mô hình hội tụ nhanh chóng. YOLOv8 được lựa chọn nhờ sự cân bằng vượt trội giữa tốc độ và độ chính xác, được xem là chuẩn mực so sánh (state-of-the-art baseline) trong các nghiên cứu phát hiện vật thể thời gian thực hiện nay \cite{Lv2023DETRsBY}.
+		\item \textbf{Vai trò:} Mô hình $M_{assist}$ này không yêu cầu khả năng tổng quát hóa hoàn hảo, mà tập trung tối ưu hóa độ nhạy để đảm bảo không bỏ sót các phương tiện trong khung hình, phục vụ cho khâu hiệu chỉnh của con người.
+	\end{itemize}
+	
+	\paragraph{Bước 3: Đánh giá và Kiểm định Điều kiện chuyển tiếp:} Đây là bước quan trọng để quyết định xem mô hình đã đủ điều kiện để hỗ trợ con người hay chưa. Tiêu chí đánh giá được thiết lập dựa trên độ chính xác trung bình (mAP@50).
+	
+	\textbf{Điều kiện chuyển tiếp:} Mô hình $M_{assist}$ được chấp nhận đưa vào quy trình bán tự động khi chỉ số mAP@50 $\geq$ 0.6 và tỷ lệ False Negative ở mức thấp. Ngưỡng này được xác định dựa trên nguyên tắc tối ưu hóa tương tác Người-Máy khi mà mức độ chính xác này đủ để giảm thiểu đáng kể thao tác thủ công thông qua việc gợi ý thị giác \cite{Branson2010VisualRW}, trong khi vẫn duy trì quyền kiểm soát và giám sát của con người để đảm bảo độ tin cậy dữ liệu cuối cùng \cite{Shneiderman2020HumanCenteredAI}.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=6cm,height=8cm,keepaspectratio]{images/map_data_processing.png}
+		\caption{Kết quả huấn luyện mô hình $M_{assist}$ trên tập dữ liệu $D_{seed}$}
+		\label{fig:map_data_processing}
+	\end{figure}
+	
+	\newpage
+	
+	Đồng thời, khả năng phân loại của mô hình cũng được đánh giá qua ma trận nhầm lẫn để đảm bảo các lớp quan trọng (như Danger Zone và Warning Zone) không bị nhầm lẫn quá mức với nền.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=10cm,height=10cm,keepaspectratio]{images/confusion_matrix_data_processing.png}
+		\caption{Ma trận nhầm lẫn của mô hình sơ khởi}
+		\label{fig:confusion_matrix_data_processing}
+	\end{figure}
+	
+	\subsubsection*{Giai đoạn 2: Gán nhãn Bán tự động quy mô lớn}
+	
+	Giai đoạn này mở rộng quy mô xử lý cho 85-90\% lượng dữ liệu còn lại ($D_{raw}$), chuyển đổi vai trò của con người từ "thao tác thủ công" sang "giám sát và hiệu chỉnh".
+	
+	\paragraph{Bước 1: Tiền gán nhãn:} Hệ thống sử dụng mô hình hỗ trợ $M_{assist}$ (đã đạt chuẩn ở Giai đoạn 1) để thực hiện suy luận trên toàn bộ tập dữ liệu thô.
+	\begin{itemize}
+		\item \textbf{Cơ chế:} Với mỗi khung hình, mô hình sinh ra các dự đoán bao gồm tọa độ Bounding Box $(x, y, w, h)$ và nhãn sơ bộ (được thiết lập mặc định là \texttt{lane\_keeping}).
+		\item \textbf{Mục đích:} Chiến lược này tận dụng thực tế rằng đa số các khung hình trong giao thông là xe đi đúng làn đường (lớp đa số). Việc gán mặc định giúp giảm thiểu rủi ro mô hình phân loại sai các lớp hiếm ngay từ đầu.
+	\end{itemize}
+	
+	\paragraph{Bước 2: Hiệu chỉnh bởi con người:} Dữ liệu thô và file nhãn dự đoán được nạp vào công cụ CVAT. Tại đây, người thực hiện tiến hành rà soát dựa trên hai tiêu chí:
+	\begin{itemize}
+		\item \textbf{Hiệu chỉnh Không gian:} Điều chỉnh kích thước bounding box để đảm bảo độ khít với phương tiện.
+		\item \textbf{Gán nhãn Sự kiện:} Do toàn bộ nhãn đang là \texttt{lane\_keeping}, người thực hiện chỉ cần tua nhanh video và dừng lại ở các đoạn có hành vi tạt đầu hoặc rẽ để đổi nhãn thành \texttt{moving\_away} và \texttt{cut\_in}.
+	\end{itemize}
+	
+	\paragraph{Bước 3: Hợp nhất và Đóng gói Dữ liệu:} Sau khi hoàn tất hiệu chỉnh, dữ liệu được xuất và trải qua bước kiểm tra ngẫu nhiên cuối cùng để loại bỏ các frame bị lỗi.
+	
 	\section{Kết quả nghiên cứu}
 	\section{Kết luận \& Hướng phát triển}
 	
