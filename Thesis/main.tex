@@ -26,6 +26,7 @@
 % ================== OTHER ==================
 \usepackage{indentfirst}
 \setlength{\parindent}{15pt}
+\usepackage{booktabs}
 
 % ================== FORMAT ==================
 \usepackage{titlesec}
@@ -268,6 +269,17 @@
 	
 	
 	\section{Phương pháp nghiên cứu}
+	\subsection{Tổng quan Kiến trúc Hệ thống}
+	Các phương pháp truyền thống trong dự đoán chuyển động thường tách biệt bài toán thành hai giai đoạn rời rạc: phát hiện vật thể và hồi quy quỹ đạo tương lai, như đã được tổng hợp trong các khảo sát của nhóm Lefèvre \cite{Lefvre2014ASO} và nhóm Mozaffari \cite{Mozaffari2020DeepLV}. Tuy nhiên, trong môi trường giao thông hỗn hợp với mật độ cao, độ trễ tích lũy giữa các module này có thể làm giảm hiệu quả cảnh báo thời gian thực.
+	
+	Để khắc phục hạn chế trên, nghiên cứu đề xuất kiến trúc End-to-End Risk Awareness. Hệ thống sử dụng một mạng nơ-ron tích chập sâu duy nhất để đồng thời thực hiện hai nhiệm vụ: định vị phương tiện và phân loại trực tiếp ý định hành vi dựa trên ngữ cảnh không gian, thay vì phụ thuộc vào các mô hình chuỗi thời gian phức tạp như LSTM hay GRU.
+	
+	Quy trình xử lý gồm 3 giai đoạn chính:
+	\begin{enumerate}
+		\item Xây dựng Dữ liệu: Sử dụng quy trình bán tự động Human-in-the-loop.
+		\item Mô hình Nhận thức Hành vi: Sử dụng kiến trúc YOLO tinh chỉnh.
+		\item Hậu xử lý Thời gian thực: Ổn định tín hiệu cảnh báo.
+	\end{enumerate}	
 	
 	\subsection{Quy trình Xây dựng \& Xử lý Dữ liệu}
 	Để giải quyết thách thức về khối lượng dữ liệu lớn và giảm thiểu chi phí nhân lực cho việc gán nhãn thủ công, đề tài đề xuất quy trình xử lý dữ liệu hai giai đoạn theo cơ chế "Human-in-the-loop" \cite{Branson2010VisualRW}. Quy trình này tận dụng một mô hình máy học sơ khởi để tự động đề xuất nhãn, chuyển vai trò của con người từ "người dán nhãn" sang "người kiểm định". Cách tiếp cận này không chỉ tối ưu hóa hiệu suất mà còn đảm bảo tính tin cậy và độ chính xác của bộ dữ liệu cuối cùng theo nguyên tắc AI lấy con người làm trung tâm \cite{Shneiderman2020HumanCenteredAI}
@@ -341,6 +353,48 @@
 	\end{itemize}
 	
 	\paragraph{Bước 3: Hợp nhất và Đóng gói Dữ liệu:} Sau khi hoàn tất hiệu chỉnh, dữ liệu được xuất và trải qua bước kiểm tra ngẫu nhiên cuối cùng để loại bỏ các frame bị lỗi.
+	
+	\subsection{Mô hình Nhận thức Hành vi}
+	
+	Thay vì chỉ phát hiện lớp đối tượng chung là phương tiện, nghiên cứu tinh chỉnh mô hình YOLO để phân loại trực tiếp 3 trạng thái hành vi: Lane Keeping, Moving Away và Cut-in.
+	
+	\subsubsection{Lựa chọn Kiến trúc Mạng}
+	
+	Việc lựa chọn backbone phù hợp là yếu tố then chốt để đảm bảo khả năng vận hành thời gian thực trên thiết bị biên. Dựa trên phân tích so sánh chuyên sâu của Hidayatullah và cộng sự (2025) \cite{Hidayatullah2025YOLOv8TY}, nghiên cứu tiến hành thực nghiệm trên các biến thể:
+	\begin{itemize}
+		\item \textbf{YOLOv8}: Được xem là chuẩn mực về sự cân bằng giữa tốc độ và độ chính xác trong các tác vụ phát hiện thời gian thực \cite{Lv2023DETRsBY}.
+		\item \textbf{YOLOv10/v11}: Các kiến trúc mới hơn với cơ chế loại bỏ NMS (v10) hoặc cải tiến module trích xuất đặc trưng (v11), hứa hẹn khả năng xử lý tốt hơn trong môi trường giao thông hỗn hợp dày đặc – nơi các phương tiện thường xuyên che khuất nhau, vấn đề đã được nhóm của Du trình bày \cite{Du2022ImprovedRT}.
+	\end{itemize}
+	
+	Để minh chứng cụ thể sự tối ưu về mặt tài nguyên, Bảng \ref{tab:yolo_comparison} trình bày sự so sánh giữa các kiến trúc YOLO hiện đại (phiên bản kích thước Nano) trên bộ dữ liệu chuẩn COCO.
+	
+	\begin{table}[h]
+		\centering
+		\caption{So sánh thông số kỹ thuật các biến thể YOLO (Phiên bản Nano/Tiny) trên độ phân giải $640 \times 640$.}
+		\label{tab:yolo_comparison}
+		\resizebox{\linewidth}{!}{%
+			\begin{tabular}{lcccc}
+				\toprule
+				\textbf{Model} & \textbf{mAP$^{val}_{50-95}$} & \textbf{Tham số (M)} & \textbf{FLOPs (B)} & \textbf{Năm} \\
+				\midrule
+				YOLOv8n & 37.3 & 3.2 & 8.7 & 2023 \\
+				YOLOv9t & 38.3 & 2.0 & 7.7 & 2024 \\
+				YOLOv10n & 39.5 & 2.3 & 6.7 & 2024 \\
+				YOLO11n & 39.5 & 2.6 & 6.5  & 2024 \\
+				YOLO12n & 40.6 & 2.6 & 6.5 & 2025 \\
+				YOLO26n & 40.9 & 2.4 & 5.4 & 2026 \\
+				\bottomrule
+			\end{tabular}%
+		}
+		\footnotesize{\textit{*Ghi chú: Số liệu Inference đo trên T4 GPU (TensorRT FP16). YOLOv10n có lợi thế về tốc độ nhờ loại bỏ NMS.}}
+	\end{table}
+	
+	Dựa trên số liệu từ Bảng \ref{tab:yolo_comparison}, có thể thấy:
+	\begin{itemize}
+		\item \textbf{Về độ chính xác:} YOLOv11n đạt hiệu suất cao nhất (39.5\% mAP), phù hợp để phát hiện các dấu hiệu nhỏ như sự thay đổi góc nghiêng của xe máy.
+		\item \textbf{Về tốc độ:} YOLOv10n thể hiện ưu thế vượt trội về độ trễ (latency) và chi phí tính toán (chỉ 6.5 GFLOPs), là ứng cử viên sáng giá nhất cho bài toán thời gian thực trên thiết bị nhúng.
+	\end{itemize}
+	Do đó, nghiên cứu quyết định lựa chọn tập trung thực nghiệm sâu vào hai biến thể \textbf{v10n và v11n} để tìm ra sự cân bằng tốt nhất.
 	
 	\section{Kết quả nghiên cứu}
 	\section{Kết luận \& Hướng phát triển}
