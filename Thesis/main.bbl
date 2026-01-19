@@ -132,4 +132,12 @@ B.~Shneiderman, ``Human-centered artificial intelligence: Reliable, safe \&
   trustworthy,'' {\em International Journal of Human–Computer Interaction},
   vol.~36, pp.~495 -- 504, 2020.
 
+\bibitem{yolov8_ultralytics}
+G.~Jocher, A.~Chaurasia, and J.~Qiu, ``Ultralytics yolov8,'' 2023.
+
+\bibitem{Wang2024YOLOv9LW}
+C.-Y. Wang, I.-H. Yeh, and H.~Liao, ``Yolov9: Learning what you want to learn
+  using programmable gradient information,'' {\em ArXiv}, vol.~abs/2402.13616,
+  2024.
+
 \end{thebibliography}
