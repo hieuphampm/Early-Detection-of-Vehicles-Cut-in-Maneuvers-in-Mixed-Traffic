@@ -275,6 +275,13 @@
 	Để khắc phục hạn chế trên, nghiên cứu đề xuất kiến trúc End-to-End Risk Awareness. Hệ thống sử dụng một mạng nơ-ron tích chập sâu duy nhất để đồng thời thực hiện hai nhiệm vụ: định vị phương tiện và phân loại trực tiếp ý định hành vi dựa trên ngữ cảnh không gian, thay vì phụ thuộc vào các mô hình chuỗi thời gian phức tạp như LSTM hay GRU.
 	
 	Quy trình xử lý gồm 3 giai đoạn chính:
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=\linewidth]{images/model_pipeline.png} 
+		\caption{Sơ đồ tổng quan mô hình}
+		\label{fig:model_pipeline}
+	\end{figure}
+	
 	\begin{enumerate}
 		\item Xây dựng Dữ liệu: Sử dụng quy trình bán tự động Human-in-the-loop.
 		\item Mô hình Nhận thức Hành vi: Sử dụng kiến trúc YOLO tinh chỉnh.
@@ -316,7 +323,7 @@
 	
 	\paragraph{Bước 3: Đánh giá và Kiểm định Điều kiện chuyển tiếp:} Đây là bước quan trọng để quyết định xem mô hình đã đủ điều kiện để hỗ trợ con người hay chưa. Tiêu chí đánh giá được thiết lập dựa trên độ chính xác trung bình (mAP@50).
 	
-	\textbf{Điều kiện chuyển tiếp:} Mô hình $M_{assist}$ được chấp nhận đưa vào quy trình bán tự động khi chỉ số mAP@50 $\geq$ 0.6 và tỷ lệ False Negative ở mức thấp. Ngưỡng này được xác định dựa trên nguyên tắc tối ưu hóa tương tác Người-Máy khi mà mức độ chính xác này đủ để giảm thiểu đáng kể thao tác thủ công thông qua việc gợi ý thị giác \cite{Branson2010VisualRW}, trong khi vẫn duy trì quyền kiểm soát và giám sát của con người để đảm bảo độ tin cậy dữ liệu cuối cùng \cite{Shneiderman2020HumanCenteredAI}.
+	\textbf{Điều kiện chuyển tiếp:} Mô hình $M_{assist}$ được chấp nhận đưa vào quy trình bán tự động khi chỉ số mAP@50 $\geq$ 0.9 và tỷ lệ False Negative ở mức thấp. Ngưỡng này được xác định dựa trên nguyên tắc tối ưu hóa tương tác Người-Máy khi mà mức độ chính xác này đủ để giảm thiểu đáng kể thao tác thủ công thông qua việc gợi ý thị giác \cite{Branson2010VisualRW}, trong khi vẫn duy trì quyền kiểm soát và giám sát của con người để đảm bảo độ tin cậy dữ liệu cuối cùng \cite{Shneiderman2020HumanCenteredAI}.
 	
 	\begin{figure}[h]
 		\centering
@@ -362,8 +369,7 @@
 	
 	Việc lựa chọn backbone phù hợp là yếu tố then chốt để đảm bảo khả năng vận hành thời gian thực trên thiết bị biên. Dựa trên phân tích so sánh chuyên sâu của Hidayatullah và cộng sự (2025) \cite{Hidayatullah2025YOLOv8TY}, nghiên cứu tiến hành thực nghiệm trên các biến thể:
 	\begin{itemize}
-		\item \textbf{YOLOv8}: Được xem là chuẩn mực về sự cân bằng giữa tốc độ và độ chính xác trong các tác vụ phát hiện thời gian thực \cite{Lv2023DETRsBY}.
-		\item \textbf{YOLOv10/v11}: Các kiến trúc mới hơn với cơ chế loại bỏ NMS (v10) hoặc cải tiến module trích xuất đặc trưng (v11), hứa hẹn khả năng xử lý tốt hơn trong môi trường giao thông hỗn hợp dày đặc – nơi các phương tiện thường xuyên che khuất nhau, vấn đề đã được nhóm của Du trình bày \cite{Du2022ImprovedRT}.
+		\item \textbf{YOLO26n}: là một mô hình đầu cuối tích hợp được thiết kế cho các thiết bị biên có công suất thấp, đơn giản hóa bằng cách loại bỏ lớp hậu xử lý NMS và tối ưu MuSGD giúp ổn định và hội tụ nhanh hơn. \cite{yolo26_ultralytics}
 	\end{itemize}
 	
 	Để minh chứng cụ thể sự tối ưu về mặt tài nguyên, Bảng \ref{tab:yolo_comparison} trình bày sự so sánh giữa các kiến trúc YOLO hiện đại (phiên bản kích thước Nano) trên bộ dữ liệu chuẩn COCO.
