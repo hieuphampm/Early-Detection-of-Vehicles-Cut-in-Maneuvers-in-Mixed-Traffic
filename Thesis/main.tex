@@ -202,12 +202,12 @@
 	% NỘI DUNG
 	% ======================================================
 	\newpage
-	\section{Tóm tắt}
+	\section{TÓM TẮT}
 	Trong môi trường giao thông hỗn hợp, hành vi tạt đầu đột ngột của xe máy là một trong những nguyên nhân hàng đầu gây ra va chạm cho ô tô. Các hệ thống hỗ trợ lái xe (ADAS) hiện nay, thường dựa trên mô hình vật lý hoặc hồi quy quỹ đạo, gặp nhiều hạn chế về độ trễ và khả năng hội tụ khi đối mặt với các chuyển động phi tuyến tính phức tạp. Để giải quyết vấn đề này, đề tài đề xuất phương pháp phát hiện sớm dựa trên dự đoán ý định, chuyển đổi bài toán từ hồi quy tọa độ sang phân loại chuỗi thời gian với ba nhóm hành vi: giữ làn, tạt đầu và rẽ xa.
 		
 	Kiến trúc hệ thống tích hợp mạng nơ-ron hồi quy (LSTM) để phân tích chuỗi đặc trưng logic hình học, đặc biệt khai thác sự biến thiên của tỷ lệ khung hình như một dấu hiệu sớm để nhận diện động tác nghiêng xe trước khi chuyển hướng. Bên cạnh đó, nghiên cứu thực hiện đánh giá so sánh thực nghiệm giữa các kiến trúc YOLO làm nền tảng nhận diện đầu vào \cite{Hidayatullah2025YOLOv8TY,Lv2023DETRsBY}. Kết quả thực nghiệm cho thấy hướng tiếp cận phân loại ý định đạt độ tin cậy cao hơn đáng kể so với phương pháp hồi quy truyền thống trong bối cảnh dữ liệu nhiễu. Đồng thời, việc lựa chọn phiên bản YOLO tối ưu giúp hệ thống giảm thiểu độ trễ xử lý, đảm bảo khả năng cảnh báo sớm từ 1.5 đến 2 giây trên các thiết bị cấu hình giới hạn.
 	
-	\section{Giới thiệu}
+	\section{GIỚI THIỆU}
 	\subsection{Bối cảnh và Đặt vấn đề}
 	Sự phát triển nhanh chóng của các hệ thống giao thông thông minh (ITS) và công nghệ xe tự hành đang đặt ra những yêu cầu khắt khe về khả năng nhận thức và dự đoán rủi ro. Mặc dù các hệ thống hỗ trợ lái xe (ADAS) hiện đại đã hoạt động hiệu quả trên đường cao tốc quy chuẩn, việc áp dụng chúng vào môi trường giao thông hỗn hợp vẫn gặp nhiều trở ngại \cite{Lefvre2014ASO}. Đặc thù tại các nước đang phát triển như Việt Nam là sự chiếm ưu thế tuyệt đối của xe máy (PTWs).
 	
@@ -225,7 +225,7 @@
 	
 	Xuất phát từ thực tiễn đó, đề tài "Phát hiện sớm hành vi tạt đầu của xe máy trong giao thông hỗn hợp sử dụng dự đoán ý định dựa trên Camera hành trình" đề xuất một kiến trúc Hybrid Architecture. Hệ thống sử dụng mô hình YOLO làm nền tảng nhận thức thị giác cốt lõi để đảm bảo khả năng phát hiện và theo dõi xe máy theo thời gian thực với độ trễ thấp \cite{Hidayatullah2025YOLOv8TY}. Dữ liệu từ YOLO sau đó được trích xuất thành các đặc trưng logic hình học để đưa vào mạng LSTM phân loại ý định. Sự kết hợp giữa tốc độ của YOLO và khả năng ghi nhớ chuỗi của LSTM kỳ vọng sẽ giải quyết được bài toán cảnh báo sớm trong môi trường giao thông phức tạp.
 	
-	\section{Nghiên cứu liên quan}
+	\section{NGHIÊN CỨU LIÊN QUAN}
 	\subsection{Nhóm 1: Phương pháp dựa trên mô hình Vật lý và đặc trưng truyền thống}
 
 	Nhóm phương pháp này tiếp cận bài toán dự đoán và nhận diện dựa trên các định luật vật lý rõ ràng hoặc các mô hình toán học được định nghĩa trước. Đặc điểm chung của nhóm này là tính minh bạch cao nhưng phụ thuộc lớn vào các giả định lý tưởng về môi trường và chuyển động.
@@ -268,7 +268,7 @@
 	Cuối cùng, đối với kịch bản cụ thể là xe tạt đầu, việc định lượng rủi ro không chỉ dựa vào AI mà còn cần các ràng buộc hình học. Chen và cộng sự \cite{Chen2021AdaptiveCC} đã phát triển thuật toán kiểm soát hành trình thích ứng cho tình huống cut-in dựa trên xác suất. Điểm đáng chú ý là họ sử dụng các đặc trưng logic như khoảng cách phương ngang và góc hướng di chuyển để tính toán xác suất xâm nhập làn đường. Cách tiếp cận này cho thấy việc kết hợp giữa dự đoán ý định và các tham số hình học (như $dx, dy$) là phương án tối ưu để phát hiện sớm các pha tạt đầu nguy hiểm trước khi va chạm xảy ra.
 	
 	
-	\section{Phương pháp nghiên cứu}
+	\section{PHƯƠNG PHÁP NGHIÊN CỨU}
 	\subsection{Tổng quan Kiến trúc Hệ thống}
 	Các phương pháp truyền thống trong dự đoán chuyển động thường tách biệt bài toán thành hai giai đoạn rời rạc: phát hiện vật thể và hồi quy quỹ đạo tương lai, như đã được tổng hợp trong các khảo sát của nhóm Lefèvre \cite{Lefvre2014ASO} và nhóm Mozaffari \cite{Mozaffari2020DeepLV}. Tuy nhiên, trong môi trường giao thông hỗn hợp với mật độ cao, độ trễ tích lũy giữa các module này có thể làm giảm hiệu quả cảnh báo thời gian thực.
 	
@@ -298,14 +298,16 @@
 		\caption{Sơ đồ tổng quan quy trình xây dựng dữ liệu hai giai đoạn}
 		\label{fig:data_pipeline}
 	\end{figure}
+	
 	\subsubsection*{Giai đoạn 1: Khởi tạo Mô hình Hỗ trợ}
 	Mục tiêu cốt lõi của giai đoạn này là giải quyết bài toán Cold Start khi chưa có bất kỳ sự hỗ trợ nào từ máy học. Tại đây, một tập dữ liệu nhỏ được thiết lập để huấn luyện mô hình sơ khởi ($M_{assist}$) sẽ đóng vai trò là công cụ tăng tốc cho giai đoạn sau.
 	
-	\paragraph{Bước 1: Chọn mẫu và Gán nhãn thủ công:} Thay vì gán nhãn toàn bộ dữ liệu ngay từ đầu, quy trình bắt đầu bằng việc trích xuất khoảng 10-15\% tổng số lượng khung hình từ dữ liệu thô ($D_{raw}$) để tạo thành thành tập dữ liệu $D_{seed}$.
+	\paragraph{Bước 1: Chọn mẫu và Gán nhãn thủ công:} Thay vì gán nhãn toàn bộ dữ liệu ngay từ đầu, quy trình bắt đầu bằng việc trích xuất khoảng 10-15\% tổng số lượng khung hình từ dữ liệu thô ($D_{raw}$) để tạo thành thành tập dữ liệu $D_{seed}$. Quy trình gán nhãn được thực hiện chặt chẽ theo các tiêu chuẩn sau:
 	
 	\begin{itemize}
-		\item \textbf{Tiêu chuẩn gán nhãn:} Tập $D_{seed}$ được gán nhãn thủ công với độ chính xác cao. Người thực hiện xác định chính xác Bounding Box của phương tiện và phân loại nhãn(Lane keeping, Moving away, Cut in) như minh họa hình~\ref{fig:labeling}.
-		\item \textbf{Công cụ:} Sử dụng công cụ CVAT để thực hiện thao tác này nhằm đảm bảo định dạng đầu ra chuẩn YOLO.
+		\item \textbf{Định nghĩa Lớp hành vi:} Người thực hiện xác định chính xác Bounding Box của phương tiện và phân loại các nhãn hành vi động như \texttt{lane\_keeping}, \texttt{moving\_away}, và \texttt{cut\_in} như minh họa ở Hình~\ref{fig:labeling}.
+		\item \textbf{Định nghĩa Vùng an toàn:} Đối với các nhãn không gian tĩnh (\texttt{Danger Zone} và \texttt{Warning Zone}), việc thiết lập ranh giới đa giác (polygon) là một thách thức lớn. Do đặc thù giao thông hỗn hợp tại Việt Nam với mật độ xe máy dày đặc và khoảng cách di chuyển bám sát nhau, việc áp dụng cứng nhắc các nguyên tắc khoảng cách an toàn tiêu chuẩn của phương Tây (như quy tắc 2 giây Time-to-Collision) sẽ dẫn đến hiện tượng cảnh báo rác. Vì vậy, nghiên cứu không sử dụng công thức khoảng cách tuyệt đối mà quyết định thiết lập kích thước các vùng này dựa trên phương pháp kinh nghiệm thực tiễn. Các đa giác được tinh chỉnh thông qua quan sát góc nhìn thực tế của tài xế, đảm bảo ngưỡng cảnh báo phản ánh đúng không gian cần thiết cho hành vi phanh khẩn cấp trong giao thông nội đô.
+		\item \textbf{Công cụ:} Sử dụng công cụ CVAT để thực hiện thao tác gán nhãn nhằm đảm bảo định dạng đầu ra chuẩn cấu trúc YOLO.
 	\end{itemize}
 	
 	\begin{figure}[!h]
@@ -318,7 +320,7 @@
 	\paragraph{Bước 2: Huấn luyện Mô hình Sơ khởi:} Sử dụng tập $D_{seed}$ để huấn luyện mô hình YOLOv8 (nano version).
 	\begin{itemize}
 		\item \textbf{Chiến lược:} Áp dụng kỹ thuật Transfer Learning từ trọng số COCO để giúp mô hình hội tụ nhanh chóng. YOLOv8 được lựa chọn nhờ sự cân bằng vượt trội giữa tốc độ và độ chính xác, được xem là chuẩn mực so sánh (state-of-the-art baseline) trong các nghiên cứu phát hiện vật thể thời gian thực hiện nay \cite{Lv2023DETRsBY}.
-		\item \textbf{Vai trò:} Mô hình $M_{assist}$ này không yêu cầu khả năng tổng quát hóa hoàn hảo, mà tập trung tối ưu hóa độ nhạy để đảm bảo không bỏ sót các phương tiện trong khung hình, phục vụ cho khâu hiệu chỉnh của con người.
+		\item \textbf{Vai trò:} Mô hình $M_{assist}$ này không yêu cầu khả năng tổng quát hóa hoàn hảo, mà tập trung tối ưu hóa độ nhạy (Recall) để đảm bảo không bỏ sót các phương tiện trong khung hình, phục vụ cho khâu hiệu chỉnh của con người.
 	\end{itemize}
 	
 	\paragraph{Bước 3: Đánh giá và Kiểm định Điều kiện chuyển tiếp:} Đây là bước quan trọng để quyết định xem mô hình đã đủ điều kiện để hỗ trợ con người hay chưa. Tiêu chí đánh giá được thiết lập dựa trên độ chính xác trung bình (mAP@50).
@@ -359,7 +361,7 @@
 		\item \textbf{Gán nhãn Sự kiện:} Do toàn bộ nhãn đang là \texttt{lane\_keeping}, người thực hiện chỉ cần tua nhanh video và dừng lại ở các đoạn có hành vi tạt đầu hoặc rẽ để đổi nhãn thành \texttt{moving\_away} và \texttt{cut\_in}.
 	\end{itemize}
 	
-	\paragraph{Bước 3: Hợp nhất và Đóng gói Dữ liệu:} Sau khi hoàn tất hiệu chỉnh, dữ liệu được xuất và trải qua bước kiểm tra ngẫu nhiên cuối cùng để loại bỏ các frame bị lỗi.
+	\paragraph{Bước 3: Hợp nhất và Đóng gói Dữ liệu:} Sau khi hoàn tất hiệu chỉnh, dữ liệu được xuất và trải qua bước kiểm tra ngẫu nhiên cuối cùng để loại bỏ các frame bị lỗi, tạo thành bộ dữ liệu huấn luyện hoàn chỉnh.
 	
 	\subsection{Mô hình Nhận thức Hành vi}
 	
@@ -367,52 +369,63 @@
 	
 	\subsubsection{Lựa chọn Kiến trúc Mạng}
 	
-	Việc lựa chọn backbone phù hợp là yếu tố then chốt để đảm bảo khả năng vận hành thời gian thực trên thiết bị biên. Dựa trên phân tích so sánh chuyên sâu của Hidayatullah và cộng sự (2025) \cite{Hidayatullah2025YOLOv8TY}, nghiên cứu tiến hành thực nghiệm trên các biến thể:
+	Việc lựa chọn backbone phù hợp là yếu tố then chốt để đảm bảo khả năng vận hành thời gian thực trên thiết bị biên. Dựa trên phân tích so sánh chuyên sâu của Hidayatullah và cộng sự (2025) \cite{Hidayatullah2025YOLOv8TY}, nghiên cứu tiến hành thực nghiệm đối chiếu giữa hai biến thể:
 	\begin{itemize}
-		\item \textbf{YOLO26n}: là một mô hình đầu cuối tích hợp được thiết kế cho các thiết bị biên có công suất thấp, đơn giản hóa bằng cách loại bỏ lớp hậu xử lý NMS và tối ưu MuSGD giúp ổn định và hội tụ nhanh hơn. \cite{yolo26_ultralytics}
+		\item \textbf{YOLOv10n}: Là phiên bản YOLO cải tiến dựa trên nền tảng YOLOv8, được tối ưu cho phát hiện đối tượng thời gian thực với kiến trúc gọn hơn, cơ chế huấn luyện mới loại bỏ NMS và đem lại hiệu năng tốt trong nhiều kịch bản triển khai \cite{Hidayatullah2025YOLOv8TY}.
+		\item \textbf{YOLO26n}: Là một mô hình đầu cuối (end-to-end) hoàn toàn mới được thiết kế đặc biệt cho các thiết bị biên có công suất thấp. Kiến trúc này đơn giản hóa đường ống xử lý bằng cách loại bỏ hoàn toàn lớp hậu xử lý NMS và tối ưu hóa thuật toán MuSGD, giúp mô hình ổn định và hội tụ nhanh hơn \cite{yolo26_ultralytics}.
 	\end{itemize}
 	
-	Để minh chứng cụ thể sự tối ưu về mặt tài nguyên, Bảng \ref{tab:yolo_comparison} trình bày sự so sánh giữa các kiến trúc YOLO hiện đại (phiên bản kích thước Nano) trên bộ dữ liệu chuẩn COCO.
+	Để minh chứng cụ thể sự tối ưu về mặt tài nguyên, Bảng \ref{tab:yolo_comparison} trình bày sự so sánh giữa hai kiến trúc này (phiên bản kích thước Nano) trên bộ dữ liệu chuẩn COCO.
 	
 	\begin{table}[h]
 		\centering
-		\caption{So sánh thông số kỹ thuật các biến thể YOLO (Phiên bản Nano/Tiny) trên độ phân giải $640 \times 640$.}
+		\caption{So sánh thông số kỹ thuật các biến thể YOLO (Phiên bản Nano) trên độ phân giải $640 \times 640$.}
 		\label{tab:yolo_comparison}
 		\resizebox{\linewidth}{!}{%
 			\begin{tabular}{lcccc}
 				\toprule
 				\textbf{Model} & \textbf{mAP$^{val}_{50-95}$} & \textbf{Tham số (M)} & \textbf{FLOPs (B)} & \textbf{Năm} \\
 				\midrule
-				YOLOv8n & 37.3 & 3.2 & 8.7 & 2023 \\
-				YOLOv9t & 38.3 & 2.0 & 7.7 & 2024 \\
-				YOLOv10n & 39.5 & 2.3 & 6.7 & 2024 \\
-				YOLO11n & 39.5 & 2.6 & 6.5  & 2024 \\
-				YOLO12n & 40.6 & 2.6 & 6.5 & 2025 \\
-				YOLO26n & 40.9 & 2.4 & 5.4 & 2026 \\
+				YOLOv10n & 39.5 & \textbf{2.3} & 6.7 & 2024 \\
+				YOLO26n & \textbf{40.9} & 2.4 & \textbf{5.4} & 2026 \\
 				\bottomrule
 			\end{tabular}%
 		}
-		\footnotesize{\textit{*Ghi chú: Số liệu Inference đo trên T4 GPU (TensorRT FP16). YOLOv10n có lợi thế về tốc độ nhờ loại bỏ NMS.}}
+		\footnotesize{\textit{*Ghi chú: Số liệu Inference đo trên T4 GPU (TensorRT FP16).}}
 	\end{table}
 	
-	Dựa trên số liệu từ Bảng \ref{tab:yolo_comparison}, có thể thấy:
+	Dựa trên số liệu từ Bảng \ref{tab:yolo_comparison}, có thể thấy YOLO26n thể hiện sự vượt trội so với nền tảng YOLOv10n:
 	\begin{itemize}
-		\item \textbf{Về độ chính xác:} YOLOv11n đạt hiệu suất cao nhất (39.5\% mAP), phù hợp để phát hiện các dấu hiệu nhỏ như sự thay đổi góc nghiêng của xe máy.
-		\item \textbf{Về tốc độ:} YOLOv10n thể hiện ưu thế vượt trội về độ trễ (latency) và chi phí tính toán (chỉ 6.5 GFLOPs), là ứng cử viên sáng giá nhất cho bài toán thời gian thực trên thiết bị nhúng.
+		\item \textbf{Về độ chính xác:} YOLO26n đạt hiệu suất cao hơn đáng kể (40.9\% mAP). Khả năng trích xuất đặc trưng tốt giúp mô hình nhạy bén trong việc phát hiện từ sớm các dấu hiệu tinh vi của phương tiện, chẳng hạn như sự thay đổi góc nghiêng của xe máy khi bắt đầu có ý định tạt đầu.
+		\item \textbf{Về chi phí tính toán:} Mặc dù khối lượng tham số của hai mô hình là gần tương đương nhau (khoảng 2.3 - 2.4 triệu), YOLO26n lại tối ưu hóa phép toán cực kỳ ấn tượng, giảm FLOPs xuống chỉ còn 5.4B (so với 6.7B của v10n). Điều này giúp tiết kiệm năng lượng tiêu thụ, giảm nhiệt độ tỏa ra và duy trì độ trễ xử lý cực thấp trên các vi mạch nhúng.
 	\end{itemize}
-	Do đó, nghiên cứu quyết định lựa chọn tập trung thực nghiệm sâu vào hai biến thể \textbf{v10n và v11n} để tìm ra sự cân bằng tốt nhất.
 	
-	\section{Kết quả nghiên cứu}
-	\section{Kết luận \& Hướng phát triển}
+	Do đó, nghiên cứu quyết định lựa chọn \textbf{YOLO26n} làm kiến trúc mạng trọng tâm để phát triển và triển khai hệ thống nhận diện rủi ro, đồng thời sử dụng YOLOv10n làm mô hình cơ sở (baseline) đối chứng trong quá trình thực nghiệm.
+	
+	\subsubsection{Cơ chế Huấn luyện}
+	
+	\subsection{Hậu xử lý \& Ổn định Cảnh báo}
+	
+	\section{KẾT QUẢ NGHIÊN CỨU}
+	
+	
+	\section{KẾT LUẬN \& HƯỚNG PHÁT TRIỂN}
+	\subsection{Hạn chế của nghiên cứu}
+	Mặc dù hệ thống đã đạt được độ chính xác cao trong việc nhận diện hành vi tạt đầu, một hạn chế của nghiên cứu là việc định cỡ các vùng an toàn (Polygon zones) vẫn đang phụ thuộc vào góc nhìn camera cố định. Do không sử dụng cảm biến chiều sâu (LiDAR/Radar), nghiên cứu này mang tính chất một Proof of Concept (PoC), tập trung vào việc chứng minh năng lực của kiến trúc YOLO kết hợp Reinforcement Learning trong bài toán nhận diện ý định. Trong các phiên bản triển khai thực tế tiếp theo, hệ thống có thể tích hợp thêm module tự động hiệu chuẩn (Auto-calibration) dựa trên phép chiếu IPM để vùng đa giác tự động thích ứng với nhiều loại camera và độ cao lắp đặt khác nhau.
+	
+	\subsection{Hướng phát triển tương lai}
 	
 	% ================== REFERENCES =================
 	\newpage 
-	\section{Tài liệu tham khảo}
+	\section{DANH MỤC TÀI LIỆU TRÍCH DẪN}
 	\begingroup
 		\raggedright 
 		\renewcommand{\section}[2]{}
 		\bibliographystyle{ieeetr}
-		\bibliography{references}
+		\bibliography{docs/references}
 	\endgroup
 	
+	\newpage 
+	\section{DANH MỤC TÀI LIỆU THAM KHẢO}
+	\input{docs/idea_refs}
 \end{document}
