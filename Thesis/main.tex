@@ -288,80 +288,49 @@
 		\item Hậu xử lý Thời gian thực: Ổn định tín hiệu cảnh báo.
 	\end{enumerate}	
 	
-	\subsection{Quy trình Xây dựng \& Xử lý Dữ liệu}
-	Để giải quyết thách thức về khối lượng dữ liệu lớn và giảm thiểu chi phí nhân lực cho việc gán nhãn thủ công, đề tài đề xuất quy trình xử lý dữ liệu hai giai đoạn theo cơ chế "Human-in-the-loop" \cite{Branson2010VisualRW}. Quy trình này tận dụng một mô hình máy học sơ khởi để tự động đề xuất nhãn, chuyển vai trò của con người từ "người dán nhãn" sang "người kiểm định". Cách tiếp cận này không chỉ tối ưu hóa hiệu suất mà còn đảm bảo tính tin cậy và độ chính xác của bộ dữ liệu cuối cùng theo nguyên tắc AI lấy con người làm trung tâm \cite{Shneiderman2020HumanCenteredAI}
+	\subsection{Phương pháp Xây dựng Dữ liệu}
 	
-	Sơ đồ tổng quan quy trình được mô tả như sau:
+	Để giải quyết thách thức về khối lượng dữ liệu lớn và giảm thiểu chi phí nhân lực cho việc gán nhãn thủ công, đề tài đề xuất quy trình xử lý dữ liệu hai giai đoạn theo cơ chế "Human-in-the-loop" \cite{Branson2010VisualRW}. Cách tiếp cận này tận dụng một mô hình máy học sơ khởi ($M_{assist}$) để tự động đề xuất nhãn, chuyển vai trò của con người từ "người dán nhãn" sang "người kiểm định", đảm bảo nguyên tắc AI lấy con người làm trung tâm \cite{Shneiderman2020HumanCenteredAI}.
+	
+	Quy trình tổng thể được mô tả tại Hình \ref{fig:data_pipeline}, bao gồm hai giai đoạn chính:
+	
 	\begin{figure}[h]
 		\centering
-		\includegraphics[width=\linewidth]{images/data_pipeline.png} 
+		\includegraphics[width=\linewidth]{images/data_pipeline.png}
 		\caption{Sơ đồ tổng quan quy trình xây dựng dữ liệu hai giai đoạn}
 		\label{fig:data_pipeline}
 	\end{figure}
 	
-	\subsubsection*{Giai đoạn 1: Khởi tạo Mô hình Hỗ trợ}
-	Mục tiêu cốt lõi của giai đoạn này là giải quyết bài toán Cold Start khi chưa có bất kỳ sự hỗ trợ nào từ máy học. Tại đây, một tập dữ liệu nhỏ được thiết lập để huấn luyện mô hình sơ khởi ($M_{assist}$) sẽ đóng vai trò là công cụ tăng tốc cho giai đoạn sau.
+	\subsubsection{Giai đoạn 1: Thiết lập Mô hình Hỗ trợ (Bootstrap Phase)}
+	Mục tiêu của giai đoạn này là giải quyết bài toán Cold Start bằng cách huấn luyện một mô hình sơ khởi từ tập dữ liệu hạt giống ($D_{seed}$).
 	
-	\paragraph{Bước 1: Chọn mẫu và Gán nhãn thủ công:} Thay vì gán nhãn toàn bộ dữ liệu ngay từ đầu, quy trình bắt đầu bằng việc trích xuất khoảng 10-15\% tổng số lượng khung hình từ dữ liệu thô ($D_{raw}$) để tạo thành thành tập dữ liệu $D_{seed}$. Quy trình gán nhãn được thực hiện chặt chẽ theo các tiêu chuẩn sau:
-	
+	\paragraph{Quy trình Tạo tập dữ liệu hạt giống ($D_{seed}$):}
+	Chúng tôi trích xuất ngẫu nhiên khoảng 10-15\% tổng số lượng khung hình từ dữ liệu thô ($D_{raw}$). Các khung hình này được gán nhãn thủ công trên công cụ CVAT tuân thủ nghiêm ngặt các tiêu chuẩn sau:
 	\begin{itemize}
-		\item \textbf{Định nghĩa Lớp hành vi:} Người thực hiện xác định chính xác Bounding Box của phương tiện và phân loại các nhãn hành vi động như \texttt{lane\_keeping}, \texttt{moving\_away}, và \texttt{cut\_in} như minh họa ở Hình~\ref{fig:labeling}.
-		\item \textbf{Định nghĩa Vùng an toàn:} Đối với các nhãn không gian tĩnh (\texttt{Danger Zone} và \texttt{Warning Zone}), việc thiết lập ranh giới đa giác (polygon) là một thách thức lớn. Do đặc thù giao thông hỗn hợp tại Việt Nam với mật độ xe máy dày đặc và khoảng cách di chuyển bám sát nhau, việc áp dụng cứng nhắc các nguyên tắc khoảng cách an toàn tiêu chuẩn của phương Tây (như quy tắc 2 giây Time-to-Collision) sẽ dẫn đến hiện tượng cảnh báo rác. Vì vậy, nghiên cứu không sử dụng công thức khoảng cách tuyệt đối mà quyết định thiết lập kích thước các vùng này dựa trên phương pháp kinh nghiệm thực tiễn. Các đa giác được tinh chỉnh thông qua quan sát góc nhìn thực tế của tài xế, đảm bảo ngưỡng cảnh báo phản ánh đúng không gian cần thiết cho hành vi phanh khẩn cấp trong giao thông nội đô.
-		\item \textbf{Công cụ:} Sử dụng công cụ CVAT để thực hiện thao tác gán nhãn nhằm đảm bảo định dạng đầu ra chuẩn cấu trúc YOLO.
+		\item \textbf{Định nghĩa Lớp hành vi:} Xác định Bounding Box và phân loại hành vi động (\texttt{lane\_keeping}, \texttt{moving\_away}, \texttt{cut\_in}) như Hình \ref{fig:labeling}.
+		\item \textbf{Định nghĩa Vùng an toàn (Heuristic Approach):} Đối với các nhãn không gian tĩnh (\texttt{Danger Zone}, \texttt{Warning Zone}), thay vì áp dụng cứng nhắc các công thức khoảng cách tiêu chuẩn phương Tây (vốn gây ra cảnh báo rác trong điều kiện giao thông xe máy dày đặc tại Việt Nam), nghiên cứu thiết lập kích thước vùng dựa trên \textit{kinh nghiệm thực tiễn}. Các đa giác được tinh chỉnh dựa trên quan sát góc nhìn thực tế của tài xế, đảm bảo phản ánh đúng không gian cần thiết cho hành vi phanh khẩn cấp trong giao thông nội đô.
 	\end{itemize}
 	
 	\begin{figure}[!h]
 		\centering
-		\includegraphics[width=12cm,height=6cm,keepaspectratio]{images/labeling.png}
-		\caption{Minh họa gán nhãn đối tượng trong bài toán}
+		\includegraphics[width=12cm,height=5cm,keepaspectratio]{images/labeling.png}
+		\caption{Minh họa gán nhãn đối tượng}
 		\label{fig:labeling}
 	\end{figure}
 	
-	\paragraph{Bước 2: Huấn luyện Mô hình Sơ khởi:} Sử dụng tập $D_{seed}$ để huấn luyện mô hình YOLOv8 (nano version).
-	\begin{itemize}
-		\item \textbf{Chiến lược:} Áp dụng kỹ thuật Transfer Learning từ trọng số COCO để giúp mô hình hội tụ nhanh chóng. YOLOv8 được lựa chọn nhờ sự cân bằng vượt trội giữa tốc độ và độ chính xác, được xem là chuẩn mực so sánh (state-of-the-art baseline) trong các nghiên cứu phát hiện vật thể thời gian thực hiện nay \cite{Lv2023DETRsBY}.
-		\item \textbf{Vai trò:} Mô hình $M_{assist}$ này không yêu cầu khả năng tổng quát hóa hoàn hảo, mà tập trung tối ưu hóa độ nhạy (Recall) để đảm bảo không bỏ sót các phương tiện trong khung hình, phục vụ cho khâu hiệu chỉnh của con người.
-	\end{itemize}
+	\paragraph{Cấu hình Mô hình $M_{assist}$:}
+	Mô hình được chọn là YOLOv8 (phiên bản nano) nhờ sự cân bằng giữa tốc độ và độ chính xác \cite{Lv2023DETRsBY}. Chiến lược Transfer Learning từ trọng số COCO được áp dụng để tăng tốc độ hội tụ. Mục tiêu của $M_{assist}$ là tối ưu hóa độ nhạy để hạn chế tối đa việc bỏ sót đối tượng (False Negative).
 	
-	\paragraph{Bước 3: Đánh giá và Kiểm định Điều kiện chuyển tiếp:} Đây là bước quan trọng để quyết định xem mô hình đã đủ điều kiện để hỗ trợ con người hay chưa. Tiêu chí đánh giá được thiết lập dựa trên độ chính xác trung bình (mAP@50).
+	\paragraph{Tiêu chí Chuyển tiếp (Transition Criteria):}
+	Mô hình $M_{assist}$ chỉ được chấp nhận đưa vào hỗ trợ Giai đoạn 2 khi đạt ngưỡng hiệu suất: mAP@50 $\geq$ 0.9. Ngưỡng này đảm bảo chất lượng gợi ý thị giác đủ tốt để giảm tải thao tác thủ công nhưng vẫn duy trì độ tin cậy \cite{Branson2010VisualRW}.
 	
-	\textbf{Điều kiện chuyển tiếp:} Mô hình $M_{assist}$ được chấp nhận đưa vào quy trình bán tự động khi chỉ số mAP@50 $\geq$ 0.9 và tỷ lệ False Negative ở mức thấp. Ngưỡng này được xác định dựa trên nguyên tắc tối ưu hóa tương tác Người-Máy khi mà mức độ chính xác này đủ để giảm thiểu đáng kể thao tác thủ công thông qua việc gợi ý thị giác \cite{Branson2010VisualRW}, trong khi vẫn duy trì quyền kiểm soát và giám sát của con người để đảm bảo độ tin cậy dữ liệu cuối cùng \cite{Shneiderman2020HumanCenteredAI}.
-	
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=6cm,height=8cm,keepaspectratio]{images/map_data_processing.png}
-		\caption{Kết quả huấn luyện mô hình $M_{assist}$ trên tập dữ liệu $D_{seed}$}
-		\label{fig:map_data_processing}
-	\end{figure}
-	
-	\newpage
-	
-	Đồng thời, khả năng phân loại của mô hình cũng được đánh giá qua ma trận nhầm lẫn để đảm bảo các lớp quan trọng (như Danger Zone và Warning Zone) không bị nhầm lẫn quá mức với nền.
-	
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=10cm,height=10cm,keepaspectratio]{images/confusion_matrix_data_processing.png}
-		\caption{Ma trận nhầm lẫn của mô hình sơ khởi}
-		\label{fig:confusion_matrix_data_processing}
-	\end{figure}
-	
-	\subsubsection*{Giai đoạn 2: Gán nhãn Bán tự động quy mô lớn}
-	
-	Giai đoạn này mở rộng quy mô xử lý cho 85-90\% lượng dữ liệu còn lại ($D_{raw}$), chuyển đổi vai trò của con người từ "thao tác thủ công" sang "giám sát và hiệu chỉnh".
-	
-	\paragraph{Bước 1: Tiền gán nhãn:} Hệ thống sử dụng mô hình hỗ trợ $M_{assist}$ (đã đạt chuẩn ở Giai đoạn 1) để thực hiện suy luận trên toàn bộ tập dữ liệu thô.
-	\begin{itemize}
-		\item \textbf{Cơ chế:} Với mỗi khung hình, mô hình sinh ra các dự đoán bao gồm tọa độ Bounding Box $(x, y, w, h)$ và nhãn sơ bộ (được thiết lập mặc định là \texttt{lane\_keeping}).
-		\item \textbf{Mục đích:} Chiến lược này tận dụng thực tế rằng đa số các khung hình trong giao thông là xe đi đúng làn đường (lớp đa số). Việc gán mặc định giúp giảm thiểu rủi ro mô hình phân loại sai các lớp hiếm ngay từ đầu.
-	\end{itemize}
-	
-	\paragraph{Bước 2: Hiệu chỉnh bởi con người:} Dữ liệu thô và file nhãn dự đoán được nạp vào công cụ CVAT. Tại đây, người thực hiện tiến hành rà soát dựa trên hai tiêu chí:
-	\begin{itemize}
-		\item \textbf{Hiệu chỉnh Không gian:} Điều chỉnh kích thước bounding box để đảm bảo độ khít với phương tiện.
-		\item \textbf{Gán nhãn Sự kiện:} Do toàn bộ nhãn đang là \texttt{lane\_keeping}, người thực hiện chỉ cần tua nhanh video và dừng lại ở các đoạn có hành vi tạt đầu hoặc rẽ để đổi nhãn thành \texttt{moving\_away} và \texttt{cut\_in}.
-	\end{itemize}
-	
-	\paragraph{Bước 3: Hợp nhất và Đóng gói Dữ liệu:} Sau khi hoàn tất hiệu chỉnh, dữ liệu được xuất và trải qua bước kiểm tra ngẫu nhiên cuối cùng để loại bỏ các frame bị lỗi, tạo thành bộ dữ liệu huấn luyện hoàn chỉnh.
+	\subsubsection{Giai đoạn 2: Quy trình Gán nhãn Bán tự động (Semi-automated Labeling)}
+	Sau khi đạt chuẩn, $M_{assist}$ được áp dụng cho 85-90\% dữ liệu còn lại theo quy trình:
+	\begin{enumerate}
+		\item \textbf{Tiền gán nhãn:} Mô hình sinh dự đoán bounding box và gán nhãn mặc định \texttt{lane\_keeping} (lớp đa số) cho toàn bộ dữ liệu.
+		\item \textbf{Hiệu chỉnh:} Sử dụng CVAT để tinh chỉnh kích thước box và chỉ cần thay đổi nhãn sự kiện tại các thời điểm phát hiện hành vi bất thường (tạt đầu, rẽ), thay vì vẽ lại từ đầu.
+		\item \textbf{Đóng gói:} Dữ liệu sau hiệu chỉnh được hợp nhất và kiểm tra ngẫu nhiên lần cuối.
+	\end{enumerate}
 	
 	\subsection{Mô hình Nhận thức Hành vi}
 	
@@ -371,8 +340,8 @@
 	
 	Việc lựa chọn backbone phù hợp là yếu tố then chốt để đảm bảo khả năng vận hành thời gian thực trên thiết bị biên. Dựa trên phân tích so sánh chuyên sâu của Hidayatullah và cộng sự (2025) \cite{Hidayatullah2025YOLOv8TY}, nghiên cứu tiến hành thực nghiệm đối chiếu giữa hai biến thể:
 	\begin{itemize}
-		\item \textbf{YOLOv10n}: Là phiên bản YOLO cải tiến dựa trên nền tảng YOLOv8, được tối ưu cho phát hiện đối tượng thời gian thực với kiến trúc gọn hơn, cơ chế huấn luyện mới loại bỏ NMS và đem lại hiệu năng tốt trong nhiều kịch bản triển khai \cite{Hidayatullah2025YOLOv8TY}.
 		\item \textbf{YOLO26n}: Là một mô hình đầu cuối (end-to-end) hoàn toàn mới được thiết kế đặc biệt cho các thiết bị biên có công suất thấp. Kiến trúc này đơn giản hóa đường ống xử lý bằng cách loại bỏ hoàn toàn lớp hậu xử lý NMS và tối ưu hóa thuật toán MuSGD, giúp mô hình ổn định và hội tụ nhanh hơn \cite{yolo26_ultralytics}.
+		\item \textbf{YOLOv10n}: Là phiên bản YOLO cải tiến dựa trên nền tảng YOLOv8, được tối ưu cho phát hiện đối tượng thời gian thực với kiến trúc gọn hơn, cơ chế huấn luyện mới loại bỏ NMS và đem lại hiệu năng tốt trong nhiều kịch bản triển khai \cite{Hidayatullah2025YOLOv8TY}.
 	\end{itemize}
 	
 	Để minh chứng cụ thể sự tối ưu về mặt tài nguyên, Bảng \ref{tab:yolo_comparison} trình bày sự so sánh giữa hai kiến trúc này (phiên bản kích thước Nano) trên bộ dữ liệu chuẩn COCO.
@@ -386,12 +355,12 @@
 				\toprule
 				\textbf{Model} & \textbf{mAP$^{val}_{50-95}$} & \textbf{Tham số (M)} & \textbf{FLOPs (B)} & \textbf{Năm} \\
 				\midrule
-				YOLOv10n & 39.5 & \textbf{2.3} & 6.7 & 2024 \\
 				YOLO26n & \textbf{40.9} & 2.4 & \textbf{5.4} & 2026 \\
+				YOLOv10n & 39.5 & \textbf{2.3} & 6.7 & 2024 \\
 				\bottomrule
 			\end{tabular}%
 		}
-		\footnotesize{\textit{*Ghi chú: Số liệu Inference đo trên T4 GPU (TensorRT FP16).}}
+		\footnotesize{\textit{*Ghi chú: Số liệu Inference đo trên T4 GPU (TensorRT FP16) theo công bố của Ultralytics.}}
 	\end{table}
 	
 	Dựa trên số liệu từ Bảng \ref{tab:yolo_comparison}, có thể thấy YOLO26n thể hiện sự vượt trội so với nền tảng YOLOv10n:
@@ -400,13 +369,77 @@
 		\item \textbf{Về chi phí tính toán:} Mặc dù khối lượng tham số của hai mô hình là gần tương đương nhau (khoảng 2.3 - 2.4 triệu), YOLO26n lại tối ưu hóa phép toán cực kỳ ấn tượng, giảm FLOPs xuống chỉ còn 5.4B (so với 6.7B của v10n). Điều này giúp tiết kiệm năng lượng tiêu thụ, giảm nhiệt độ tỏa ra và duy trì độ trễ xử lý cực thấp trên các vi mạch nhúng.
 	\end{itemize}
 	
-	Do đó, nghiên cứu quyết định lựa chọn \textbf{YOLO26n} làm kiến trúc mạng trọng tâm để phát triển và triển khai hệ thống nhận diện rủi ro, đồng thời sử dụng YOLOv10n làm mô hình cơ sở (baseline) đối chứng trong quá trình thực nghiệm.
+	Do đó, nghiên cứu quyết định lựa chọn \textbf{YOLO26n} làm kiến trúc mạng trọng tâm để phát triển và triển khai hệ thống nhận diện rủi ro, đồng thời sử dụng YOLOv10n làm mô hình cơ sở đối chứng trong quá trình thực nghiệm.
 	
 	\subsubsection{Cơ chế Huấn luyện}
+	Để tối ưu hóa hiệu năng của kiến trúc YOLO26n trong bài toán nhận diện ý định và hành vi phương tiện, quá trình huấn luyện được thiết lập một cách nghiêm ngặt với các kỹ thuật tinh chỉnh tham số và tăng cường dữ liệu tiên tiến.
+	
+	\paragraph{1. Môi trường và Thiết lập cơ sở:}
+	Quá trình thực nghiệm được triển khai trên máy chủ đám mây với bộ xử lý đồ họa GPU NVIDIA Tesla T4 (16GB VRAM) nhằm đáp ứng nhu cầu tính toán hiệu năng cao. Mô hình được khởi tạo theo chiến lược Học chuyển giao, sử dụng tập trọng số đào tạo trước để tận dụng khả năng trích xuất đặc trưng chung, từ đó rút ngắn thời gian hội tụ trên tập dữ liệu giao thông nội bộ. Tập dữ liệu cấu thành gồm 17.939 khung ảnh huấn luyện và 3.611 khung ảnh kiểm chứng.
+	
+	\paragraph{2. Cấu hình Siêu tham số:}
+	Các tham số cấu hình cốt lõi được lựa chọn thông qua quá trình thử nghiệm lặp nhằm cân bằng giữa tốc độ học và sự ổn định:
+	\begin{itemize}
+		\item \textbf{Kích thước đầu vào:} Ảnh được chuẩn hóa về độ phân giải $640 \times 640$ pixel. Đây là kích thước tối ưu (sweet-spot) của các mạng YOLO, vừa giữ được chi tiết của vật thể nhỏ ở xa (dấu hiệu chuyển làn), vừa không làm quá tải bộ nhớ.
+		\item \textbf{Kích thước lô:} Đặt ở mức 16, phù hợp với dung lượng bộ nhớ của GPU Tesla T4 và đảm bảo gradient được cập nhật mượt mà.
+		\item \textbf{Số kỷ nguyên \& Dừng sớm:} Mô hình được thiết lập huấn luyện tối đa 100 epochs. Để ngăn chặn hiện tượng học vẹt, cơ chế \textit{Early Stopping} được áp dụng với \texttt{patience=8} (tự động dừng nếu mô hình không cải thiện sau 8 kỷ nguyên liên tiếp).
+	\end{itemize}
+	
+	\paragraph{3. Thuật toán Tối ưu hóa:}
+	Điểm sáng công nghệ lớn nhất trong cơ chế huấn luyện của YOLO26 là việc ứng dụng bộ tối ưu hóa lai \textbf{MuSGD} (kết hợp giữa nguyên lý phân kỳ SGD và bộ tối ưu hóa Muon). Lấy cảm hứng từ những đột phá trong huấn luyện Mô hình ngôn ngữ lớn (LLM - tiêu biểu là kiến trúc Kimi K2 của Moonshot AI) \cite{yolo26_ultralytics}, việc chuyển giao MuSGD vào lĩnh vực thị giác máy tính giúp mô hình đạt được sự ổn định nâng cao và tốc độ hội tụ nhanh hơn hẳn so với các thuật toán truyền thống. Bộ tối ưu hóa được cấu hình với tốc độ học khởi tạo ($lr_0$) là 0.01 và hệ số quán tính là 0.9.
+	
+	\paragraph{4. Tinh chỉnh Kiến trúc và Hàm mất mát:}
+	Kiến trúc của mạng được tinh gọn hóa thông qua các cải tiến mang tính chiến lược, đặc biệt phù hợp cho các hệ thống ADAS bị hạn chế về tài nguyên phần cứng:
+	\begin{itemize}
+		\item \textbf{Loại bỏ NMS và DFL:} YOLO26 là một mô hình đầu cuối tích hợp (end-to-end inference), dự đoán trực tiếp Bounding Box mà không cần bước hậu xử lý triệt tiêu cực đại (NMS). Đồng thời, mô-đun Distribution Focal Loss (DFL) cũng được loại bỏ hoàn toàn nhằm đơn giản hóa quá trình xuất (export) và tăng khả năng tương thích với các thiết bị biên (edge devices) \cite{yolo26_ultralytics}.
+		\item \textbf{Tích hợp ProgLoss và STAL:} Các hàm mất mát mới này được áp dụng nhằm tăng cường đáng kể độ chính xác khi nhận dạng các vật thể nhỏ. Trong ngữ cảnh bài toán tạt đầu, điều này đóng vai trò then chốt giúp mạng nhạy bén hơn trong việc trích xuất các đặc trưng tinh vi như sự thay đổi nhỏ về góc nghiêng của phương tiện \cite{yolo26_ultralytics}.
+	\end{itemize}
+	
+	\paragraph{5. Tăng cường Dữ liệu:}
+	Để gia tăng tính bền vững, pipeline huấn luyện tích hợp thư viện Albumentations:
+	\begin{itemize}
+		\item \textbf{Biến đổi quang học:} Cân bằng sáng CLAHE, làm mờ, chuyển ảnh xám với tỷ lệ nhỏ nhằm giúp mô hình thích ứng với sự thay đổi thời tiết, ánh sáng chói hoặc sương mù.
+		\item \textbf{Biến đổi không gian:} Áp dụng lật ngang ảnh (\texttt{fliplr=0.5}), dịch chuyển (\texttt{translate=0.1}), và thay đổi tỷ lệ (\texttt{scale=0.5}).
+	\end{itemize}
 	
 	\subsection{Hậu xử lý \& Ổn định Cảnh báo}
 	
 	\section{KẾT QUẢ NGHIÊN CỨU}
+	
+	\subsection{Kết quả Huấn luyện Mô hình Hỗ trợ}
+	
+	Dựa trên phương pháp luận đã đề xuất, mô hình sơ khởi ($M_{assist}$) đã được huấn luyện trên tập dữ liệu hạt giống $D_{seed}$. Kết quả thực nghiệm cho thấy mô hình đáp ứng tốt các tiêu chí chuyển tiếp để phục vụ quy trình bán tự động.
+	
+	\subsubsection{Hiệu suất Mô hình trên Tập kiểm định}
+	Biểu đồ quá trình huấn luyện (Hình \ref{fig:map_data_processing}) cho thấy sự hội tụ ổn định của mô hình. Chỉ số độ chính xác trung bình (mAP@50) đạt mức cao xấp xỉ \textbf{0.97}, vượt qua ngưỡng yêu cầu 0.9 đã thiết lập tại phần Phương pháp.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=6cm,height=8cm,keepaspectratio]{images/map_data_processing.png}
+		\caption{Biểu đồ mAP@50 của mô hình $M_{assist}$ qua các epoch}
+		\label{fig:map_data_processing}
+	\end{figure}
+	
+	Điều này chứng minh rằng chiến lược sử dụng YOLOv8n kết hợp Transfer Learning đã phát huy hiệu quả trong việc học nhanh các đặc trưng từ tập dữ liệu nhỏ ban đầu, tạo tiền đề vững chắc cho việc gán nhãn tự động quy mô lớn.
+	
+	\subsubsection{Phân tích Ma trận Nhầm lẫn (Confusion Matrix)}
+	Khả năng phân loại chi tiết của $M_{assist}$ được thể hiện qua ma trận nhầm lẫn tại Hình \ref{fig:confusion_matrix_data_processing}.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=10cm,height=10cm,keepaspectratio]{images/confusion_matrix_data_processing.png}
+		\caption{Ma trận nhầm lẫn của mô hình sơ khởi $M_{assist}$}
+		\label{fig:confusion_matrix_data_processing}
+	\end{figure}
+	
+	Kết quả cho thấy:
+	\begin{itemize}
+		\item Tỷ lệ nhận diện đúng (True Positive) của các lớp quan trọng như \texttt{cut\_in} và \texttt{lane\_keeping} đạt mức cao.
+		\item Sự nhầm lẫn giữa các vùng tĩnh (\texttt{Danger Zone} vs \texttt{Warning Zone}) nằm trong mức chấp nhận được đối với một mô hình sơ khởi.
+		\item Tỷ lệ bỏ sót đối tượng (Background FN) rất thấp, thỏa mãn yêu cầu về tối ưu hóa độ nhạy (Recall) để hỗ trợ người kiểm định không bị sót xe trong khung hình.
+	\end{itemize}
+	
+	\textbf{Kết luận:} Với các chỉ số hiệu năng trên, mô hình $M_{assist}$ chính thức được đưa vào vận hành cho Giai đoạn 2, giúp giảm thiểu đáng kể thời gian gán nhãn cho phần dữ liệu thô còn lại.
 	
 	
 	\section{KẾT LUẬN \& HƯỚNG PHÁT TRIỂN}
