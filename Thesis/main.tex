@@ -416,7 +416,7 @@
     \begin{figure}[h]
         \centering
         \includegraphics[width=0.85\textwidth]{images/train_loss.png}\\[0.2cm]
-        \small Hình 4: Các chỉ số hàm mất mát trên tập huấn luyện
+        \caption{Các chỉ số hàm mất mát trên tập huấn luyện}
         \label{fig:train_loss}
     \end{figure}
     
@@ -430,7 +430,7 @@
     \begin{figure}[h]
         \centering
         \includegraphics[width=0.85\textwidth]{images/val_loss.png}\\[0.2cm]
-        \small Hình 5: Các chỉ số hàm mất mát trên tập kiểm định
+        \caption{Các chỉ số hàm mất mát trên tập kiểm định}
         \label{fig:val_loss}
     \end{figure}
 
@@ -448,7 +448,7 @@
 	\begin{figure}[h]
 		\centering
     	\includegraphics[width=6cm,height=8cm,keepaspectratio]{images/map_data_processing.png}\\[0.2cm]
-    	\small Hình 6: Biểu đồ mAP@50 của mô hình $M_{assist}$ qua các epoch
+    	\caption{Biểu đồ mAP@50 của mô hình $M_{assist}$ qua các epoch}
 		\label{fig:map_data_processing}
 	\end{figure}
 	
@@ -475,46 +475,73 @@
 	
 	\subsection{Kết quả thực nghiệm mô hình trọng tâm}
 
-    Sau khi hoàn tất quy trình xây dựng dữ liệu thông qua cơ chế Human-in-the-loop, mô hình chính \textbf{YOLO26n} được huấn luyện để đánh giá khả năng nhận thức hành vi thực tế. Để minh chứng cho tính ưu việt của kiến trúc đề xuất, nghiên cứu thực hiện đối chiếu hiệu năng với mô hình \textbf{YOLOv10n} làm Baseline.
+	Dựa trên quy trình huấn luyện đã thiết lập, mô hình trọng tâm được thực hiện đánh giá chi tiết trên tập dữ liệu thực nghiệm quy mô lớn. Kết quả cho thấy mô hình đạt được sự ổn định cao và khả năng nhận diện hành vi chính xác, đáp ứng các tiêu chuẩn kỹ thuật đề ra.
 
-    \subsubsection{So sánh hiệu năng nhận diện và phân loại}
+	\subsubsection{Sự hội tụ của mô hình}
 
-    Kết quả thực nghiệm trên tập kiểm chứng gồm 3.611 khung hình cho thấy sự vượt trội của YOLO26n về cả độ chính xác lẫn tốc độ xử lý.
+	Để đánh giá chi tiết hành vi học tập của mô hình trọng tâm qua 65 \textbf{epochs}, nghiên cứu thực hiện đối chiếu các thành phần \textbf{Loss} giữa tập \textbf{train} và tập \textbf{val}.
 
-    \begin{table}[h]
-        \centering
-        \caption{So sánh thông số kỹ thuật và hiệu năng giữa YOLO26n và YOLOv10n.}
-        \label{tab:final_results}
-        \resizebox{\linewidth}{!}{%
-            \begin{tabular}{lcccc}
-                \toprule
-                \textbf{Kiến trúc} & \textbf{mAP@50 (\%)} & \textbf{mAP@50-95 (\%)} & \textbf{FLOPs (B)} & \textbf{Latency (ms)} \\
-                \midrule
-                YOLOv10n (Baseline) & 82.4 & 39.5 & 6.7 & 1.2 \\
-                \textbf{YOLO26n (Ours)} & \textbf{89.7} & \textbf{40.9} & \textbf{5.4} & \textbf{0.9} \\
-                \bottomrule
-            \end{tabular}%
-        }
-        \footnotesize{\textit{*Ghi chú: Latency đo trên NVIDIA Tesla T4 GPU.}}
-    \end{table}
+	\begin{figure}[h]
+		\centering
+    	\includegraphics[width=0.85\textwidth]{images/train_loss_main.png}\\[0.2cm]
+    	\caption{Các chỉ số hàm mất mát trên tập huấn luyện của mô hình trọng tâm}
+		\label{fig:train_loss_main} 
+	\end{figure}
 
-    \textbf{Phân tích kết quả thực nghiệm:}
-    \begin{itemize}
-        \item \textbf{Độ chính xác:} YOLO26n đạt hiệu suất \textbf{89.7\% mAP@50}, vượt trội hơn đáng kể so với kiến trúc tiền nhiệm. Khả năng trích xuất đặc trưng được cải thiện nhờ hàm mất mát \textbf{ProgLoss} và \textbf{STAL}, giúp hệ thống nhạy bén trong việc phát hiện các dấu hiệu thay đổi góc nghiêng của xe máy trước khi thực hiện pha \texttt{cut\_in}.
-        \item \textbf{Tối ưu hóa tài nguyên:} Mặc dù có số lượng tham số tương đương (~2.4M), YOLO26n giảm được lượng tính toán FLOPs xuống còn \textbf{5.4B}. Việc loại bỏ hoàn toàn hậu xử lý \textbf{NMS} (Non-Maximum Suppression) giúp giảm thiểu độ trễ xử lý xuống dưới mức \textbf{1 ms}.
-    \end{itemize}
+	Dựa trên kết quả thu được từ quá trình huấn luyện:
+	\begin{itemize}
+    	\item \textbf{train/box\_loss}: Chỉ số này thể hiện sai số trong việc dự đoán tọa độ của \textbf{Bounding Box}. Đồ thị cho thấy xu hướng giảm ổn định từ mức ~1.25 xuống còn ~0.88. Điều này chứng minh thuật toán đang tối ưu tốt khả năng định vị phương tiện qua từng vòng lặp.
+    	\item \textbf{train/cls\_loss}: Đây là chỉ số đánh giá độ chính xác của việc phân loại các lớp hành vi. Đồ thị giảm mạnh ngay từ những \textbf{epochs} đầu tiên từ mức 2.0 xuống tiệm cận mức 0.35. Kết quả này khẳng định mô hình nhận diện rất tốt các đặc trưng phân biệt giữa các nhóm trạng thái hành vi.
+    	\item \textbf{train/dfl\_loss}: Hội tụ mượt mà về mức ~0.003. Việc giảm dần của \textbf{DFL} hỗ trợ mô hình tinh chỉnh các biên của vật thể một cách chính xác, giúp xử lý tốt các đối tượng có kích thước nhỏ như xe máy.
+	\end{itemize}
 
-    \subsubsection{Đánh giá khả năng dự đoán ý định sớm}
+	\begin{figure}[h]
+		\centering
+    	\includegraphics[width=0.85\textwidth]{images/val_loss_main.png}\\[0.2cm]
+    	\caption{Các chỉ số hàm mất mát trên tập kiểm định của mô hình trọng tâm}
+		\label{fig:val_loss_main}
+	\end{figure}
 
-    Mục tiêu quan trọng nhất của hệ thống là khả năng đưa ra cảnh báo trước khi hành vi nguy hiểm xảy ra hoàn toàn. Qua thực nghiệm trên các kịch bản giao thông hỗn hợp tại Việt Nam, hệ thống đã chứng minh được năng lực phản hồi sớm:
+	Quá trình đánh giá hiệu suất trên tập kiểm định (\textbf{Validation}) cho thấy các đặc tính sau:
+	\begin{itemize}
+    	\item \textbf{val/box\_loss \& val/dfl\_loss}: Mặc dù xuất hiện một số điểm biến động (\textbf{spikes}) tại giai đoạn đầu (khoảng \textbf{epoch} thứ 3 đến thứ 10), nhưng ngay sau đó cả hai chỉ số đều duy trì xu hướng giảm tương đồng với tập \textbf{train} và ổn định dần về cuối quá trình.
+    	\item \textbf{val/cls\_loss}: Đồ thị đạt mức ổn định khoảng ~0.4 và duy trì trạng thái nằm ngang ở các \textbf{epochs} cuối. Điều quan trọng là chỉ số này không có dấu hiệu tăng ngược lại, minh chứng cho việc mô hình không bị rơi vào hiện tượng \textbf{overfitting}. 
+	\end{itemize}
 
-    \begin{itemize}
-        \item \textbf{Thời gian phản ứng:} Nhờ sự kết hợp giữa kiến trúc End-to-End và bộ tối ưu hóa \textbf{MuSGD}, hệ thống có khả năng đưa ra cảnh báo sớm từ \textbf{1.5 đến 2 giây} trước khi xe máy cắt mặt ô tô.
-        \item \textbf{Độ ổn định cảnh báo:} Thuật toán hậu xử lý giúp ổn định tín hiệu, giảm thiểu tình trạng cảnh báo giả do nhiễu môi trường hoặc các xe di chuyển phi làn đường nhưng không có ý định tạt đầu.
-    \end{itemize}
+	\subsubsection{Hiệu suất mô hình trên tập kiểm định}
 
-    \textbf{Kết luận:} Kết quả thực nghiệm khẳng định YOLO26n là lựa chọn tối ưu cho hệ thống ADAS triển khai trên thiết bị biên. Mô hình không chỉ đảm bảo độ chính xác cao trong phân loại ý định mà còn duy trì hiệu suất ổn định trong điều kiện tài nguyên phần cứng hạn chế.
+	Chỉ số độ chính xác trung bình (\textbf{mAP@50}) đóng vai trò quyết định trong việc đánh giá năng lực thực tế của mô hình được thể hiện tại Hình \ref{fig:mAP50_main}.
 
+	Biểu đồ quá trình huấn luyện tại Hình \ref{fig:mAP50_main} cho thấy sự hội tụ ấn tượng của mô hình. 
+	Chỉ số \textbf{mAP@50} tăng trưởng mạnh mẽ từ mức ban đầu ~0.53 và đạt ngưỡng ổn định xấp xỉ \textbf{0.80} sau 50 \textbf{epochs} huấn luyện. Điều này chứng minh mô hình trọng tâm đã đạt được độ tin cậy cao trong việc nhận diện đối tượng và hành vi trên tập dữ liệu thực nghiệm quy mô lớn.
+
+	\begin{figure}[h]
+		\centering
+    	\includegraphics[width=6cm,height=8cm]{images/mAP50_main.png}\\[0.2cm]
+    	\caption{Biểu đồ mAP@50 của mô hình trọng tâm qua các epoch}
+		\label{fig:mAP50_main} 
+	\end{figure}
+
+	\subsubsection{Phân tích Ma trận Nhầm lẫn (Confusion Matrix)}
+
+	Khả năng phân loại chi tiết của mô hình trọng tâm được minh chứng qua ma trận nhầm lẫn thực nghiệm tại Hình \ref{fig:confusion_matrix_main}.
+
+	Dựa trên số liệu thống kê từ ma trận nhầm lẫn:
+	\begin{itemize}
+    	\item \textbf{Độ chính xác phân loại hành vi}: Mô hình đạt tỷ lệ nhận diện đúng (\textbf{True Positive}) cực cao đối với lớp \texttt{lane\_keeping} với 9932 mẫu và lớp hành vi tạt đầu \texttt{cut\_in} với 1146 mẫu được phân loại chính xác. 
+    	\item \textbf{Tỷ lệ bỏ sót (Background FN)}: Đối với lớp hành vi quan trọng \texttt{cut\_in}, chỉ có 86 trường hợp bị nhầm lẫn thành nền (\textbf{background}), đảm bảo hệ thống duy trì tính an toàn cao và không bỏ qua các kịch bản tạt đầu nguy hiểm.
+    	\item \textbf{Phân loại vùng không gian}: Các vùng tĩnh được mô hình phân loại với độ chính xác tuyệt đối, hỗ trợ tốt cho các thuật toán hậu xử lý tính toán mức độ rủi ro dựa trên vị trí phương tiện trong các vùng an toàn.
+	\end{itemize}
+
+	\begin{figure}[h]
+		\centering
+    	\includegraphics[width=10cm,height=10cm]{images/confusion_matrix_main.png}\\[0.2cm]
+    	\caption{Ma trận nhầm lẫn của mô hình trọng tâm}
+		\label{fig:confusion_matrix_main}
+	\end{figure}
+
+	\textbf{Kết luận}: Với sự hội tụ đồng nhất giữa các chỉ số \textbf{Loss} và sự gia tăng ổn định của \textbf{mAP@50}, mô hình trọng tâm đã chứng minh được năng lực nhận thức hành vi vượt trội. Kết quả thực nghiệm khẳng định tính khả thi của việc triển khai mô hình vào hệ thống dự đoán ý định và cảnh báo sớm hành vi tạt đầu trong giao thông thực tế.
+	
 	\section{KẾT LUẬN \& HƯỚNG PHÁT TRIỂN}
 	\subsection{Hạn chế của nghiên cứu}
 	Mặc dù hệ thống đã đạt được độ chính xác cao trong việc nhận diện hành vi tạt đầu, một hạn chế của nghiên cứu là việc định cỡ các vùng an toàn (Polygon zones) vẫn đang phụ thuộc vào góc nhìn camera cố định. Do không sử dụng cảm biến chiều sâu (LiDAR/Radar), nghiên cứu này mang tính chất một Proof of Concept (PoC), tập trung vào việc chứng minh năng lực của kiến trúc YOLO kết hợp Reinforcement Learning trong bài toán nhận diện ý định. Trong các phiên bản triển khai thực tế tiếp theo, hệ thống có thể tích hợp thêm module tự động hiệu chuẩn (Auto-calibration) dựa trên phép chiếu IPM để vùng đa giác tự động thích ứng với nhiều loại camera và độ cao lắp đặt khác nhau.
