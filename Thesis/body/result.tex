@@ -1,0 +1,137 @@
+\section{KẾT QUẢ NGHIÊN CỨU}
+	
+	\subsection{Kết quả Huấn luyện Mô hình Hỗ trợ}
+	
+	Dựa trên phương pháp luận đã đề xuất, mô hình sơ khởi ($M_{assist}$) đã được huấn luyện trên tập dữ liệu hạt giống $D_{seed}$. Kết quả thực nghiệm cho thấy mô hình đáp ứng tốt các tiêu chí chuyển tiếp để phục vụ quy trình bán tự động.
+	
+	\subsubsection{Sự hội tụ của mô hình}
+    Để đánh giá chi tiết hành vi học tập của mô hình hỗ trợ $M_{assist}$ qua 40 epochs, nghiên cứu thực hiện đối chiếu các thành phần Loss giữa tập train và tập val.
+    
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.85\textwidth]{images/train_loss.png}\\[0.2cm]
+        \caption{Các chỉ số hàm mất mát trên tập huấn luyện}
+        \label{fig:train_loss}
+    \end{figure}
+    
+    Dựa trên kết quả thực nghiệm thu được từ quá trình huấn luyện mô hình $M_{assist}$:
+    \begin{itemize}
+        \item \textbf{train/box\_loss:} Chỉ số này thể hiện sai số trong việc dự đoán tọa độ của \textbf{Bounding Box}. Đồ thị cho thấy xu hướng giảm ổn định từ mức ~1.1 xuống còn ~0.73, chứng minh thuật toán đang tối ưu tốt khả năng định vị phương tiện qua từng vòng lặp.
+        \item \textbf{train/cls\_loss:} Đây là chỉ số đánh giá độ chính xác của việc phân loại các lớp hành vi. Đồ thị giảm mạnh ngay từ những \textbf{epochs} đầu tiên và tiệm cận mức 0.35, khẳng định mô hình nhận diện rất tốt các đặc trưng của 3 nhóm trạng thái: \texttt{lane\_keeping}, \texttt{moving\_away} và \texttt{cut\_in}.
+        \item \textbf{train/dfl\_loss:} Chỉ số \textbf{Distribution Focal Loss} giúp mô hình học cách phân phối xác suất của các giá trị tọa độ xung quanh biên của vật thể. Đồ thị hội tụ về mức ~0.90; việc giảm dần của \textbf{DFL} hỗ trợ mô hình tinh chỉnh các biên của vật thể một cách mượt mà, đặc biệt hiệu quả trong việc xử lý các đối tượng xe máy có kích thước nhỏ.
+    \end{itemize}
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[width=0.85\textwidth]{images/val_loss.png}\\[0.2cm]
+        \caption{Các chỉ số hàm mất mát trên tập kiểm định}
+        \label{fig:val_loss}
+    \end{figure}
+
+    Quá trình đánh giá hiệu suất trên tập kiểm định cho thấy các đặc tính sau:
+    \begin{itemize}
+        \item \textbf{val/box\_loss \& val/dfl\_loss:} Mặc dù xuất hiện một số điểm biến động (\textbf{spikes}) tại giai đoạn đầu (khoảng \textbf{epoch} thứ 3 đến thứ 5), nhưng ngay sau đó cả hai chỉ số đều duy trì xu hướng giảm tương đồng với tập \textbf{train}. Các biến động này thường do sự điều chỉnh trọng số của bộ tối ưu hóa khi tiếp cận các mẫu dữ liệu khó trong tập kiểm định.
+        \item \textbf{val/cls\_loss:} Đồ thị đạt mức ổn định khoảng ~0.38 và duy trì trạng thái nằm ngang ở các \textbf{epochs} cuối. Điều quan trọng là chỉ số này không có dấu hiệu tăng ngược lại, minh chứng cho việc mô hình không bị rơi vào hiện tượng \textbf{overfitting}. 
+    \end{itemize}
+
+    Sự hội tụ đồng nhất giữa \textbf{Training Loss} và \textbf{Validation Loss} với khoảng cách sai số nhỏ khẳng định mô hình $M_{assist}$ đạt độ tin cậy cao và khả năng \textbf{generalization} tốt. Đây là tiền đề vững chắc để đưa mô hình vào vận hành cho quy trình gán nhãn bán tự động ở Giai đoạn 2.
+	
+	\subsubsection{Hiệu suất Mô hình trên Tập kiểm định}
+	Biểu đồ quá trình huấn luyện (Hình \ref{fig:map_data_processing}) cho thấy sự hội tụ ổn định của mô hình. Chỉ số độ chính xác trung bình (mAP@50) đạt mức cao xấp xỉ \textbf{0.97}, vượt qua ngưỡng yêu cầu 0.9 đã thiết lập tại phần Phương pháp.
+	
+	\begin{figure}[h]
+		\centering
+    	\includegraphics[width=6cm,height=8cm,keepaspectratio]{images/map_data_processing.png}\\[0.2cm]
+    	\caption{Biểu đồ mAP@50 của mô hình $M_{assist}$ qua các epoch}
+		\label{fig:map_data_processing}
+	\end{figure}
+	
+	Điều này chứng minh rằng chiến lược sử dụng YOLOv8n kết hợp Transfer Learning đã phát huy hiệu quả trong việc học nhanh các đặc trưng từ tập dữ liệu nhỏ ban đầu, tạo tiền đề vững chắc cho việc gán nhãn tự động quy mô lớn.
+	
+	\subsubsection{Phân tích Ma trận Nhầm lẫn (Confusion Matrix)}
+	Khả năng phân loại chi tiết của $M_{assist}$ được thể hiện qua ma trận nhầm lẫn tại Hình \ref{fig:confusion_matrix_data_processing}.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=10cm,height=10cm,keepaspectratio]{images/confusion_matrix_data_processing.png}
+		\caption{Ma trận nhầm lẫn của mô hình sơ khởi $M_{assist}$}
+		\label{fig:confusion_matrix_data_processing}
+	\end{figure}
+	
+	Kết quả cho thấy:
+	\begin{itemize}
+		\item Tỷ lệ nhận diện đúng (True Positive) của các lớp quan trọng như \texttt{cut\_in} và \texttt{lane\_keeping} đạt mức cao.
+		\item Sự nhầm lẫn giữa các vùng tĩnh (\texttt{Danger Zone} vs \texttt{Warning Zone}) nằm trong mức chấp nhận được đối với một mô hình sơ khởi.
+		\item Tỷ lệ bỏ sót đối tượng (Background FN) rất thấp, thỏa mãn yêu cầu về tối ưu hóa độ nhạy (Recall) để hỗ trợ người kiểm định không bị sót xe trong khung hình.
+	\end{itemize}
+	
+	\textbf{Kết luận:} Với các chỉ số hiệu năng trên, mô hình $M_{assist}$ chính thức được đưa vào vận hành cho Giai đoạn 2, giúp giảm thiểu đáng kể thời gian gán nhãn cho phần dữ liệu thô còn lại.
+	
+	\subsection{Kết quả thực nghiệm mô hình trọng tâm}
+
+	Dựa trên quy trình huấn luyện đã thiết lập, mô hình trọng tâm được thực hiện đánh giá chi tiết trên tập dữ liệu thực nghiệm quy mô lớn. Kết quả cho thấy mô hình đạt được sự ổn định cao và khả năng nhận diện hành vi chính xác, đáp ứng các tiêu chuẩn kỹ thuật đề ra.
+
+	\subsubsection{Sự hội tụ của mô hình}
+
+	Để đánh giá chi tiết hành vi học tập của mô hình trọng tâm qua 65 \textbf{epochs}, nghiên cứu thực hiện đối chiếu các thành phần \textbf{Loss} giữa tập \textbf{train} và tập \textbf{val}.
+
+	\begin{figure}[h]
+		\centering
+    	\includegraphics[width=0.85\textwidth]{images/train_loss_main.png}\\[0.2cm]
+    	\caption{Các chỉ số hàm mất mát trên tập huấn luyện của mô hình trọng tâm}
+		\label{fig:train_loss_main} 
+	\end{figure}
+
+	Dựa trên kết quả thu được từ quá trình huấn luyện:
+	\begin{itemize}
+    	\item \textbf{train/box\_loss}: Chỉ số này thể hiện sai số trong việc dự đoán tọa độ của \textbf{Bounding Box}. Đồ thị cho thấy xu hướng giảm ổn định từ mức ~1.25 xuống còn ~0.88. Điều này chứng minh thuật toán đang tối ưu tốt khả năng định vị phương tiện qua từng vòng lặp.
+    	\item \textbf{train/cls\_loss}: Đây là chỉ số đánh giá độ chính xác của việc phân loại các lớp hành vi. Đồ thị giảm mạnh ngay từ những \textbf{epochs} đầu tiên từ mức 2.0 xuống tiệm cận mức 0.35. Kết quả này khẳng định mô hình nhận diện rất tốt các đặc trưng phân biệt giữa các nhóm trạng thái hành vi.
+    	\item \textbf{train/dfl\_loss}: Hội tụ mượt mà về mức ~0.003. Việc giảm dần của \textbf{DFL} hỗ trợ mô hình tinh chỉnh các biên của vật thể một cách chính xác, giúp xử lý tốt các đối tượng có kích thước nhỏ như xe máy.
+	\end{itemize}
+
+	\begin{figure}[h]
+		\centering
+    	\includegraphics[width=0.85\textwidth]{images/val_loss_main.png}\\[0.2cm]
+    	\caption{Các chỉ số hàm mất mát trên tập kiểm định của mô hình trọng tâm}
+		\label{fig:val_loss_main}
+	\end{figure}
+
+	Quá trình đánh giá hiệu suất trên tập kiểm định (\textbf{Validation}) cho thấy các đặc tính sau:
+	\begin{itemize}
+    	\item \textbf{val/box\_loss \& val/dfl\_loss}: Mặc dù xuất hiện một số điểm biến động (\textbf{spikes}) tại giai đoạn đầu (khoảng \textbf{epoch} thứ 3 đến thứ 10), nhưng ngay sau đó cả hai chỉ số đều duy trì xu hướng giảm tương đồng với tập \textbf{train} và ổn định dần về cuối quá trình.
+    	\item \textbf{val/cls\_loss}: Đồ thị đạt mức ổn định khoảng ~0.4 và duy trì trạng thái nằm ngang ở các \textbf{epochs} cuối. Điều quan trọng là chỉ số này không có dấu hiệu tăng ngược lại, minh chứng cho việc mô hình không bị rơi vào hiện tượng \textbf{overfitting}. 
+	\end{itemize}
+
+	\subsubsection{Hiệu suất mô hình trên tập kiểm định}
+
+	Chỉ số độ chính xác trung bình (\textbf{mAP@50}) đóng vai trò quyết định trong việc đánh giá năng lực thực tế của mô hình được thể hiện tại Hình \ref{fig:mAP50_main}.
+
+	Biểu đồ quá trình huấn luyện tại Hình \ref{fig:mAP50_main} cho thấy sự hội tụ ấn tượng của mô hình. 
+	Chỉ số \textbf{mAP@50} tăng trưởng mạnh mẽ từ mức ban đầu ~0.53 và đạt ngưỡng ổn định xấp xỉ \textbf{0.80} sau 50 \textbf{epochs} huấn luyện. Điều này chứng minh mô hình trọng tâm đã đạt được độ tin cậy cao trong việc nhận diện đối tượng và hành vi trên tập dữ liệu thực nghiệm quy mô lớn.
+
+	\begin{figure}[h]
+		\centering
+    	\includegraphics[width=6cm,height=8cm]{images/mAP50_main.png}\\[0.2cm]
+    	\caption{Biểu đồ mAP@50 của mô hình trọng tâm qua các epoch}
+		\label{fig:mAP50_main} 
+	\end{figure}
+
+	\subsubsection{Phân tích Ma trận Nhầm lẫn (Confusion Matrix)}
+
+	Khả năng phân loại chi tiết của mô hình trọng tâm được minh chứng qua ma trận nhầm lẫn thực nghiệm tại Hình \ref{fig:confusion_matrix_main}.
+
+	Dựa trên số liệu thống kê từ ma trận nhầm lẫn:
+	\begin{itemize}
+    	\item \textbf{Độ chính xác phân loại hành vi}: Mô hình đạt tỷ lệ nhận diện đúng (\textbf{True Positive}) cực cao đối với lớp \texttt{lane\_keeping} với 9932 mẫu và lớp hành vi tạt đầu \texttt{cut\_in} với 1146 mẫu được phân loại chính xác. 
+    	\item \textbf{Tỷ lệ bỏ sót (Background FN)}: Đối với lớp hành vi quan trọng \texttt{cut\_in}, chỉ có 86 trường hợp bị nhầm lẫn thành nền (\textbf{background}), đảm bảo hệ thống duy trì tính an toàn cao và không bỏ qua các kịch bản tạt đầu nguy hiểm.
+    	\item \textbf{Phân loại vùng không gian}: Các vùng tĩnh được mô hình phân loại với độ chính xác tuyệt đối, hỗ trợ tốt cho các thuật toán hậu xử lý tính toán mức độ rủi ro dựa trên vị trí phương tiện trong các vùng an toàn.
+	\end{itemize}
+
+	\begin{figure}[h]
+		\centering
+    	\includegraphics[width=10cm,height=10cm]{images/confusion_matrix_main.png}\\[0.2cm]
+    	\caption{Ma trận nhầm lẫn của mô hình trọng tâm}
+		\label{fig:confusion_matrix_main}
+	\end{figure}
+
+	\textbf{Kết luận}: Với sự hội tụ đồng nhất giữa các chỉ số \textbf{Loss} và sự gia tăng ổn định của \textbf{mAP@50}, mô hình trọng tâm đã chứng minh được năng lực nhận thức hành vi vượt trội. Kết quả thực nghiệm khẳng định tính khả thi của việc triển khai mô hình vào hệ thống dự đoán ý định và cảnh báo sớm hành vi tạt đầu trong giao thông thực tế.

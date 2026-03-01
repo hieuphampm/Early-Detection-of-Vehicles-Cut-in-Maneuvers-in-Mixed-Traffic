@@ -1,0 +1,17 @@
+\section{GIỚI THIỆU}
+	\subsection{Bối cảnh và Đặt vấn đề}
+	Sự phát triển nhanh chóng của các hệ thống giao thông thông minh (ITS) và công nghệ xe tự hành đang đặt ra những yêu cầu khắt khe về khả năng nhận thức và dự đoán rủi ro. Mặc dù các hệ thống hỗ trợ lái xe (ADAS) hiện đại đã hoạt động hiệu quả trên đường cao tốc quy chuẩn, việc áp dụng chúng vào môi trường giao thông hỗn hợp vẫn gặp nhiều trở ngại \cite{Lefvre2014ASO}. Đặc thù tại các nước đang phát triển như Việt Nam là sự chiếm ưu thế tuyệt đối của xe máy (PTWs).
+	
+	Khác với ô tô, xe máy có kích thước nhỏ, tính động lực học linh hoạt và thường xuyên di chuyển "phi làn đường". Trong dòng chảy giao thông hỗn loạn này, hành vi tạt đầu của xe máy là nguyên nhân hàng đầu gây ra va chạm, đòi hỏi hệ thống phải có khả năng phát hiện và cảnh báo ngay lập tức \cite{Zeng2025TrajectoryPF}. Tuy nhiên, để một hệ thống ADAS hoạt động hiệu quả trong bối cảnh này, nó phải giải quyết đồng thời hai bài toán khó: (1) Nhận diện vật thể chính xác với tốc độ cực nhanh và (2) Dự đoán hành vi phức tạp trước khi nó xảy ra.
+	
+	\subsection{Hạn chế của các phương pháp hiện hành}
+	Về mặt dự đoán chuyển động, các phương pháp truyền thống dựa trên vật lý như Constant Velocity hay Constant Acceleration thường được sử dụng vì tính đơn giản \cite{Lefvre2014ASO}. Tuy nhiên, nhược điểm chí tử của nhóm phương pháp này là chúng chỉ hiệu quả trong ngắn hạn (dưới 1 giây) và không thể mô tả được các chuyển động phi tuyến tính. Khi xe máy thực hiện hành vi tạt đầu, các giả định vật lý ổn định bị phá vỡ, dẫn đến độ trễ lớn trong cảnh báo.
+	
+	Về mặt nhận diện thị giác, các mô hình CNN truyền thống tuy có độ chính xác cao nhưng thường đòi hỏi tài nguyên tính toán lớn, khó triển khai trên các thiết bị camera hành trình nhỏ gọn. Sự thiếu hụt một cơ chế nhận diện tốc độ cao làm nền tảng đầu vào đã kìm hãm khả năng ứng dụng thực tế của các thuật toán dự đoán hành vi tiên tiến \cite{Mozaffari2020DeepLV}.
+	
+	\subsection{Tính cấp thiết và Giải pháp đề xuất}
+	Để khắc phục các hạn chế trên, xu hướng nghiên cứu hiện đại đang chuyển dịch sang phương pháp dựa trên hành vi, tập trung nhận diện ý định của người lái thay vì chỉ hồi quy quỹ đạo đơn thuần \cite{Zeng2025TrajectoryPF}.
+	
+	Các nghiên cứu tổng quan về Deep Learning khẳng định rằng mạng nơ-ron hồi quy, đặc biệt là LSTM có khả năng vượt trội trong việc học các đặc trưng chuỗi thời gian của hành vi lái xe \cite{Mozaffari2020DeepLV}.
+	
+	Xuất phát từ thực tiễn đó, đề tài "Phát hiện sớm hành vi tạt đầu của xe máy trong giao thông hỗn hợp sử dụng dự đoán ý định dựa trên Camera hành trình" đề xuất một kiến trúc Hybrid Architecture. Hệ thống sử dụng mô hình YOLO làm nền tảng nhận thức thị giác cốt lõi để đảm bảo khả năng phát hiện và theo dõi xe máy theo thời gian thực với độ trễ thấp \cite{Hidayatullah2025YOLOv8TY}. Dữ liệu từ YOLO sau đó được trích xuất thành các đặc trưng logic hình học để đưa vào mạng LSTM phân loại ý định. Sự kết hợp giữa tốc độ của YOLO và khả năng ghi nhớ chuỗi của LSTM kỳ vọng sẽ giải quyết được bài toán cảnh báo sớm trong môi trường giao thông phức tạp.
