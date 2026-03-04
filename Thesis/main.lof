@@ -3,10 +3,10 @@
 \contentsline {figure}{\numberline {2}{\ignorespaces Sơ đồ tổng quan quy trình xây dựng dữ liệu hai giai đoạn}}{8}{}%
 \contentsline {figure}{\numberline {3}{\ignorespaces Minh họa gán nhãn đối tượng}}{8}{}%
 \contentsline {figure}{\numberline {4}{\ignorespaces Các chỉ số hàm mất mát trên tập huấn luyện}}{12}{}%
-\contentsline {figure}{\numberline {5}{\ignorespaces Các chỉ số hàm mất mát trên tập kiểm định}}{12}{}%
-\contentsline {figure}{\numberline {6}{\ignorespaces Biểu đồ mAP@50 của mô hình $M_{assist}$ qua các epoch}}{13}{}%
-\contentsline {figure}{\numberline {7}{\ignorespaces Ma trận nhầm lẫn của mô hình sơ khởi $M_{assist}$}}{13}{}%
-\contentsline {figure}{\numberline {8}{\ignorespaces Các chỉ số hàm mất mát trên tập huấn luyện của mô hình trọng tâm}}{14}{}%
-\contentsline {figure}{\numberline {9}{\ignorespaces Các chỉ số hàm mất mát trên tập kiểm định của mô hình trọng tâm}}{15}{}%
-\contentsline {figure}{\numberline {10}{\ignorespaces Biểu đồ mAP@50 của mô hình trọng tâm qua các epoch}}{15}{}%
-\contentsline {figure}{\numberline {11}{\ignorespaces Ma trận nhầm lẫn của mô hình trọng tâm}}{16}{}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Các chỉ số hàm mất mát trên tập kiểm định}}{13}{}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Biểu đồ mAP@50 của mô hình $M_{assist}$ qua các epoch}}{14}{}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Ma trận nhầm lẫn của mô hình sơ khởi $M_{assist}$}}{14}{}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Các chỉ số hàm mất mát trên tập huấn luyện của mô hình trọng tâm}}{15}{}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Các chỉ số hàm mất mát trên tập kiểm định của mô hình trọng tâm}}{16}{}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Biểu đồ mAP@50 của mô hình trọng tâm qua các epoch}}{16}{}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Ma trận nhầm lẫn của mô hình trọng tâm}}{17}{}%

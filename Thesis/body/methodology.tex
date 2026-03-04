@@ -133,3 +133,37 @@
 	\end{itemize}
 	
 	\subsection{Hậu xử lý \& Ổn định Cảnh báo}
+
+	Mặc dù mô hình YOLO26n cung cấp tốc độ nhận diện vượt trội, các dự đoán thô (raw predictions) từ mạng nơ-ron thường xuyên gặp hiện tượng nhiễu tín hiệu (jittering) – trạng thái nhãn thay đổi liên tục giữa các khung hình do nhiễu môi trường hoặc vật thể bị che khuất tạm thời. Để hệ thống có thể đưa ra cảnh báo tin cậy cho tài xế, chúng tôi triển khai quy trình hậu xử lý hai tầng.
+
+	\subsubsection{Cơ chế Ổn định Nhãn}
+
+	Thay vì đưa ra cảnh báo ngay lập tức dựa trên kết quả của một khung hình đơn lẻ, hệ thống sử dụng một cửa sổ trượt thời gian (sliding window) kích thước $W$ để theo dõi lịch sử trạng thái của từng phương tiện. 
+
+	Gọi $L_t$ là nhãn dự đoán của phương tiện tại thời điểm $t$. Trạng thái cuối cùng $S_{final}$ được xác định thông qua bộ lọc đa số (Majority Voting):
+	\begin{equation}
+    	S_{final} = \text{mode}\{L_{t-W}, \dots, L_t\}
+	\end{equation}
+	Trong thực nghiệm, chúng tôi thiết lập $W=5$ khung hình. Cơ chế này giúp loại bỏ các dự đoán sai lệch ngắn hạn, đảm bảo tín hiệu cảnh báo chỉ được kích hoạt khi hành vi \texttt{cut\_in} được xác nhận ổn định trong một khoảng thời gian đủ lớn.
+
+	\subsubsection{Logic Cảnh báo Đa tầng dựa trên Vùng Không gian}
+
+	Hệ thống tích hợp kết quả phân loại hành vi với các vùng an toàn đã thiết lập bằng phương pháp Heuristic để định lượng mức độ rủi ro. Logic cảnh báo được phân cấp như sau:
+
+	\begin{itemize}
+    	\item \textbf{Cấp độ 1 (Theo dõi - Monitoring):} Phương tiện được nhãn \texttt{lane\_keeping} hoặc \texttt{moving\_away}, nằm ngoài các vùng an toàn. Hệ thống duy trì trạng thái theo dõi bình thường.
+    	\item \textbf{Cấp độ 2 (Chú ý - Attention):} Phương tiện nằm trong \texttt{Warning Zone} và bắt đầu có nhãn \texttt{cut\_in}. Hệ thống chuẩn bị các tham số tính toán nhưng chưa phát tín hiệu âm thanh để tránh gây xao nhãng cho tài xế.
+    	\item \textbf{Cấp độ 3 (Cảnh báo - Warning):} Phương tiện nằm trong \texttt{Danger Zone} đồng thời được xác nhận nhãn \texttt{cut\_in}. Tại đây, hệ thống kích hoạt cảnh báo thị giác và âm thanh ngay lập tức.
+	\end{itemize}
+
+
+
+	\subsubsection{Ước tính Độ nguy hiểm dựa trên Tỷ lệ Khung hình}
+
+	Để hỗ trợ thêm cho việc phát hiện sớm ý định, hệ thống theo dõi biến thiên tỷ lệ khung hình (Aspect Ratio - AR) của Bounding Box. Khi xe máy chuẩn bị tạt đầu, động tác nghiêng xe và hướng di chuyển chéo làm thay đổi giá trị AR một cách đặc trưng trước khi tọa độ trung tâm thay đổi lớn. 
+
+	\begin{equation}
+    	\Delta AR = \frac{W_t}{H_t} - \frac{W_{t-1}}{H_{t-1}}
+	\end{equation}
+
+	Sự kết hợp giữa nhãn từ mô hình YOLO26n và xu hướng biến thiên $\Delta AR$ cho phép hệ thống "nhìn trước" được hành vi tạt đầu từ 0.5 đến 1 giây so với các phương pháp dựa trên khoảng cách thuần túy, giúp bù đắp độ trễ phản xạ của tài xế trong các tình huống khẩn cấp.
