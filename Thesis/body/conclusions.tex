@@ -1,5 +1,21 @@
 \section{KẾT LUẬN \& HƯỚNG PHÁT TRIỂN}
+	\subsection{Kết luận}
+	
 	\subsection{Hạn chế của nghiên cứu}
 	Mặc dù hệ thống đã đạt được độ chính xác cao trong việc nhận diện hành vi tạt đầu, một hạn chế của nghiên cứu là việc định cỡ các vùng an toàn (Polygon zones) vẫn đang phụ thuộc vào góc nhìn camera cố định. Do không sử dụng cảm biến chiều sâu (LiDAR/Radar), nghiên cứu này mang tính chất một Proof of Concept (PoC), tập trung vào việc chứng minh năng lực của kiến trúc YOLO kết hợp Reinforcement Learning trong bài toán nhận diện ý định. Trong các phiên bản triển khai thực tế tiếp theo, hệ thống có thể tích hợp thêm module tự động hiệu chuẩn (Auto-calibration) dựa trên phép chiếu IPM để vùng đa giác tự động thích ứng với nhiều loại camera và độ cao lắp đặt khác nhau.
 	
 	\subsection{Hướng phát triển tương lai}
+	Mặc dù hệ thống hiện tại đã chứng minh được tính khả thi trong việc nhận diện sớm ý định tạt đầu của phương tiện, nghiên cứu vẫn mang tính chất của một PoC. Để tiến tới thương mại hóa và triển khai trên các hệ thống Hỗ trợ Lái xe Tiên tiến (ADAS) thực tế, đề tài đề xuất các hướng phát triển trọng tâm sau:
+	
+	\paragraph{1. Chuẩn hóa và Tự động hiệu chuẩn Vùng An toàn:}
+	Điểm cần cải tiến lớn nhất của hệ thống hiện tại là việc thiết lập các vùng rủi ro đa giác (Danger/Warning Zones) đang phụ thuộc vào phương pháp quan sát thực nghiệm trên một góc camera cố định. Trong tương lai, hệ thống cần được nâng cấp để vẽ các vùng này dựa trên số liệu tham chiếu vật lý chính xác, thông qua các kỹ thuật:
+	\begin{itemize}
+		\item \textbf{Tự động hiệu chuẩn Camera:} Sử dụng các đặc trưng hình học cố định trên đường (như chiều rộng làn đường chuẩn 2.75m - 3.5m, hoặc độ dài vạch sơn đứt quãng) làm mốc tham chiếu. Từ đó, hệ thống tự động tính toán các tham số ngoại như độ cao lắp đặt và góc chúi của camera.
+		\item \textbf{Phép chiếu Phối cảnh Nghịch:} Chuyển đổi tọa độ từ mặt phẳng ảnh 2D sang không gian thực 3D. Khi đó, hệ thống sẽ tính toán chính xác khoảng cách từ xe đến vật thể bằng đơn vị mét, cho phép thiết lập các Zone dựa trên chỉ số Thời gian va chạm (Time-to-Collision - TTC) chuẩn mực (ví dụ: Danger Zone kích hoạt khi TTC < 0.6s, Warning Zone khi TTC < 1.5s), giúp đa giác tự động co giãn linh hoạt và chính xác trên mọi loại xe.
+	\end{itemize}
+	
+	\paragraph{2. Dung hợp Cảm biến:}
+	Do giới hạn của thị giác đơn nhãn trong các điều kiện thời tiết khắc nghiệt (mưa lớn, sương mù, chói sáng ban đêm), việc mở rộng phần cứng là cần thiết. Hướng đi tiếp theo là kết hợp camera AI với cảm biến Radar sóng milimet. Radar cung cấp dữ liệu chính xác tuyệt đối về vận tốc tương đối và khoảng cách chiều sâu, trong khi YOLO đảm nhiệm việc phân loại và nhận diện ý định. Sự dung hợp này sẽ triệt tiêu hoàn toàn nhược điểm ảo ảnh quang học và nâng cao độ tin cậy của hệ thống.
+	
+	\paragraph{3. Tối ưu hóa Triển khai Biên:}
+	Tiếp tục khai thác thế mạnh của cấu trúc loại bỏ NMS trên YOLO26n, đề tài hướng tới việc biên dịch và tối ưu hóa mô hình bằng TensorRT. Mục tiêu là đóng gói toàn bộ pipeline (YOLO + Rule-based Zones) để triển khai trực tiếp trên các vi xử lý nhúng công suất thấp (như NVIDIA Jetson Nano hoặc Rockchip NPU) tích hợp thẳng vào Dashcam, đảm bảo tốc độ khung hình > 30 FPS với độ trễ phản hồi dưới 50ms mà không cần kết nối Internet.
