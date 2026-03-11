@@ -101,14 +101,49 @@
 	
 	Do đó, nghiên cứu quyết định lựa chọn \textbf{YOLO26n} làm kiến trúc mạng trọng tâm để phát triển và triển khai hệ thống nhận diện rủi ro, đồng thời sử dụng YOLOv10n làm mô hình cơ sở đối chứng trong quá trình thực nghiệm.
 	
-	% Thay cái hình
 	\begin{figure}[h]
-		\centering
-		\includegraphics[width=0.85\textwidth]{images/core_arch_yolo26.png}\\[0.2cm]
-		\caption{Sơ đồ kiến trúc lõi đơn giản hóa của Ultralytics YOLO26}
-		\label{fig:core_arch_yolo26}
-	\end{figure}
+        \centering
+        \includegraphics[width=0.95\textwidth]{images/methodology-pipeline.png}
+        \caption{Sơ đồ quy trình xử lý hệ thống từ dữ liệu đầu vào đến thực thi trên thiết bị biên}
+        \label{fig:methodology_pipeline}
+    \end{figure}
 	
+	Dựa trên sơ đồ quy trình tại Hình \ref{fig:methodology_pipeline}, kiến trúc hệ thống được thiết kế tối ưu hóa cho việc triển khai trên các thiết bị biên (edge devices) thông qua các giai đoạn then chốt sau:
+
+	\begin{itemize}
+    	\item \textbf{Khối Trích xuất đặc trưng và Tổng hợp (Backbone \& Neck):} Dữ liệu đầu vào sau khi được chuẩn hóa sẽ đi qua khối Backbone Feature Extraction để trích xuất các đặc trưng phân cấp từ thấp đến cao. Tiếp đó, Lightweight Feature Fusion Neck thực hiện tổng hợp các bản đồ đặc trưng đa quy mô (Multi-Scale Feature Maps), giúp mô hình duy trì khả năng nhận diện tốt cả đối tượng xe máy ở khoảng cách xa và gần.
+    
+    	\item \textbf{Cơ chế dự đoán trực tiếp (Direct Regression Head):} Thay vì sử dụng các cấu trúc hậu xử lý phức tạp, hệ thống áp dụng Direct Regression Head kết hợp với chiến lược NMS-Free Predictions. Cải tiến này loại bỏ hoàn toàn bước triệt tiêu cực đại (Non-Maximum Suppression), từ đó giảm đáng kể chi phí tính toán và triệt tiêu độ trễ tích lũy trong quá trình suy luận thời gian thực.
+    
+    	\item \textbf{Giao thức Huấn luyện tiên tiến (STAL \& MuSGD):} Quá trình huấn luyện tích hợp cơ chế STAL (Spatio-Temporal Assignment Learning), giúp gán nhãn mục tiêu dựa trên sự kết hợp giữa ngữ cảnh không gian và thời gian. Đồng thời, bộ tối ưu hóa MuSGD Optimizer được sử dụng để tăng tốc độ hội tụ và đảm bảo sự ổn định của các trọng số mạng nơ-ron.
+    
+    	\item \textbf{Tối ưu hóa triển khai (Quantization):} Để đảm bảo hệ thống vận hành mượt mà trên phần cứng Dashcam có tài nguyên giới hạn, mô hình trải qua bước Quantization (định dạng FP16 hoặc INT8). Quá trình này giúp nén dung lượng mô hình và tăng tốc độ xử lý khung hình trên mỗi giây (FPS) mà vẫn giữ vững độ chính xác cần thiết cho các cảnh báo nguy cơ.
+	\end{itemize}
+	
+	\subsubsection{Kiến trúc kết hợp (Hybrid Architecture) và Cơ chế Dự đoán Ý định}
+
+	Để chuyển đổi từ kết quả nhận diện vật thể sang việc hiểu hành vi, nghiên cứu đề xuất một cấu trúc lai tích hợp mạng bộ nhớ ngắn hạn dài hạn (LSTM)[cite: 71, 93, 149]. Luồng dữ liệu được trích xuất từ các đặc trưng logic hình học của YOLO26n và đưa vào LSTM để phân loại ý định thay vì hồi quy tọa độ đơn thuần[cite: 70, 96].
+
+	\paragraph{Cấu trúc Vector đầu vào (Feature Vector):}
+	Tại mỗi khung hình $t$, hệ thống trích xuất một vector đặc trưng $V_t$ để cung cấp cho mạng LSTM[cite: 71, 96]. Vector này bao gồm:
+	\begin{equation}
+    	V_t = [x_c, y_c, w, h, AR, \Delta AR, s]
+	\end{equation}
+	Trong đó:
+	\begin{itemize}
+    	\item $(x_c, y_c, w, h)$: Tọa độ tâm, chiều rộng và chiều cao của Bounding Box đã được chuẩn hóa[cite: 256, 334, 448].
+    	\item $AR = w/h$: Tỷ lệ khung hình (Aspect Ratio), đóng vai trò then chốt trong việc nhận diện động tác nghiêng xe của xe máy trước khi thực hiện cú cắt mặt[cite: 71, 293, 294].
+    	\item $\Delta AR$: Sự biến thiên của tỷ lệ khung hình giữa các khung hình liên tiếp, giúp phát hiện sớm ý định chuyển làn từ 0.5 đến 1 giây[cite: 295, 297].
+    	\item $s$: Độ tin cậy (Confidence score) từ mô hình nhận diện[cite: 207, 336].
+	\end{itemize}
+
+	\paragraph{Lựa chọn Cửa sổ thời gian (Window Size):}
+	Cơ chế ổn định nhãn sử dụng cửa sổ trượt (sliding window) với kích thước $W=5$ khung hình[cite: 277, 281]. Với tần số quét của camera hành trình đạt khoảng 30 FPS, $W=5$ tương ứng với khoảng thời gian quan sát 166ms[cite: 74, 141]. Lựa chọn này đảm bảo:
+	\begin{itemize}
+    	\item Loại bỏ hiện tượng nhiễu nhãn (jittering) do sai số tức thời của mô hình nhận diện[cite: 273, 282].
+    	\item Đảm bảo độ trễ hệ thống đủ thấp để cung cấp cảnh báo sớm từ 1.5 đến 2 giây cho tài xế[cite: 74, 297].
+	\end{itemize}
+
 	\subsubsection{Cơ chế Huấn luyện}
 	Để tối ưu hóa hiệu năng của kiến trúc YOLO26n trong bài toán nhận diện ý định và hành vi phương tiện, quá trình huấn luyện được thiết lập một cách nghiêm ngặt với các kỹ thuật tinh chỉnh tham số và tăng cường dữ liệu tiên tiến.
 	
