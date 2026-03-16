@@ -175,12 +175,12 @@
 	\end{table}
 
 	\paragraph{Phân tích Case Study:}
-	Dựa trên kết quả ma trận nhầm lẫn (Hình \ref{fig:ma_tran_nham_lan_trong_tam}), hệ thống đạt độ chính xác cực cao với 1146 mẫu \texttt{cut\_in} được phân loại đúng[cite: 493, 532, 544]. Tuy nhiên, qua quan sát thực nghiệm, một số lỗi vẫn tồn tại:
+	Dựa trên kết quả ma trận nhầm lẫn (Hình \ref{fig:confusion_matrix_main}), hệ thống đạt độ chính xác cực cao với 1146 mẫu \texttt{cut\_in} được phân loại đúng. Tuy nhiên, qua quan sát thực nghiệm, một số lỗi vẫn tồn tại:
 	\begin{itemize}
-    	\item \textbf{Dự báo đúng (True Positive):} Các trường hợp xe máy tạt đầu ở khoảng cách gần (Danger Zone) được cảnh báo ngay lập tức nhờ sự biến thiên rõ rệt của $\Delta AR$[cite: 290, 297].
+    	\item \textbf{Dự báo đúng (True Positive):} Các trường hợp xe máy tạt đầu ở khoảng cách gần (Danger Zone) được cảnh báo ngay lập tức nhờ sự biến thiên rõ rệt của $\Delta AR$.
     	\item \textbf{Sai sót (False Positive/Negative):} 
         	\begin{itemize}
-            	\item Lỗi nhầm lẫn do ánh sáng chói hoặc sương mù làm sai lệch đặc trưng hình học trích xuất từ YOLO[cite: 270].
-            	\item Các vật thể bị che khuất quá nhiều dẫn đến thiếu hụt dữ liệu chuỗi cho LSTM, gây ra 86 trường hợp bỏ sót hành vi nguy hiểm[cite: 506, 532].
+            	\item Lỗi nhầm lẫn do ánh sáng chói hoặc sương mù làm sai lệch đặc trưng hình học trích xuất từ YOLO.
+            	\item Các vật thể bị che khuất quá nhiều dẫn đến thiếu hụt dữ liệu chuỗi cho LSTM, gây ra 86 trường hợp bỏ sót hành vi nguy hiểm.
         	\end{itemize}
 	\end{itemize}
