@@ -101,7 +101,26 @@
     	\item \textbf{val/box\_loss \& val/dfl\_loss}: Mặc dù xuất hiện một số điểm biến động (\textbf{spikes}) tại giai đoạn đầu (khoảng \textbf{epoch} thứ 3 đến thứ 10), nhưng ngay sau đó cả hai chỉ số đều duy trì xu hướng giảm tương đồng với tập \textbf{train} và ổn định dần về cuối quá trình.
     	\item \textbf{val/cls\_loss}: Đồ thị đạt mức ổn định khoảng ~0.4 và duy trì trạng thái nằm ngang ở các \textbf{epochs} cuối. Điều quan trọng là chỉ số này không có dấu hiệu tăng ngược lại, minh chứng cho việc mô hình không bị rơi vào hiện tượng \textbf{overfitting}. 
 	\end{itemize}
-
+	
+	\subsubsection{Bảng so sánh giữa YOLO26 và YOLOv10}
+	
+	\begin{table}[h]
+		\centering
+		\caption{So sánh thông số sau khi huấn luyện}
+		\label{tab:yolo_result_comparison}
+		\resizebox{\linewidth}{!}{%
+			\begin{tabular}{lcc}
+				\toprule
+				\textbf{Model} & \textbf{mAP@50} & \textbf{mAP@50-95} \\
+				\midrule
+				YOLO26n & 0.800 & 0.679 \\
+				YOLOv10n & 0.949 & 0.851 \\
+				\bottomrule
+			\end{tabular}%
+		}
+		\footnotesize{\textit{*Ghi chú: Số liệu Inference đo trên T4 GPU (TensorRT FP16) trên tập Valid.}}
+	\end{table}
+	\newpage
 	\subsubsection{Hiệu suất mô hình trên tập kiểm định}
 
 	Chỉ số độ chính xác trung bình (\textbf{mAP@50}) đóng vai trò quyết định trong việc đánh giá năng lực thực tế của mô hình được thể hiện tại Hình \ref{fig:mAP50_main}.
