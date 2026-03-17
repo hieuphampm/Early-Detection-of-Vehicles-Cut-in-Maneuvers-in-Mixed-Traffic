@@ -16,7 +16,7 @@
     
     Dựa trên kết quả thực nghiệm thu được từ quá trình huấn luyện mô hình $M_{assist}$:
     \begin{itemize}
-        \item \textbf{train/box\_loss:} Chỉ số này thể hiện sai số trong việc dự đoán tọa độ của \textbf{Bounding Box}. Đồ thị cho thấy xu hướng giảm ổn định từ mức ~1.1 xuống còn ~0.73, chứng minh thuật toán đang tối ưu tốt khả năng định vị phương tiện qua từng vòng lặp.
+        \item \textbf{train/box\_loss:} Chỉ số này thể hiện sai số trong việc dự đoán tọa độ của \textbf{Bounding Box}. Đồ thị cho thấy xu hướng giảm ổn định từ mức ~1.1 xuống còn ~0.63, chứng minh thuật toán đang tối ưu tốt khả năng định vị phương tiện qua từng vòng lặp.
         \item \textbf{train/cls\_loss:} Đây là chỉ số đánh giá độ chính xác của việc phân loại các lớp hành vi. Đồ thị giảm mạnh ngay từ những \textbf{epochs} đầu tiên và tiệm cận mức 0.35, khẳng định mô hình nhận diện rất tốt các đặc trưng của 3 nhóm trạng thái: \texttt{lane\_keeping}, \texttt{moving\_away} và \texttt{cut\_in}.
         \item \textbf{train/dfl\_loss:} Chỉ số \textbf{Distribution Focal Loss} giúp mô hình học cách phân phối xác suất của các giá trị tọa độ xung quanh biên của vật thể. Đồ thị hội tụ về mức ~0.90; việc giảm dần của \textbf{DFL} hỗ trợ mô hình tinh chỉnh các biên của vật thể một cách mượt mà, đặc biệt hiệu quả trong việc xử lý các đối tượng xe máy có kích thước nhỏ.
     \end{itemize}
@@ -37,7 +37,7 @@
     Sự hội tụ đồng nhất giữa \textbf{Training Loss} và \textbf{Validation Loss} với khoảng cách sai số nhỏ khẳng định mô hình $M_{assist}$ đạt độ tin cậy cao và khả năng \textbf{generalization} tốt. Đây là tiền đề vững chắc để đưa mô hình vào vận hành cho quy trình gán nhãn bán tự động ở Giai đoạn 2.
 	
 	\subsubsection{Hiệu suất Mô hình trên Tập kiểm định}
-	Biểu đồ quá trình huấn luyện (Hình \ref{fig:map_data_processing}) cho thấy sự hội tụ ổn định của mô hình. Chỉ số độ chính xác trung bình (mAP@50) đạt mức cao xấp xỉ \textbf{0.97}, vượt qua ngưỡng yêu cầu 0.9 đã thiết lập tại phần Phương pháp.
+	Biểu đồ quá trình huấn luyện (Hình \ref{fig:map_data_processing}) cho thấy sự hội tụ ổn định của mô hình. Chỉ số độ chính xác trung bình (mAP@50) đạt mức cao xấp xỉ \textbf{0.96}, vượt qua ngưỡng yêu cầu 0.9 đã thiết lập tại phần Phương pháp.
 	
 	\begin{figure}[h]
 		\centering
@@ -101,7 +101,7 @@
     	\item \textbf{val/box\_loss \& val/dfl\_loss}: Mặc dù xuất hiện một số điểm biến động (\textbf{spikes}) tại giai đoạn đầu (khoảng \textbf{epoch} thứ 3 đến thứ 10), nhưng ngay sau đó cả hai chỉ số đều duy trì xu hướng giảm tương đồng với tập \textbf{train} và ổn định dần về cuối quá trình.
     	\item \textbf{val/cls\_loss}: Đồ thị đạt mức ổn định khoảng ~0.4 và duy trì trạng thái nằm ngang ở các \textbf{epochs} cuối. Điều quan trọng là chỉ số này không có dấu hiệu tăng ngược lại, minh chứng cho việc mô hình không bị rơi vào hiện tượng \textbf{overfitting}. 
 	\end{itemize}
-	
+	\newpage
 	\subsubsection{Bảng so sánh giữa YOLO26 và YOLOv10}
 	
 	\begin{table}[h]
@@ -109,18 +109,18 @@
 		\caption{So sánh thông số sau khi huấn luyện}
 		\label{tab:yolo_result_comparison}
 		\resizebox{\linewidth}{!}{%
-			\begin{tabular}{lcc}
+			\begin{tabular}{lcccc}
 				\toprule
-				\textbf{Model} & \textbf{mAP@50} & \textbf{mAP@50-95} \\
+				\textbf{Model} & \textbf{mAP@50} & \textbf{mAP@50-95} & \textbf{Recall} & \textbf{GFLOPs}\\
 				\midrule
-				YOLO26n & 0.800 & 0.679 \\
-				YOLOv10n & 0.949 & 0.851 \\
+				YOLO26n & 0.949 & 0.853 & 0.865 & 5.2\\
+				YOLOv10n & 0.949 & 0.851 & 0.868 & 6.5\\
 				\bottomrule
 			\end{tabular}%
 		}
 		\footnotesize{\textit{*Ghi chú: Số liệu Inference đo trên T4 GPU (TensorRT FP16) trên tập Valid.}}
 	\end{table}
-	\newpage
+	
 	\subsubsection{Hiệu suất mô hình trên tập kiểm định}
 
 	Chỉ số độ chính xác trung bình (\textbf{mAP@50}) đóng vai trò quyết định trong việc đánh giá năng lực thực tế của mô hình được thể hiện tại Hình \ref{fig:mAP50_main}.
@@ -148,33 +148,15 @@
 
 	\begin{figure}[h]
 		\centering
-    	\includegraphics[width=10cm,height=10cm]{images/confusion_matrix_main.png}\\[0.2cm]
+    	\includegraphics[width=8cm,height=8cm]{images/confusion_matrix_main.png}\\[0.2cm]
     	\caption{Ma trận nhầm lẫn của mô hình trọng tâm}
 		\label{fig:confusion_matrix_main}
 	\end{figure}
 
 	\textbf{Kết luận}: Với sự hội tụ đồng nhất giữa các chỉ số \textbf{Loss} và sự gia tăng ổn định của \textbf{mAP@50}, mô hình trọng tâm đã chứng minh được năng lực nhận thức hành vi vượt trội. Kết quả thực nghiệm khẳng định tính khả thi của việc triển khai mô hình vào hệ thống dự đoán ý định và cảnh báo sớm hành vi tạt đầu trong giao thông thực tế.
+	
+	\subsubsection{Phân tích Case Study}
 
-	\subsubsection{Phân tích Hiệu năng Thực thi và Case Study}
-
-	\paragraph{Đo lường độ trễ (Latency):}
-	Để đánh giá khả năng triển khai thực tế trên các thiết bị biên như Jetson Nano hoặc camera hành trình AI[cite: 561], nghiên cứu thực hiện đo lường thời gian xử lý của toàn bộ pipeline trên máy chủ thử nghiệm (tương đương cấu hình thiết bị nhúng hiệu năng cao).
-
-	\begin{table}[h]
-    	\centering
-    	\caption{Phân rã thời gian xử lý của hệ thống (Inference Time)}
-    	\begin{tabular}{|l|c|}
-        	\hline
-        	\textbf{Thành phần xử lý} & \textbf{Thời gian trung bình (ms)} \\ \hline
-        	Tiền xử lý (Resize \& Normalize) & 1.5 \\ \hline
-        	Suy luận YOLO26n (Inference) & 5.4 \\ \hline
-        	Xử lý LSTM (Intent Classification) & 3.2 \\ \hline
-        	Hậu xử lý và Logic Cảnh báo & 0.8 \\ \hline
-        	\textbf{Tổng cộng (End-to-End)} & \textbf{10.9 ($\approx$ 91 FPS)} \\ \hline
-    	\end{tabular}
-	\end{table}
-
-	\paragraph{Phân tích Case Study:}
 	Dựa trên kết quả ma trận nhầm lẫn (Hình \ref{fig:confusion_matrix_main}), hệ thống đạt độ chính xác cực cao với 1146 mẫu \texttt{cut\_in} được phân loại đúng. Tuy nhiên, qua quan sát thực nghiệm, một số lỗi vẫn tồn tại:
 	\begin{itemize}
     	\item \textbf{Dự báo đúng (True Positive):} Các trường hợp xe máy tạt đầu ở khoảng cách gần (Danger Zone) được cảnh báo ngay lập tức nhờ sự biến thiên rõ rệt của $\Delta AR$.
@@ -184,3 +166,77 @@
             	\item Các vật thể bị che khuất quá nhiều dẫn đến thiếu hụt dữ liệu chuỗi cho LSTM, gây ra 86 trường hợp bỏ sót hành vi nguy hiểm.
         	\end{itemize}
 	\end{itemize}
+	
+	\subsection{Kết quả thực tế:}
+	
+	\subsubsection{Trong điều kiện bình thường:}
+	\begin{figure}[H]
+		\centering
+		\begin{subfigure}{0.32\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{images/test/1_lstm_zone.jpg}
+			\caption{YOLO26 + LSTM + Zones}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}{0.32\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{images/test/1_lstm.jpg}
+			\caption{YOLO26 + LSTM}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}{0.32\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{images/test/1_yolo.jpg}
+			\caption{YOLO26}
+		\end{subfigure}
+		\caption{Kết quả trong điều kiện bình thường}
+		\label{fig:normal}
+	\end{figure}
+	
+	\subsubsection{Trong điều kiện cảnh báo sớm:}
+	\begin{figure}[H]
+		\centering
+		\begin{subfigure}{0.32\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{images/test/2_lstm_zone.jpg}
+			\caption{YOLO26 + LSTM + Zones}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}{0.32\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{images/test/2_lstm.jpg}
+			\caption{YOLO26 + LSTM}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}{0.32\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{images/test/2_yolo.jpg}
+			\caption{YOLO26}
+		\end{subfigure}
+		\caption{Kết quả trong điều kiện cảnh báo sớm}
+		\label{fig:warning}
+	\end{figure}
+	
+	\subsubsection{Trong điều kiện có xe tạt đầu:}
+	\begin{figure}[H]
+		\centering
+		\begin{subfigure}{0.32\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{images/test/2_lstm_zone.jpg}
+			\caption{YOLO26 + LSTM + Zones}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}{0.32\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{images/test/2_lstm.jpg}
+			\caption{YOLO26 + LSTM}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}{0.32\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{images/test/2_yolo.jpg}
+			\caption{YOLO26}
+		\end{subfigure}
+		\caption{Kết quả trong điều kiện xe tạt đầu}
+		\label{fig:cutin}
+	\end{figure}

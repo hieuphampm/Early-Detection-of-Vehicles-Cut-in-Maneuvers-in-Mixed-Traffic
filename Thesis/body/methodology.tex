@@ -64,17 +64,15 @@
 	
 	\subsection{Mô hình Nhận thức Hành vi}
 	
-	Thay vì chỉ phát hiện lớp đối tượng chung là phương tiện, nghiên cứu tinh chỉnh mô hình YOLO để phân loại trực tiếp 3 trạng thái hành vi: Lane Keeping, Moving Away và Cut-in.
+	Thay vì yêu cầu mạng YOLO phải trực tiếp nhận diện một hành vi mang tính quá trình như "cắt mặt" trên một khung hình tĩnh duy nhất, đề tài xây dựng kiến trúc kết hợp: YOLO26n đóng vai trò trích xuất chuỗi đặc trưng hình học, trong khi LSTM đảm nhiệm phân loại chuỗi thời gian.
 	
-	\subsubsection{Lựa chọn Kiến trúc Mạng}
+	\subsubsection{Mạng Trích xuất Đặc trưng Không gian (YOLO26n)}
 	
-	Việc lựa chọn backbone phù hợp là yếu tố then chốt để đảm bảo khả năng vận hành thời gian thực trên thiết bị biên. Dựa trên phân tích so sánh chuyên sâu của Hidayatullah và cộng sự (2025) \cite{Hidayatullah2025YOLOv8TY}, nghiên cứu tiến hành thực nghiệm đối chiếu giữa hai biến thể:
+	Việc lựa chọn backbone phù hợp là yếu tố then chốt để đảm bảo khả năng vận hành thời gian thực. Dựa trên phân tích so sánh chuyên sâu \cite{Hidayatullah2025YOLOv8TY}, nghiên cứu tiến hành thực nghiệm đối chiếu giữa hai biến thể:
 	\begin{itemize}
-		\item \textbf{YOLO26n}: Là một mô hình đầu cuối (end-to-end) hoàn toàn mới được thiết kế đặc biệt cho các thiết bị biên có công suất thấp. Kiến trúc này đơn giản hóa đường ống xử lý bằng cách loại bỏ hoàn toàn lớp hậu xử lý NMS và tối ưu hóa thuật toán MuSGD, giúp mô hình ổn định và hội tụ nhanh hơn \cite{yolo26_ultralytics}.
-		\item \textbf{YOLOv10n}: Là phiên bản YOLO cải tiến dựa trên nền tảng YOLOv8, được tối ưu cho phát hiện đối tượng thời gian thực với kiến trúc gọn hơn, cơ chế huấn luyện mới loại bỏ NMS và đem lại hiệu năng tốt trong nhiều kịch bản triển khai \cite{Hidayatullah2025YOLOv8TY}.
+		\item \textbf{YOLO26n}: Là một mô hình đầu cuối (end-to-end) thiết kế đặc biệt cho thiết bị biên. Kiến trúc này loại bỏ hoàn toàn lớp hậu xử lý NMS và tối ưu hóa thuật toán MuSGD, giúp mô hình ổn định và hội tụ nhanh hơn \cite{yolo26_ultralytics}.
+		\item \textbf{YOLOv10n}: Phiên bản YOLO cải tiến từ YOLOv8, được tối ưu cho phát hiện thời gian thực với kiến trúc gọn hơn.
 	\end{itemize}
-	
-	Để minh chứng cụ thể sự tối ưu về mặt tài nguyên, Bảng \ref{tab:yolo_comparison} trình bày sự so sánh giữa hai kiến trúc này (phiên bản kích thước Nano) trên bộ dữ liệu chuẩn COCO.
 	
 	\begin{table}[h]
 		\centering
@@ -93,120 +91,42 @@
 		\footnotesize{\textit{*Ghi chú: Số liệu Inference đo trên T4 GPU (TensorRT FP16) theo công bố của Ultralytics.}}
 	\end{table}
 	
-	Dựa trên số liệu từ Bảng \ref{tab:yolo_comparison}, có thể thấy YOLO26n thể hiện sự vượt trội so với nền tảng YOLOv10n:
-	\begin{itemize}
-		\item \textbf{Về độ chính xác:} YOLO26n đạt hiệu suất cao hơn đáng kể (40.9\% mAP). Khả năng trích xuất đặc trưng tốt giúp mô hình nhạy bén trong việc phát hiện từ sớm các dấu hiệu tinh vi của phương tiện, chẳng hạn như sự thay đổi góc nghiêng của xe máy khi bắt đầu có ý định tạt đầu.
-		\item \textbf{Về chi phí tính toán:} Mặc dù khối lượng tham số của hai mô hình là gần tương đương nhau (khoảng 2.3 - 2.4 triệu), YOLO26n lại tối ưu hóa phép toán cực kỳ ấn tượng, giảm FLOPs xuống chỉ còn 5.4B (so với 6.7B của v10n). Điều này giúp tiết kiệm năng lượng tiêu thụ, giảm nhiệt độ tỏa ra và duy trì độ trễ xử lý cực thấp trên các vi mạch nhúng.
-	\end{itemize}
+	Dựa trên số liệu Bảng \ref{tab:yolo_comparison}, YOLO26n thể hiện sự vượt trội về cả độ chính xác (40.9\% mAP) lẫn chi phí tính toán (chỉ 5.4 BFLOPs), giúp duy trì độ trễ xử lý cực thấp. Khả năng trích xuất Bounding Box chính xác và mượt mà của YOLO26n cung cấp nền tảng dữ liệu sạch, chống nhiễu tuyệt vời cho mạng LSTM ở giai đoạn sau.
 	
-	Do đó, nghiên cứu quyết định lựa chọn \textbf{YOLO26n} làm kiến trúc mạng trọng tâm để phát triển và triển khai hệ thống nhận diện rủi ro, đồng thời sử dụng YOLOv10n làm mô hình cơ sở đối chứng trong quá trình thực nghiệm.
+	\subsubsection{Mạng Nhận thức Ý định Chuỗi Thời gian (LSTM)}
 	
-	\begin{figure}[h]
-        \centering
-        \includegraphics[width=0.95\textwidth]{images/methodology-pipeline.png}
-        \caption{Sơ đồ kiến trúc YOLO26 \cite{Sapkota2025UltralyticsYE}}
-        \label{fig:methodology_pipeline}
-    \end{figure}
+	Để chuyển đổi từ kết quả nhận diện vật thể sang việc hiểu hành vi, luồng dữ liệu theo dõi từ YOLO26n được đưa vào mạng LSTM để phân loại ý định.
 	
-	Dựa trên sơ đồ quy trình tại Hình \ref{fig:methodology_pipeline}, kiến trúc hệ thống được thiết kế tối ưu hóa cho việc triển khai trên các thiết bị biên (edge devices) thông qua các giai đoạn then chốt sau:
-
-	\begin{itemize}
-    	\item \textbf{Khối Trích xuất đặc trưng và Tổng hợp (Backbone \& Neck):} Dữ liệu đầu vào sau khi được chuẩn hóa sẽ đi qua khối Backbone Feature Extraction để trích xuất các đặc trưng phân cấp từ thấp đến cao. Tiếp đó, Lightweight Feature Fusion Neck thực hiện tổng hợp các bản đồ đặc trưng đa quy mô (Multi-Scale Feature Maps), giúp mô hình duy trì khả năng nhận diện tốt cả đối tượng xe máy ở khoảng cách xa và gần.
-    
-    	\item \textbf{Cơ chế dự đoán trực tiếp (Direct Regression Head):} Thay vì sử dụng các cấu trúc hậu xử lý phức tạp, hệ thống áp dụng Direct Regression Head kết hợp với chiến lược NMS-Free Predictions. Cải tiến này loại bỏ hoàn toàn bước triệt tiêu cực đại (Non-Maximum Suppression), từ đó giảm đáng kể chi phí tính toán và triệt tiêu độ trễ tích lũy trong quá trình suy luận thời gian thực.
-    
-    	\item \textbf{Giao thức Huấn luyện tiên tiến (STAL \& MuSGD):} Quá trình huấn luyện tích hợp cơ chế STAL (Spatio-Temporal Assignment Learning), giúp gán nhãn mục tiêu dựa trên sự kết hợp giữa ngữ cảnh không gian và thời gian. Đồng thời, bộ tối ưu hóa MuSGD Optimizer được sử dụng để tăng tốc độ hội tụ và đảm bảo sự ổn định của các trọng số mạng nơ-ron.
-    
-    	\item \textbf{Tối ưu hóa triển khai (Quantization):} Để đảm bảo hệ thống vận hành mượt mà trên phần cứng Dashcam có tài nguyên giới hạn, mô hình trải qua bước Quantization (định dạng FP16 hoặc INT8). Quá trình này giúp nén dung lượng mô hình và tăng tốc độ xử lý khung hình trên mỗi giây (FPS) mà vẫn giữ vững độ chính xác cần thiết cho các cảnh báo nguy cơ.
-	\end{itemize}
-	
-	\subsubsection{Kiến trúc kết hợp (Hybrid Architecture) và Cơ chế Dự đoán Ý định}
-
-	Để chuyển đổi từ kết quả nhận diện vật thể sang việc hiểu hành vi, nghiên cứu đề xuất một cấu trúc lai tích hợp mạng bộ nhớ ngắn hạn dài hạn (LSTM)[cite: 71, 93, 149]. Luồng dữ liệu được trích xuất từ các đặc trưng logic hình học của YOLO26n và đưa vào LSTM để phân loại ý định thay vì hồi quy tọa độ đơn thuần[cite: 70, 96].
-
-	\paragraph{Cấu trúc Vector đầu vào (Feature Vector):}
-	Tại mỗi khung hình $t$, hệ thống trích xuất một vector đặc trưng $V_t$ để cung cấp cho mạng LSTM[cite: 71, 96]. Vector này bao gồm:
+	\paragraph{Cấu trúc Vector đầu vào:}
+	Tại mỗi khung hình $t$, hệ thống trích xuất một vector đặc trưng không gian $V_t$ của phương tiện được theo dõi:
 	\begin{equation}
-    	V_t = [x_c, y_c, w, h, AR, \Delta AR, s]
+		V_t = [cx_t, cy_t, w_t, h_t, conf_t]
 	\end{equation}
-	Trong đó:
-	\begin{itemize}
-    	\item $(x_c, y_c, w, h)$: Tọa độ tâm, chiều rộng và chiều cao của Bounding Box đã được chuẩn hóa[cite: 256, 334, 448].
-    	\item $AR = w/h$: Tỷ lệ khung hình (Aspect Ratio), đóng vai trò then chốt trong việc nhận diện động tác nghiêng xe của xe máy trước khi thực hiện cú cắt mặt[cite: 71, 293, 294].
-    	\item $\Delta AR$: Sự biến thiên của tỷ lệ khung hình giữa các khung hình liên tiếp, giúp phát hiện sớm ý định chuyển làn từ 0.5 đến 1 giây[cite: 295, 297].
-    	\item $s$: Độ tin cậy (Confidence score) từ mô hình nhận diện[cite: 207, 336].
-	\end{itemize}
-
-	\paragraph{Lựa chọn Cửa sổ thời gian (Window Size):}
-	Cơ chế ổn định nhãn sử dụng cửa sổ trượt (sliding window) với kích thước $W=5$ khung hình[cite: 277, 281]. Với tần số quét của camera hành trình đạt khoảng 30 FPS, $W=5$ tương ứng với khoảng thời gian quan sát 166ms[cite: 74, 141]. Lựa chọn này đảm bảo:
-	\begin{itemize}
-    	\item Loại bỏ hiện tượng nhiễu nhãn (jittering) do sai số tức thời của mô hình nhận diện[cite: 273, 282].
-    	\item Đảm bảo độ trễ hệ thống đủ thấp để cung cấp cảnh báo sớm từ 1.5 đến 2 giây cho tài xế[cite: 74, 297].
-	\end{itemize}
-
-	\subsubsection{Cơ chế Huấn luyện}
-	Để tối ưu hóa hiệu năng của kiến trúc YOLO26n trong bài toán nhận diện ý định và hành vi phương tiện, quá trình huấn luyện được thiết lập một cách nghiêm ngặt với các kỹ thuật tinh chỉnh tham số và tăng cường dữ liệu tiên tiến.
+	Trong đó, $cx, cy, w, h$ là tọa độ tâm, chiều rộng, chiều cao của Bounding Box đã được chuẩn hóa theo kích thước ảnh, và $conf$ là độ tin cậy. Việc cấp dữ liệu chuỗi $(w_t, h_t)$ liên tục cho LSTM giúp mạng tự động học được các đặc trưng vi phân bậc cao như sự biến thiên tỷ lệ khung hình ($\Delta AR$) và gia tốc ngang -- vốn là các dấu hiệu đặc trưng nhất khi xe máy nghiêng người chuẩn bị tạt đầu.
 	
-	\paragraph{1. Môi trường và Thiết lập cơ sở:}
-	Quá trình thực nghiệm được triển khai trên máy chủ đám mây với bộ xử lý đồ họa GPU NVIDIA Tesla T4 (16GB VRAM) nhằm đáp ứng nhu cầu tính toán hiệu năng cao. Mô hình được khởi tạo theo chiến lược Học chuyển giao, sử dụng tập trọng số đào tạo trước để tận dụng khả năng trích xuất đặc trưng chung, từ đó rút ngắn thời gian hội tụ trên tập dữ liệu giao thông nội bộ. Tập dữ liệu cấu thành gồm 17.939 khung ảnh huấn luyện và 3.611 khung ảnh kiểm chứng.
+	\paragraph{Thiết kế Cửa sổ Thời gian:}
+	Thay vì lấy các khung hình liên tiếp vốn có sự thay đổi quá nhỏ, hệ thống áp dụng kỹ thuật lấy mẫu thưa. Cụ thể, mô hình sử dụng một bộ đệm độ dài cửa sổ trạng thái $N=160$ với bước nhảy $S=3$. Do đó, để tạo ra một chuỗi gồm 10 điểm dữ liệu, hệ thống bao quát một trường nhìn thời gian khoảng 30 khung hình (tương đương $\approx 1$ giây với camera 30 FPS). Thiết kế này giúp mô hình LSTM nắm bắt được bối cảnh chuyển động đủ dài để nhận diện rõ ràng sự thay đổi quỹ đạo, vượt trội hoàn toàn so với việc đánh giá trên khung hình đơn lẻ.
 	
-	\paragraph{2. Cấu hình Siêu tham số:}
-	Các tham số cấu hình cốt lõi được lựa chọn thông qua quá trình thử nghiệm lặp nhằm cân bằng giữa tốc độ học và sự ổn định:
+	\subsection{Cơ chế Huấn luyện Mạng Lai}
+	Quá trình huấn luyện hệ thống được chia làm hai giai đoạn độc lập để tối ưu hóa đặc thù của từng kiến trúc mạng.
+	
+	\paragraph{1. Huấn luyện Bộ trích xuất Không gian (YOLO26n):}
+	Mô hình được huấn luyện trên cấu hình GPU Tesla T4, sử dụng bộ tối ưu hóa lai \textbf{MuSGD} kết hợp với chiến lược STAL (Spatio-Temporal Assignment Learning). Kiến trúc loại bỏ DFL (Distribution Focal Loss) và NMS giúp tối giản hóa quá trình hội tụ. Bên cạnh đó, việc sử dụng các kỹ thuật tăng cường dữ liệu từ Albumentations (CLAHE, Blur, ToGray) giúp mô hình thích nghi mạnh mẽ với điều kiện môi trường giao thông phức tạp.
+	
+	\paragraph{2. Huấn luyện Bộ phân loại Ý định (LSTM):}
+	Sau khi mô hình YOLO đã ổn định, hệ thống tiến hành trích xuất quỹ đạo Bounding Box của tập dữ liệu huấn luyện để tạo thành các tensor chuỗi kích thước $(Batch, N, 5)$. Mạng LSTM gồm 2 lớp ẩn (Hidden size = 64, Dropout = 0.2) được huấn luyện bằng hàm mất mát CrossEntropyLoss kết hợp bộ tối ưu hóa Adam. Mạng thực hiện bài toán phân loại nhị phân (0: An toàn, 1: Có ý định cắt mặt) tại bước thời gian cuối cùng của chuỗi.
+	
+	\subsection{Hậu xử lý \& Logic Cảnh báo Đa tầng}
+	
+	Hệ thống kết hợp sức mạnh dự đoán sớm của mạng LSTM với sự chắc chắn về không gian của Luật tĩnh (Rule-based Zones) để tạo ra cơ chế Quyết định Lai (Hybrid Decision Making), đảm bảo tính an toàn tối đa.
+	
+	Logic cảnh báo được phân cấp dựa trên sự giao cắt giữa Bounding Box của phương tiện và đa giác ranh giới (\texttt{Danger Zone}, \texttt{Warning Zone}) kết hợp với tín hiệu ý định:
+	
 	\begin{itemize}
-		\item \textbf{Kích thước đầu vào:} Ảnh được chuẩn hóa về độ phân giải $640 \times 640$ pixel. Đây là kích thước tối ưu (sweet-spot) của các mạng YOLO, vừa giữ được chi tiết của vật thể nhỏ ở xa (dấu hiệu chuyển làn), vừa không làm quá tải bộ nhớ.
-		\item \textbf{Kích thước lô:} Đặt ở mức 16, phù hợp với dung lượng bộ nhớ của GPU Tesla T4 và đảm bảo gradient được cập nhật mượt mà.
-		\item \textbf{Số kỷ nguyên \& Dừng sớm:} Mô hình được thiết lập huấn luyện tối đa 100 epochs. Để ngăn chặn hiện tượng học vẹt, cơ chế \textit{Early Stopping} được áp dụng với \texttt{patience=8} (tự động dừng nếu mô hình không cải thiện sau 8 kỷ nguyên liên tiếp).
+		\item \textbf{Cấp độ 1 (An toàn):} Phương tiện nằm ngoài các vùng rủi ro và mạng LSTM dự đoán ý định là 0 (Đi thẳng). Trạng thái theo dõi bình thường.
+		\item \textbf{Cấp độ 2 (Theo dõi Ý định):} Mạng LSTM phát tín hiệu 1 (Có ý định tạt đầu), nhưng phương tiện vẫn còn ở xa, chưa chạm vào bất kỳ Zone cảnh báo nào. Hệ thống đánh dấu phương tiện nhưng chưa phát âm thanh.
+		\item \textbf{Cấp độ 3 (Cảnh báo):} Phương tiện đã giao cắt vào \texttt{Warning Zone} VÀ đồng thời LSTM phát tín hiệu 1. Tại đây, rủi ro cắt mặt đã rất rõ ràng, hệ thống kích hoạt cảnh báo mức độ trung bình (Cam).
+		\item \textbf{Cấp độ 4 (Khẩn cấp - Danger Override):} Phương tiện tiến sâu và giao cắt với \texttt{Danger Zone}. Hệ thống bỏ qua mọi dự đoán của AI (Override) và kích hoạt cảnh báo Đỏ ngay lập tức do rủi ro va chạm vật lý là tất yếu.
 	\end{itemize}
 	
-	\paragraph{3. Thuật toán Tối ưu hóa:}
-	Điểm sáng công nghệ lớn nhất trong cơ chế huấn luyện của YOLO26 là việc ứng dụng bộ tối ưu hóa lai \textbf{MuSGD} (kết hợp giữa nguyên lý phân kỳ SGD và bộ tối ưu hóa Muon). Lấy cảm hứng từ những đột phá trong huấn luyện Mô hình ngôn ngữ lớn (LLM - tiêu biểu là kiến trúc Kimi K2 của Moonshot AI) \cite{yolo26_ultralytics}, việc chuyển giao MuSGD vào lĩnh vực thị giác máy tính giúp mô hình đạt được sự ổn định nâng cao và tốc độ hội tụ nhanh hơn hẳn so với các thuật toán truyền thống. Bộ tối ưu hóa được cấu hình với tốc độ học khởi tạo ($lr_0$) là 0.01 và hệ số quán tính là 0.9.
-	
-	\paragraph{4. Tinh chỉnh Kiến trúc và Hàm mất mát:}
-	Kiến trúc của mạng được tinh gọn hóa thông qua các cải tiến mang tính chiến lược, đặc biệt phù hợp cho các hệ thống ADAS bị hạn chế về tài nguyên phần cứng:
-	\begin{itemize}
-		\item \textbf{Loại bỏ NMS và DFL:} YOLO26 là một mô hình đầu cuối tích hợp (end-to-end inference), dự đoán trực tiếp Bounding Box mà không cần bước hậu xử lý triệt tiêu cực đại (NMS). Đồng thời, mô-đun Distribution Focal Loss (DFL) cũng được loại bỏ hoàn toàn nhằm đơn giản hóa quá trình xuất (export) và tăng khả năng tương thích với các thiết bị biên (edge devices) \cite{yolo26_ultralytics}.
-		\item \textbf{Tích hợp ProgLoss và STAL:} Các hàm mất mát mới này được áp dụng nhằm tăng cường đáng kể độ chính xác khi nhận dạng các vật thể nhỏ. Trong ngữ cảnh bài toán tạt đầu, điều này đóng vai trò then chốt giúp mạng nhạy bén hơn trong việc trích xuất các đặc trưng tinh vi như sự thay đổi nhỏ về góc nghiêng của phương tiện \cite{yolo26_ultralytics}.
-	\end{itemize}
-	
-	\paragraph{5. Tăng cường Dữ liệu:}
-	Để gia tăng tính bền vững, pipeline huấn luyện tích hợp thư viện Albumentations:
-	\begin{itemize}
-		\item \textbf{Biến đổi quang học:} Cân bằng sáng CLAHE, làm mờ, chuyển ảnh xám với tỷ lệ nhỏ nhằm giúp mô hình thích ứng với sự thay đổi thời tiết, ánh sáng chói hoặc sương mù.
-		\item \textbf{Biến đổi không gian:} Áp dụng lật ngang ảnh (\texttt{fliplr=0.5}), dịch chuyển (\texttt{translate=0.1}), và thay đổi tỷ lệ (\texttt{scale=0.5}).
-	\end{itemize}
-	
-	\subsection{Hậu xử lý \& Ổn định Cảnh báo}
-
-	Mặc dù mô hình YOLO26n cung cấp tốc độ nhận diện vượt trội, các dự đoán thô (raw predictions) từ mạng nơ-ron thường xuyên gặp hiện tượng nhiễu tín hiệu (jittering) – trạng thái nhãn thay đổi liên tục giữa các khung hình do nhiễu môi trường hoặc vật thể bị che khuất tạm thời. Để hệ thống có thể đưa ra cảnh báo tin cậy cho tài xế, chúng tôi triển khai quy trình hậu xử lý hai tầng.
-
-	\subsubsection{Cơ chế Ổn định Nhãn}
-
-	Thay vì đưa ra cảnh báo ngay lập tức dựa trên kết quả của một khung hình đơn lẻ, hệ thống sử dụng một cửa sổ trượt thời gian (sliding window) kích thước $W$ để theo dõi lịch sử trạng thái của từng phương tiện. 
-
-	Gọi $L_t$ là nhãn dự đoán của phương tiện tại thời điểm $t$. Trạng thái cuối cùng $S_{final}$ được xác định thông qua bộ lọc đa số (Majority Voting):
-	\begin{equation}
-    	S_{final} = \text{mode}\{L_{t-W}, \dots, L_t\}
-	\end{equation}
-	Trong thực nghiệm, chúng tôi thiết lập $W=5$ khung hình. Cơ chế này giúp loại bỏ các dự đoán sai lệch ngắn hạn, đảm bảo tín hiệu cảnh báo chỉ được kích hoạt khi hành vi \texttt{cut\_in} được xác nhận ổn định trong một khoảng thời gian đủ lớn.
-
-	\subsubsection{Logic Cảnh báo Đa tầng dựa trên Vùng Không gian}
-
-	Hệ thống tích hợp kết quả phân loại hành vi với các vùng an toàn đã thiết lập bằng phương pháp Heuristic để định lượng mức độ rủi ro. Logic cảnh báo được phân cấp như sau:
-
-	\begin{itemize}
-    	\item \textbf{Cấp độ 1 (Theo dõi - Monitoring):} Phương tiện được nhãn \texttt{lane\_keeping} hoặc \texttt{moving\_away}, nằm ngoài các vùng an toàn. Hệ thống duy trì trạng thái theo dõi bình thường.
-    	\item \textbf{Cấp độ 2 (Chú ý - Attention):} Phương tiện nằm trong \texttt{Warning Zone} và bắt đầu có nhãn \texttt{cut\_in}. Hệ thống chuẩn bị các tham số tính toán nhưng chưa phát tín hiệu âm thanh để tránh gây xao nhãng cho tài xế.
-    	\item \textbf{Cấp độ 3 (Cảnh báo - Warning):} Phương tiện nằm trong \texttt{Danger Zone} đồng thời được xác nhận nhãn \texttt{cut\_in}. Tại đây, hệ thống kích hoạt cảnh báo thị giác và âm thanh ngay lập tức.
-	\end{itemize}
-
-
-
-	\subsubsection{Ước tính Độ nguy hiểm dựa trên Tỷ lệ Khung hình}
-
-	Để hỗ trợ thêm cho việc phát hiện sớm ý định, hệ thống theo dõi biến thiên tỷ lệ khung hình (Aspect Ratio - AR) của Bounding Box. Khi xe máy chuẩn bị tạt đầu, động tác nghiêng xe và hướng di chuyển chéo làm thay đổi giá trị AR một cách đặc trưng trước khi tọa độ trung tâm thay đổi lớn. 
-
-	\begin{equation}
-    	\Delta AR = \frac{W_t}{H_t} - \frac{W_{t-1}}{H_{t-1}}
-	\end{equation}
-
-	Sự kết hợp giữa nhãn từ mô hình YOLO26n và xu hướng biến thiên $\Delta AR$ cho phép hệ thống "nhìn trước" được hành vi tạt đầu từ 0.5 đến 1 giây so với các phương pháp dựa trên khoảng cách thuần túy, giúp bù đắp độ trễ phản xạ của tài xế trong các tình huống khẩn cấp.
+	Sự kết hợp logic lai này giúp hệ thống vừa có năng lực "cảnh báo sớm" (nhờ LSTM), vừa đảm bảo nguyên tắc "không bao giờ bỏ lọt" (nhờ Rule-based Zones) trong các tình huống khẩn cấp thực tế.
