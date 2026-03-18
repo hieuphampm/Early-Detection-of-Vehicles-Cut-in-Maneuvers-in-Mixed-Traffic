@@ -2,14 +2,16 @@
 \contentsline {figure}{\numberline {1}{\ignorespaces Sơ đồ tổng quan mô hình}}{7}{}%
 \contentsline {figure}{\numberline {2}{\ignorespaces Sơ đồ tổng quan quy trình xây dựng dữ liệu hai giai đoạn}}{8}{}%
 \contentsline {figure}{\numberline {3}{\ignorespaces Minh họa gán nhãn đối tượng}}{8}{}%
-\contentsline {figure}{\numberline {4}{\ignorespaces Các chỉ số hàm mất mát trên tập huấn luyện}}{12}{}%
-\contentsline {figure}{\numberline {5}{\ignorespaces Các chỉ số hàm mất mát trên tập kiểm định}}{12}{}%
-\contentsline {figure}{\numberline {6}{\ignorespaces Biểu đồ mAP@50 của mô hình $M_{assist}$ qua các epoch}}{13}{}%
-\contentsline {figure}{\numberline {7}{\ignorespaces Ma trận nhầm lẫn của mô hình sơ khởi $M_{assist}$}}{13}{}%
-\contentsline {figure}{\numberline {8}{\ignorespaces Các chỉ số hàm mất mát trên tập huấn luyện của mô hình trọng tâm}}{14}{}%
-\contentsline {figure}{\numberline {9}{\ignorespaces Các chỉ số hàm mất mát trên tập kiểm định của mô hình trọng tâm}}{15}{}%
-\contentsline {figure}{\numberline {10}{\ignorespaces Biểu đồ mAP@50 của mô hình trọng tâm qua các epoch}}{16}{}%
-\contentsline {figure}{\numberline {11}{\ignorespaces Ma trận nhầm lẫn của mô hình trọng tâm}}{17}{}%
-\contentsline {figure}{\numberline {12}{\ignorespaces Kết quả trong điều kiện bình thường}}{17}{}%
-\contentsline {figure}{\numberline {13}{\ignorespaces Kết quả trong điều kiện cảnh báo sớm}}{17}{}%
-\contentsline {figure}{\numberline {14}{\ignorespaces Kết quả trong điều kiện xe tạt đầu}}{18}{}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Kiến trúc YOLO26 \cite {Sapkota2025UltralyticsYE}}}{10}{}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Các chỉ số hàm mất mát trên tập huấn luyện}}{12}{}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Các chỉ số hàm mất mát trên tập kiểm định}}{12}{}%
+\contentsline {figure}{\numberline {7}{\ignorespaces Biểu đồ mAP@50 của mô hình $M_{assist}$ qua các epoch}}{13}{}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Ma trận nhầm lẫn của mô hình sơ khởi $M_{assist}$}}{13}{}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Các chỉ số hàm mất mát trên tập huấn luyện của YOLO26n}}{14}{}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Các chỉ số hàm mất mát trên tập kiểm định của YOLO26n}}{14}{}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Biểu đồ mAP@50 của YOLO26n qua các epoch}}{15}{}%
+\contentsline {figure}{\numberline {12}{\ignorespaces Ma trận nhầm lẫn của mô hình YOLO26n}}{15}{}%
+\contentsline {figure}{\numberline {13}{\ignorespaces Biểu đồ Hàm mất mát (Loss) và Độ chính xác (Accuracy) của mạng LSTM qua 50 epochs}}{16}{}%
+\contentsline {figure}{\numberline {14}{\ignorespaces Thực nghiệm trong điều kiện giao thông bình thường}}{17}{}%
+\contentsline {figure}{\numberline {15}{\ignorespaces Thực nghiệm năng lực cảnh báo sớm ý định tạt đầu}}{17}{}%
+\contentsline {figure}{\numberline {16}{\ignorespaces Thực nghiệm khi phương tiện tạt đầu vào vùng nguy hiểm}}{17}{}%

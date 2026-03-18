@@ -93,6 +93,13 @@
 	
 	Dựa trên số liệu Bảng \ref{tab:yolo_comparison}, YOLO26n thể hiện sự vượt trội về cả độ chính xác (40.9\% mAP) lẫn chi phí tính toán (chỉ 5.4 BFLOPs), giúp duy trì độ trễ xử lý cực thấp. Khả năng trích xuất Bounding Box chính xác và mượt mà của YOLO26n cung cấp nền tảng dữ liệu sạch, chống nhiễu tuyệt vời cho mạng LSTM ở giai đoạn sau.
 	
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=7cm,height=7cm,keepaspectratio]{images/core_arch_yolo26.png}
+		\caption{Kiến trúc YOLO26 \cite{Sapkota2025UltralyticsYE}}
+		\label{fig:core_arch_yolo26}
+	\end{figure}
+	
 	\subsubsection{Mạng Nhận thức Ý định Chuỗi Thời gian (LSTM)}
 	
 	Để chuyển đổi từ kết quả nhận diện vật thể sang việc hiểu hành vi, luồng dữ liệu theo dõi từ YOLO26n được đưa vào mạng LSTM để phân loại ý định.

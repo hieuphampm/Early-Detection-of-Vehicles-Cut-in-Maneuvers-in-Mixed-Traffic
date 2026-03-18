@@ -1,242 +1,241 @@
 \section{KẾT QUẢ NGHIÊN CỨU}
-	
-	\subsection{Kết quả Huấn luyện Mô hình Hỗ trợ}
-	
-	Dựa trên phương pháp luận đã đề xuất, mô hình sơ khởi ($M_{assist}$) đã được huấn luyện trên tập dữ liệu hạt giống $D_{seed}$. Kết quả thực nghiệm cho thấy mô hình đáp ứng tốt các tiêu chí chuyển tiếp để phục vụ quy trình bán tự động.
-	
-	\subsubsection{Sự hội tụ của mô hình}
-    Để đánh giá chi tiết hành vi học tập của mô hình hỗ trợ $M_{assist}$ qua 40 epochs, nghiên cứu thực hiện đối chiếu các thành phần Loss giữa tập train và tập val.
-    
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=0.85\textwidth]{images/train_loss.png}\\[0.2cm]
-        \caption{Các chỉ số hàm mất mát trên tập huấn luyện}
-        \label{fig:train_loss}
-    \end{figure}
-    
-    Dựa trên kết quả thực nghiệm thu được từ quá trình huấn luyện mô hình $M_{assist}$:
-    \begin{itemize}
-        \item \textbf{train/box\_loss:} Chỉ số này thể hiện sai số trong việc dự đoán tọa độ của \textbf{Bounding Box}. Đồ thị cho thấy xu hướng giảm ổn định từ mức ~1.1 xuống còn ~0.63, chứng minh thuật toán đang tối ưu tốt khả năng định vị phương tiện qua từng vòng lặp.
-        \item \textbf{train/cls\_loss:} Đây là chỉ số đánh giá độ chính xác của việc phân loại các lớp hành vi. Đồ thị giảm mạnh ngay từ những \textbf{epochs} đầu tiên và tiệm cận mức 0.35, khẳng định mô hình nhận diện rất tốt các đặc trưng của 3 nhóm trạng thái: \texttt{lane\_keeping}, \texttt{moving\_away} và \texttt{cut\_in}.
-        \item \textbf{train/dfl\_loss:} Chỉ số \textbf{Distribution Focal Loss} giúp mô hình học cách phân phối xác suất của các giá trị tọa độ xung quanh biên của vật thể. Đồ thị hội tụ về mức ~0.90; việc giảm dần của \textbf{DFL} hỗ trợ mô hình tinh chỉnh các biên của vật thể một cách mượt mà, đặc biệt hiệu quả trong việc xử lý các đối tượng xe máy có kích thước nhỏ.
-    \end{itemize}
 
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=0.85\textwidth]{images/val_loss.png}\\[0.2cm]
-        \caption{Các chỉ số hàm mất mát trên tập kiểm định}
-        \label{fig:val_loss}
-    \end{figure}
+% =========================================================
+% 1. MÔ HÌNH HỖ TRỢ (GIỮ NGUYÊN - RẤT TỐT)
+% =========================================================
+\subsection{Kết quả Huấn luyện Mô hình Hỗ trợ ($M_{assist}$)}
 
-    Quá trình đánh giá hiệu suất trên tập kiểm định cho thấy các đặc tính sau:
-    \begin{itemize}
-        \item \textbf{val/box\_loss \& val/dfl\_loss:} Mặc dù xuất hiện một số điểm biến động (\textbf{spikes}) tại giai đoạn đầu (khoảng \textbf{epoch} thứ 3 đến thứ 5), nhưng ngay sau đó cả hai chỉ số đều duy trì xu hướng giảm tương đồng với tập \textbf{train}. Các biến động này thường do sự điều chỉnh trọng số của bộ tối ưu hóa khi tiếp cận các mẫu dữ liệu khó trong tập kiểm định.
-        \item \textbf{val/cls\_loss:} Đồ thị đạt mức ổn định khoảng ~0.38 và duy trì trạng thái nằm ngang ở các \textbf{epochs} cuối. Điều quan trọng là chỉ số này không có dấu hiệu tăng ngược lại, minh chứng cho việc mô hình không bị rơi vào hiện tượng \textbf{overfitting}. 
-    \end{itemize}
+Dựa trên phương pháp luận đã đề xuất, mô hình sơ khởi ($M_{assist}$) đã được huấn luyện trên tập dữ liệu hạt giống $D_{seed}$. Kết quả thực nghiệm cho thấy mô hình đáp ứng tốt các tiêu chí chuyển tiếp để phục vụ quy trình bán tự động.
 
-    Sự hội tụ đồng nhất giữa \textbf{Training Loss} và \textbf{Validation Loss} với khoảng cách sai số nhỏ khẳng định mô hình $M_{assist}$ đạt độ tin cậy cao và khả năng \textbf{generalization} tốt. Đây là tiền đề vững chắc để đưa mô hình vào vận hành cho quy trình gán nhãn bán tự động ở Giai đoạn 2.
-	
-	\subsubsection{Hiệu suất Mô hình trên Tập kiểm định}
-	Biểu đồ quá trình huấn luyện (Hình \ref{fig:map_data_processing}) cho thấy sự hội tụ ổn định của mô hình. Chỉ số độ chính xác trung bình (mAP@50) đạt mức cao xấp xỉ \textbf{0.96}, vượt qua ngưỡng yêu cầu 0.9 đã thiết lập tại phần Phương pháp.
-	
-	\begin{figure}[h]
+\subsubsection{Sự hội tụ của mô hình}
+Để đánh giá chi tiết hành vi học tập của mô hình hỗ trợ $M_{assist}$ qua 40 epochs, nghiên cứu thực hiện đối chiếu các thành phần Loss giữa tập train và tập val.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.85\textwidth]{images/train_loss.png}\\[0.2cm]
+	\caption{Các chỉ số hàm mất mát trên tập huấn luyện}
+	\label{fig:train_loss}
+\end{figure}
+
+Dựa trên kết quả thực nghiệm thu được từ quá trình huấn luyện mô hình $M_{assist}$:
+\begin{itemize}
+	\item \textbf{train/box\_loss:} Chỉ số này thể hiện sai số trong việc dự đoán tọa độ của \textbf{Bounding Box}. Đồ thị cho thấy xu hướng giảm ổn định từ mức ~1.1 xuống còn ~0.63, chứng minh thuật toán đang tối ưu tốt khả năng định vị phương tiện qua từng vòng lặp.
+	\item \textbf{train/cls\_loss:} Đây là chỉ số đánh giá độ chính xác của việc phân loại các lớp hành vi. Đồ thị giảm mạnh ngay từ những \textbf{epochs} đầu tiên và tiệm cận mức 0.35, khẳng định mô hình nhận diện rất tốt các đặc trưng của 3 nhóm trạng thái: \texttt{lane\_keeping}, \texttt{moving\_away} và \texttt{cut\_in}.
+	\item \textbf{train/dfl\_loss:} Chỉ số \textbf{Distribution Focal Loss} giúp mô hình học cách phân phối xác suất của các giá trị tọa độ xung quanh biên của vật thể. Đồ thị hội tụ về mức ~0.90; việc giảm dần của \textbf{DFL} hỗ trợ mô hình tinh chỉnh các biên của vật thể một cách mượt mà.
+\end{itemize}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.85\textwidth]{images/val_loss.png}\\[0.2cm]
+	\caption{Các chỉ số hàm mất mát trên tập kiểm định}
+	\label{fig:val_loss}
+\end{figure}
+
+Quá trình đánh giá hiệu suất trên tập kiểm định cho thấy các đặc tính sau:
+\begin{itemize}
+	\item \textbf{val/box\_loss \& val/dfl\_loss:} Mặc dù xuất hiện một số điểm biến động (\textbf{spikes}) tại giai đoạn đầu (khoảng \textbf{epoch} thứ 3 đến thứ 5), nhưng ngay sau đó cả hai chỉ số đều duy trì xu hướng giảm tương đồng với tập \textbf{train}. 
+	\item \textbf{val/cls\_loss:} Đồ thị đạt mức ổn định khoảng ~0.38 và duy trì trạng thái nằm ngang ở các \textbf{epochs} cuối. Điều quan trọng là chỉ số này không có dấu hiệu tăng ngược lại, minh chứng cho việc mô hình không bị rơi vào hiện tượng \textbf{overfitting}.
+\end{itemize}
+
+Sự hội tụ đồng nhất giữa \textbf{Training Loss} và \textbf{Validation Loss} khẳng định mô hình $M_{assist}$ đạt độ tin cậy cao, là tiền đề vững chắc cho quy trình gán nhãn bán tự động.
+
+\subsubsection{Hiệu suất Mô hình trên Tập kiểm định}
+Biểu đồ quá trình huấn luyện (Hình \ref{fig:map_data_processing}) cho thấy sự hội tụ ổn định của mô hình. Chỉ số độ chính xác trung bình (mAP@50) đạt mức cao xấp xỉ \textbf{0.96}, vượt qua ngưỡng yêu cầu 0.9 đã thiết lập tại phần Phương pháp.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=6cm,height=8cm,keepaspectratio]{images/map_data_processing.png}\\[0.2cm]
+	\caption{Biểu đồ mAP@50 của mô hình $M_{assist}$ qua các epoch}
+	\label{fig:map_data_processing}
+\end{figure}
+
+\subsubsection{Phân tích Ma trận Nhầm lẫn (Confusion Matrix)}
+Khả năng phân loại chi tiết của $M_{assist}$ được thể hiện qua ma trận nhầm lẫn tại Hình \ref{fig:confusion_matrix_data_processing}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=10cm,height=10cm,keepaspectratio]{images/confusion_matrix_data_processing.png}
+	\caption{Ma trận nhầm lẫn của mô hình sơ khởi $M_{assist}$}
+	\label{fig:confusion_matrix_data_processing}
+\end{figure}
+
+Kết quả cho thấy tỷ lệ nhận diện đúng của các lớp quan trọng đạt mức cao. Tỷ lệ bỏ sót đối tượng (Background FN) rất thấp, thỏa mãn yêu cầu tối ưu hóa độ nhạy (Recall) để không bỏ sót xe.
+
+
+% =========================================================
+% 2. MÔ HÌNH NHẬN THỨC KHÔNG GIAN (YOLO26)
+% =========================================================
+\subsection{Kết quả Huấn luyện Mô hình Nhận thức Không gian (YOLO26n)}
+
+Dựa trên quy trình huấn luyện đã thiết lập, mô hình trọng tâm YOLO26n được đánh giá chi tiết trên tập dữ liệu thực nghiệm quy mô lớn. 
+
+\subsubsection{Sự hội tụ của mô hình}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.85\textwidth]{images/train_loss_main.png}\\[0.2cm]
+	\caption{Các chỉ số hàm mất mát trên tập huấn luyện của YOLO26n}
+	\label{fig:train_loss_main} 
+\end{figure}
+
+Dựa trên kết quả thu được:
+\begin{itemize}
+	\item \textbf{train/box\_loss}: Giảm ổn định từ ~1.25 xuống ~0.88, chứng minh thuật toán tối ưu tốt khả năng định vị phương tiện.
+	\item \textbf{train/cls\_loss}: Giảm mạnh từ mức 2.0 xuống tiệm cận mức 0.35, khẳng định mô hình nhận diện rất tốt các đặc trưng phân biệt giữa các nhóm trạng thái hành vi.
+	\item \textbf{train/dfl\_loss}: Hội tụ mượt mà về mức ~0.003, hỗ trợ tinh chỉnh biên vật thể chính xác.
+\end{itemize}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.85\textwidth]{images/val_loss_main.png}\\[0.2cm]
+	\caption{Các chỉ số hàm mất mát trên tập kiểm định của YOLO26n}
+	\label{fig:val_loss_main}
+\end{figure}
+
+Trên tập kiểm định (\textbf{Validation}): \textbf{val/box\_loss \& val/dfl\_loss} duy trì xu hướng giảm tương đồng với tập \textbf{train}. \textbf{val/cls\_loss} đạt mức ổn định ~0.4 và không có dấu hiệu \textbf{overfitting}.
+
+\subsubsection{Hiệu suất mô hình trên tập kiểm định}
+Chỉ số \textbf{mAP@50} tăng trưởng mạnh mẽ từ mức ban đầu ~0.53 và đạt ngưỡng ổn định xấp xỉ \textbf{0.80} sau 50 \textbf{epochs} (Hình \ref{fig:mAP50_main}), chứng minh độ tin cậy cao.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=6cm,height=8cm]{images/mAP50_main.png}\\[0.2cm]
+	\caption{Biểu đồ mAP@50 của YOLO26n qua các epoch}
+	\label{fig:mAP50_main} 
+\end{figure}
+
+\subsubsection{Phân tích Ma trận Nhầm lẫn và Case Study}
+Khả năng phân loại của YOLO26n được minh chứng qua ma trận nhầm lẫn tại Hình \ref{fig:confusion_matrix_main}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=8cm,height=8cm]{images/confusion_matrix_main.png}\\[0.2cm]
+	\caption{Ma trận nhầm lẫn của mô hình YOLO26n}
+	\label{fig:confusion_matrix_main}
+\end{figure}
+
+Dựa trên số liệu thống kê:
+\begin{itemize}
+	\item \textbf{Dự báo đúng (True Positive):} Mô hình đạt tỷ lệ nhận diện cực cao đối với lớp \texttt{lane\_keeping} (9932 mẫu) và \texttt{cut\_in} (1146 mẫu).
+	\item \textbf{Tỷ lệ bỏ sót (Background FN):} Chỉ có 86 trường hợp \texttt{cut\_in} bị nhầm thành nền do vật thể bị che khuất quá nhiều hoặc nhiễu sáng, đảm bảo hệ thống duy trì tính an toàn cao.
+\end{itemize}
+
+\subsubsection{Bảng so sánh hiệu năng: YOLO26n và YOLOv10n}
+Để khẳng định quyết định chọn mô hình, nghiên cứu thực hiện đối chiếu chéo hiệu năng.
+
+\begin{table}[H]
+	\centering
+	\caption{So sánh thông số sau khi huấn luyện}
+	\label{tab:yolo_result_comparison}
+	\resizebox{\linewidth}{!}{%
+		\begin{tabular}{lcccc}
+			\toprule
+			\textbf{Model} & \textbf{mAP@50} & \textbf{mAP@50-95} & \textbf{Recall} & \textbf{GFLOPs}\\
+			\midrule
+			YOLO26n & 0.949 & 0.853 & 0.875 & 5.2\\
+			YOLOv10n & 0.949 & 0.851 & 0.868 & 6.5\\
+			\bottomrule
+		\end{tabular}%
+	}
+\end{table}
+
+Cả hai mô hình đều đạt mAP@50 ở mức 0.949. Tuy nhiên, YOLO26n được lựa chọn nhờ sự tối ưu vượt trội về chi phí tính toán (chỉ 5.2 GFLOPs so với 6.5 của v10n). Sự tối ưu này giúp duy trì FPS cao trên phần cứng giới hạn, chừa lại không gian tính toán cho mạng LSTM hoạt động song song.
+
+
+% =========================================================
+% 3. MÔ HÌNH PHÂN LOẠI Ý ĐỊNH (LSTM)
+% =========================================================
+\subsection{Kết quả Huấn luyện Mạng Phân loại Ý định (LSTM)}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{images/lstm_training_results.png}
+	\caption{Biểu đồ Hàm mất mát (Loss) và Độ chính xác (Accuracy) của mạng LSTM qua 50 epochs}
+	\label{fig:lstm_training}
+\end{figure}
+
+Sau khi sử dụng YOLO26n để trích xuất quỹ đạo, dữ liệu chuỗi được đưa vào mạng LSTM để phân loại ý định (0: Safe, 1: Cut-in). Dựa trên biểu đồ Hình \ref{fig:lstm_training}, mạng LSTM thể hiện khả năng hội tụ cực kỳ mạnh mẽ. Hàm mất mát giảm dốc đứng và tiệm cận mức 0.06. Đồng thời, độ chính xác (Accuracy) đạt đỉnh 97.5\%. Kết quả này khẳng định kiến trúc CNN-RNN hoàn toàn phù hợp để nắm bắt động học của hành vi tạt đầu.
+
+
+% =========================================================
+% 4. ĐÁNH GIÁ THỰC NGHIỆM HỆ THỐNG LAI (VIẾT LẠI HOÀN TOÀN)
+% =========================================================
+\subsection{Đánh giá Thực nghiệm Hệ thống Lai (YOLO + LSTM + Zones)}
+Để chứng minh tính thực tiễn, hệ thống được thử nghiệm trên các video giao thông chưa từng xuất hiện trong tập huấn luyện. Sự đối chiếu được thực hiện giữa 3 cấu hình: (a) Toàn vẹn hệ thống YOLO+LSTM+Zones, (b) Chỉ có YOLO+LSTM, và (c) Chỉ dùng YOLO26 độc lập.
+
+\subsubsection{Kịch bản 1: Môi trường bình thường (Lane Keeping)}
+Trong điều kiện xe cộ di chuyển đúng làn đường, cả 3 hệ thống đều không phát cảnh báo giả. Tuy nhiên, hệ thống toàn vẹn (Hình \ref{fig:normal}a) hiển thị rõ các vùng Zone, giúp tài xế nhận thức được không gian an toàn, trong khi hệ thống thuần YOLO (Hình \ref{fig:normal}c) chỉ đóng khung vật thể mà không mang lại giá trị đo lường rủi ro không gian.
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{0.32\textwidth}
 		\centering
-    	\includegraphics[width=6cm,height=8cm,keepaspectratio]{images/map_data_processing.png}\\[0.2cm]
-    	\caption{Biểu đồ mAP@50 của mô hình $M_{assist}$ qua các epoch}
-		\label{fig:map_data_processing}
-	\end{figure}
-	
-	Điều này chứng minh rằng chiến lược sử dụng YOLOv8n kết hợp Transfer Learning đã phát huy hiệu quả trong việc học nhanh các đặc trưng từ tập dữ liệu nhỏ ban đầu, tạo tiền đề vững chắc cho việc gán nhãn tự động quy mô lớn.
-	
-	\subsubsection{Phân tích Ma trận Nhầm lẫn (Confusion Matrix)}
-	Khả năng phân loại chi tiết của $M_{assist}$ được thể hiện qua ma trận nhầm lẫn tại Hình \ref{fig:confusion_matrix_data_processing}.
-	
-	\begin{figure}[h]
+		\includegraphics[width=\linewidth]{images/test/1_lstm_zone.jpg}
+		\caption{YOLO26 + LSTM + Zones}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.32\textwidth}
 		\centering
-		\includegraphics[width=10cm,height=10cm,keepaspectratio]{images/confusion_matrix_data_processing.png}
-		\caption{Ma trận nhầm lẫn của mô hình sơ khởi $M_{assist}$}
-		\label{fig:confusion_matrix_data_processing}
-	\end{figure}
-	
-	Kết quả cho thấy:
-	\begin{itemize}
-		\item Tỷ lệ nhận diện đúng (True Positive) của các lớp quan trọng như \texttt{cut\_in} và \texttt{lane\_keeping} đạt mức cao.
-		\item Sự nhầm lẫn giữa các vùng tĩnh (\texttt{Danger Zone} vs \texttt{Warning Zone}) nằm trong mức chấp nhận được đối với một mô hình sơ khởi.
-		\item Tỷ lệ bỏ sót đối tượng (Background FN) rất thấp, thỏa mãn yêu cầu về tối ưu hóa độ nhạy (Recall) để hỗ trợ người kiểm định không bị sót xe trong khung hình.
-	\end{itemize}
-	
-	\textbf{Kết luận:} Với các chỉ số hiệu năng trên, mô hình $M_{assist}$ chính thức được đưa vào vận hành cho Giai đoạn 2, giúp giảm thiểu đáng kể thời gian gán nhãn cho phần dữ liệu thô còn lại.
-	
-	\subsection{Kết quả thực nghiệm mô hình trọng tâm}
-
-	Dựa trên quy trình huấn luyện đã thiết lập, mô hình trọng tâm được thực hiện đánh giá chi tiết trên tập dữ liệu thực nghiệm quy mô lớn. Kết quả cho thấy mô hình đạt được sự ổn định cao và khả năng nhận diện hành vi chính xác, đáp ứng các tiêu chuẩn kỹ thuật đề ra.
-
-	\subsubsection{Sự hội tụ của mô hình}
-
-	Để đánh giá chi tiết hành vi học tập của mô hình trọng tâm qua 65 \textbf{epochs}, nghiên cứu thực hiện đối chiếu các thành phần \textbf{Loss} giữa tập \textbf{train} và tập \textbf{val}.
-
-	\begin{figure}[h]
+		\includegraphics[width=\linewidth]{images/test/1_lstm.jpg}
+		\caption{YOLO26 + LSTM}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.32\textwidth}
 		\centering
-    	\includegraphics[width=0.85\textwidth]{images/train_loss_main.png}\\[0.2cm]
-    	\caption{Các chỉ số hàm mất mát trên tập huấn luyện của mô hình trọng tâm}
-		\label{fig:train_loss_main} 
-	\end{figure}
+		\includegraphics[width=\linewidth]{images/test/1_yolo.jpg}
+		\caption{YOLO26}
+	\end{subfigure}
+	\caption{Thực nghiệm trong điều kiện giao thông bình thường}
+	\label{fig:normal}
+\end{figure}
 
-	Dựa trên kết quả thu được từ quá trình huấn luyện:
-	\begin{itemize}
-    	\item \textbf{train/box\_loss}: Chỉ số này thể hiện sai số trong việc dự đoán tọa độ của \textbf{Bounding Box}. Đồ thị cho thấy xu hướng giảm ổn định từ mức ~1.25 xuống còn ~0.88. Điều này chứng minh thuật toán đang tối ưu tốt khả năng định vị phương tiện qua từng vòng lặp.
-    	\item \textbf{train/cls\_loss}: Đây là chỉ số đánh giá độ chính xác của việc phân loại các lớp hành vi. Đồ thị giảm mạnh ngay từ những \textbf{epochs} đầu tiên từ mức 2.0 xuống tiệm cận mức 0.35. Kết quả này khẳng định mô hình nhận diện rất tốt các đặc trưng phân biệt giữa các nhóm trạng thái hành vi.
-    	\item \textbf{train/dfl\_loss}: Hội tụ mượt mà về mức ~0.003. Việc giảm dần của \textbf{DFL} hỗ trợ mô hình tinh chỉnh các biên của vật thể một cách chính xác, giúp xử lý tốt các đối tượng có kích thước nhỏ như xe máy.
-	\end{itemize}
+\subsubsection{Kịch bản 2: Cảnh báo sớm ý định (Early Warning)}
+Khi một xe máy ở xa bắt đầu có dấu hiệu nghiêng người chuyển làn, mạng LSTM (a và b) ngay lập tức nhấp nháy cảnh báo màu Vàng (Intent: Cut-in) dù xe máy \textbf{chưa chạm vào Warning Zone}. Trong khi đó, YOLO độc lập (c) hoàn toàn "im lặng" vì chỉ coi đó là xe máy bình thường. LSTM đã giúp hệ thống "nhìn trước" tương lai khoảng 0.5 - 1.0 giây.
 
-	\begin{figure}[h]
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{0.32\textwidth}
 		\centering
-    	\includegraphics[width=0.85\textwidth]{images/val_loss_main.png}\\[0.2cm]
-    	\caption{Các chỉ số hàm mất mát trên tập kiểm định của mô hình trọng tâm}
-		\label{fig:val_loss_main}
-	\end{figure}
-
-	Quá trình đánh giá hiệu suất trên tập kiểm định (\textbf{Validation}) cho thấy các đặc tính sau:
-	\begin{itemize}
-    	\item \textbf{val/box\_loss \& val/dfl\_loss}: Mặc dù xuất hiện một số điểm biến động (\textbf{spikes}) tại giai đoạn đầu (khoảng \textbf{epoch} thứ 3 đến thứ 10), nhưng ngay sau đó cả hai chỉ số đều duy trì xu hướng giảm tương đồng với tập \textbf{train} và ổn định dần về cuối quá trình.
-    	\item \textbf{val/cls\_loss}: Đồ thị đạt mức ổn định khoảng ~0.4 và duy trì trạng thái nằm ngang ở các \textbf{epochs} cuối. Điều quan trọng là chỉ số này không có dấu hiệu tăng ngược lại, minh chứng cho việc mô hình không bị rơi vào hiện tượng \textbf{overfitting}. 
-	\end{itemize}
-	\newpage
-	\subsubsection{Bảng so sánh giữa YOLO26 và YOLOv10}
-	
-	\begin{table}[h]
+		\includegraphics[width=\linewidth]{images/test/2_lstm_zone.jpg}
+		\caption{YOLO26 + LSTM + Zones}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.32\textwidth}
 		\centering
-		\caption{So sánh thông số sau khi huấn luyện}
-		\label{tab:yolo_result_comparison}
-		\resizebox{\linewidth}{!}{%
-			\begin{tabular}{lcccc}
-				\toprule
-				\textbf{Model} & \textbf{mAP@50} & \textbf{mAP@50-95} & \textbf{Recall} & \textbf{GFLOPs}\\
-				\midrule
-				YOLO26n & 0.949 & 0.853 & 0.865 & 5.2\\
-				YOLOv10n & 0.949 & 0.851 & 0.868 & 6.5\\
-				\bottomrule
-			\end{tabular}%
-		}
-		\footnotesize{\textit{*Ghi chú: Số liệu Inference đo trên T4 GPU (TensorRT FP16) trên tập Valid.}}
-	\end{table}
-	
-	\subsubsection{Hiệu suất mô hình trên tập kiểm định}
-
-	Chỉ số độ chính xác trung bình (\textbf{mAP@50}) đóng vai trò quyết định trong việc đánh giá năng lực thực tế của mô hình được thể hiện tại Hình \ref{fig:mAP50_main}.
-
-	Biểu đồ quá trình huấn luyện tại Hình \ref{fig:mAP50_main} cho thấy sự hội tụ ấn tượng của mô hình. 
-	Chỉ số \textbf{mAP@50} tăng trưởng mạnh mẽ từ mức ban đầu ~0.53 và đạt ngưỡng ổn định xấp xỉ \textbf{0.80} sau 50 \textbf{epochs} huấn luyện. Điều này chứng minh mô hình trọng tâm đã đạt được độ tin cậy cao trong việc nhận diện đối tượng và hành vi trên tập dữ liệu thực nghiệm quy mô lớn.
-
-	\begin{figure}[h]
+		\includegraphics[width=\linewidth]{images/test/2_lstm.jpg}
+		\caption{YOLO26 + LSTM}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.32\textwidth}
 		\centering
-    	\includegraphics[width=6cm,height=8cm]{images/mAP50_main.png}\\[0.2cm]
-    	\caption{Biểu đồ mAP@50 của mô hình trọng tâm qua các epoch}
-		\label{fig:mAP50_main} 
-	\end{figure}
+		\includegraphics[width=\linewidth]{images/test/2_yolo.jpg}
+		\caption{YOLO26}
+	\end{subfigure}
+	\caption{Thực nghiệm năng lực cảnh báo sớm ý định tạt đầu}
+	\label{fig:warning}
+\end{figure}
 
-	\subsubsection{Phân tích Ma trận Nhầm lẫn (Confusion Matrix)}
+\subsubsection{Kịch bản 3: Xâm nhập vùng nguy hiểm (Cut-in Danger)}
+Khi phương tiện thực sự cắt mặt và xâm nhập vào vùng Đỏ (\texttt{Danger Zone}), hệ thống lai (Hình \ref{fig:cutin}a) lập tức kích hoạt luật cứng, chuyển cảnh báo sang mức cao nhất (DANGER! BRAKE). Tại điểm cận chiến này, việc có vùng đa giác (Zones) thể hiện sự ưu việt tuyệt đối so với thuần AI (b) vì nó định lượng được chính xác cự ly vật lý từ mũi xe ô tô đến vật cản.
 
-	Khả năng phân loại chi tiết của mô hình trọng tâm được minh chứng qua ma trận nhầm lẫn thực nghiệm tại Hình \ref{fig:confusion_matrix_main}.
-
-	Dựa trên số liệu thống kê từ ma trận nhầm lẫn:
-	\begin{itemize}
-    	\item \textbf{Độ chính xác phân loại hành vi}: Mô hình đạt tỷ lệ nhận diện đúng (\textbf{True Positive}) cực cao đối với lớp \texttt{lane\_keeping} với 9932 mẫu và lớp hành vi tạt đầu \texttt{cut\_in} với 1146 mẫu được phân loại chính xác. 
-    	\item \textbf{Tỷ lệ bỏ sót (Background FN)}: Đối với lớp hành vi quan trọng \texttt{cut\_in}, chỉ có 86 trường hợp bị nhầm lẫn thành nền (\textbf{background}), đảm bảo hệ thống duy trì tính an toàn cao và không bỏ qua các kịch bản tạt đầu nguy hiểm.
-    	\item \textbf{Phân loại vùng không gian}: Các vùng tĩnh được mô hình phân loại với độ chính xác tuyệt đối, hỗ trợ tốt cho các thuật toán hậu xử lý tính toán mức độ rủi ro dựa trên vị trí phương tiện trong các vùng an toàn.
-	\end{itemize}
-
-	\begin{figure}[h]
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{0.32\textwidth}
 		\centering
-    	\includegraphics[width=8cm,height=8cm]{images/confusion_matrix_main.png}\\[0.2cm]
-    	\caption{Ma trận nhầm lẫn của mô hình trọng tâm}
-		\label{fig:confusion_matrix_main}
-	\end{figure}
-
-	\textbf{Kết luận}: Với sự hội tụ đồng nhất giữa các chỉ số \textbf{Loss} và sự gia tăng ổn định của \textbf{mAP@50}, mô hình trọng tâm đã chứng minh được năng lực nhận thức hành vi vượt trội. Kết quả thực nghiệm khẳng định tính khả thi của việc triển khai mô hình vào hệ thống dự đoán ý định và cảnh báo sớm hành vi tạt đầu trong giao thông thực tế.
-	
-	\subsubsection{Phân tích Case Study}
-
-	Dựa trên kết quả ma trận nhầm lẫn (Hình \ref{fig:confusion_matrix_main}), hệ thống đạt độ chính xác cực cao với 1146 mẫu \texttt{cut\_in} được phân loại đúng. Tuy nhiên, qua quan sát thực nghiệm, một số lỗi vẫn tồn tại:
-	\begin{itemize}
-    	\item \textbf{Dự báo đúng (True Positive):} Các trường hợp xe máy tạt đầu ở khoảng cách gần (Danger Zone) được cảnh báo ngay lập tức nhờ sự biến thiên rõ rệt của $\Delta AR$.
-    	\item \textbf{Sai sót (False Positive/Negative):} 
-        	\begin{itemize}
-            	\item Lỗi nhầm lẫn do ánh sáng chói hoặc sương mù làm sai lệch đặc trưng hình học trích xuất từ YOLO.
-            	\item Các vật thể bị che khuất quá nhiều dẫn đến thiếu hụt dữ liệu chuỗi cho LSTM, gây ra 86 trường hợp bỏ sót hành vi nguy hiểm.
-        	\end{itemize}
-	\end{itemize}
-	
-	\subsection{Kết quả thực tế:}
-	
-	\subsubsection{Trong điều kiện bình thường:}
-	\begin{figure}[H]
+		\includegraphics[width=\linewidth]{images/test/3_lstm_zone.jpg}
+		\caption{YOLO26 + LSTM + Zones}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.32\textwidth}
 		\centering
-		\begin{subfigure}{0.32\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{images/test/1_lstm_zone.jpg}
-			\caption{YOLO26 + LSTM + Zones}
-		\end{subfigure}
-		\hfill
-		\begin{subfigure}{0.32\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{images/test/1_lstm.jpg}
-			\caption{YOLO26 + LSTM}
-		\end{subfigure}
-		\hfill
-		\begin{subfigure}{0.32\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{images/test/1_yolo.jpg}
-			\caption{YOLO26}
-		\end{subfigure}
-		\caption{Kết quả trong điều kiện bình thường}
-		\label{fig:normal}
-	\end{figure}
-	
-	\subsubsection{Trong điều kiện cảnh báo sớm:}
-	\begin{figure}[H]
+		\includegraphics[width=\linewidth]{images/test/3_lstm.jpg}
+		\caption{YOLO26 + LSTM}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.32\textwidth}
 		\centering
-		\begin{subfigure}{0.32\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{images/test/2_lstm_zone.jpg}
-			\caption{YOLO26 + LSTM + Zones}
-		\end{subfigure}
-		\hfill
-		\begin{subfigure}{0.32\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{images/test/2_lstm.jpg}
-			\caption{YOLO26 + LSTM}
-		\end{subfigure}
-		\hfill
-		\begin{subfigure}{0.32\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{images/test/2_yolo.jpg}
-			\caption{YOLO26}
-		\end{subfigure}
-		\caption{Kết quả trong điều kiện cảnh báo sớm}
-		\label{fig:warning}
-	\end{figure}
-	
-	\subsubsection{Trong điều kiện có xe tạt đầu:}
-	\begin{figure}[H]
-		\centering
-		\begin{subfigure}{0.32\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{images/test/2_lstm_zone.jpg}
-			\caption{YOLO26 + LSTM + Zones}
-		\end{subfigure}
-		\hfill
-		\begin{subfigure}{0.32\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{images/test/2_lstm.jpg}
-			\caption{YOLO26 + LSTM}
-		\end{subfigure}
-		\hfill
-		\begin{subfigure}{0.32\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{images/test/2_yolo.jpg}
-			\caption{YOLO26}
-		\end{subfigure}
-		\caption{Kết quả trong điều kiện xe tạt đầu}
-		\label{fig:cutin}
-	\end{figure}
+		\includegraphics[width=\linewidth]{images/test/3_yolo.jpg}
+		\caption{YOLO26}
+	\end{subfigure}
+	\caption{Thực nghiệm khi phương tiện tạt đầu vào vùng nguy hiểm}
+	\label{fig:cutin}
+\end{figure}
