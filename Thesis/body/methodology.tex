@@ -1,13 +1,23 @@
 \section{PHƯƠNG PHÁP NGHIÊN CỨU}
-	\subsection{Tổng quan Kiến trúc Hệ thống}
+	\subsection{Cơ sở Lý thuyết và Tổng quan Kiến trúc Hệ thống}
+	
+	\subsubsection{Khung lý thuyết về Ý định và Hành vi lái xe}
+	Trong lĩnh vực xe tự hành và hệ thống hỗ trợ người lái tiên tiến (ADAS), quá trình ra quyết định của một phương tiện tham gia giao thông được mô hình hóa qua hai cấp độ: ``Ý định'' và ``Hành vi''. 
+	Theo mô hình nhận thức của tài xế (Human Driver Model), "ý định" là một trạng thái tâm lý tiềm ẩn (latent state) diễn ra bên trong não bộ của người điều khiển (ví dụ: muốn vượt xe, muốn rẽ phải) trước khi các thao tác cơ học được thực thi. Trạng thái tiềm ẩn này sau đó sẽ chuyển hóa thành "hành vi" quan sát được trên không gian vật lý (như tăng tốc, đánh lái, thay đổi góc nghiêng) và cuối cùng hình thành nên quỹ đạo (trajectory) của phương tiện. Do đó, việc dự đoán "ý định" mang tính chất đi trước thời gian (proactive) và cung cấp cảnh báo sớm hơn đáng kể so với việc chỉ theo dõi "hành vi" đè vạch hay hồi quy quỹ đạo tọa độ thuần túy.
+	
+	\subsubsection{Đặc tính Động lực học trong Giao thông Hỗn hợp}
+	Giao thông hỗn hợp tại Việt Nam đặc trưng bởi sự thống trị của xe gắn máy hai bánh (Powered Two-Wheelers - PTWs). Khác với ô tô vốn bị ràng buộc khắt khe bởi tính vật lý phi toàn hướng và thường di chuyển theo luồng tuyến tính, xe máy sở hữu đặc tính động lực học phức tạp hơn nhiều. 
+	Xe máy có kích thước nhỏ, tỷ lệ công suất trên trọng lượng lớn, biên độ đánh lái rộng và đặc biệt là khả năng ``di chuyển phi làn đường''. Trong môi trường ùn tắc, người điều khiển xe máy thường xuyên thực hiện các hành vi phi tuyến tính như lách qua khe hẹp, điền vào chỗ trống, và tạt đầu ngoặt nghèo ở cự ly cực ngắn. Sự linh hoạt này khiến các mô hình dự đoán dựa trên định luật vật lý động học tiêu chuẩn (như Vận tốc không đổi - CV, hay Gia tốc không đổi - CA) hoàn toàn thất bại về mặt lý thuyết, buộc hệ thống phải chuyển sang phương pháp học máy thống kê.
+	
+	\subsubsection{Đề xuất Kiến trúc Lai}
 	Các phương pháp truyền thống trong dự đoán chuyển động thường tách biệt bài toán thành hai giai đoạn rời rạc: phát hiện vật thể và hồi quy quỹ đạo tương lai, như đã được tổng hợp trong các khảo sát của nhóm Lefèvre \cite{Lefvre2014ASO} và nhóm Mozaffari \cite{Mozaffari2020DeepLV}. Tuy nhiên, trong môi trường giao thông hỗn hợp với mật độ cao, độ trễ tích lũy giữa các module này có thể làm giảm hiệu quả cảnh báo thời gian thực.
 	
-	Để khắc phục hạn chế trên, nghiên cứu đề xuất kiến trúc End-to-End Risk Awareness. Hệ thống sử dụng một mạng nơ-ron tích chập sâu duy nhất để đồng thời thực hiện hai nhiệm vụ: định vị phương tiện và phân loại trực tiếp ý định hành vi dựa trên ngữ cảnh không gian, thay vì phụ thuộc vào các mô hình chuỗi thời gian phức tạp như LSTM hay GRU.
+	Để khắc phục, nghiên cứu đề xuất kiến trúc End-to-End Risk Awareness. Hệ thống sử dụng Mạng nơ-ron tích chập (CNN) để trích xuất đặc trưng không gian và Mạng bộ nhớ ngắn hạn dài hạn (LSTM) để giải mã chuỗi thời gian, từ đó phân loại trực tiếp ý định tạt đầu trước khi hành vi thực sự diễn ra.
 	
 	Quy trình xử lý gồm 3 giai đoạn chính:
 	\begin{figure}[h]
 		\centering
-		\includegraphics[width=\linewidth]{images/model_pipeline.png} 
+		\includegraphics[width=\linewidth, height=5.5cm]{images/model_pipeline.png} 
 		\caption{Sơ đồ tổng quan mô hình}
 		\label{fig:model_pipeline}
 	\end{figure}
