@@ -146,4 +146,9 @@ J.~Redmon, S.~K. Divvala, R.~B. Girshick, and A.~Farhadi, ``You only look once:
 G.~Jocher and J.~Qiu, ``Ultralytics yolo26,'' 2026.
 \newblock Version 26.0.0.
 
+\bibitem{Ullah2018ActionRI}
+A.~Ullah, J.~Ahmad, K.~Muhammad, M.~Sajjad, and S.~W. Baik, ``Action
+  recognition in video sequences using deep bi-directional lstm with cnn
+  features,'' {\em IEEE Access}, vol.~6, pp.~1155--1166, 2018.
+
 \end{thebibliography}
