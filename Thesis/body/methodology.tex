@@ -74,14 +74,32 @@
 	
 	\subsection{Mô hình Nhận thức Hành vi}
 	
-	Thay vì yêu cầu mạng YOLO phải trực tiếp nhận diện một hành vi mang tính quá trình như "cắt mặt" trên một khung hình tĩnh duy nhất, đề tài xây dựng kiến trúc kết hợp: YOLO26n đóng vai trò trích xuất chuỗi đặc trưng hình học, trong khi LSTM đảm nhiệm phân loại chuỗi thời gian.
+	Thay vì yêu cầu mạng YOLO phải trực tiếp nhận diện một hành vi mang tính quá trình như "cắt mặt" trên một khung hình tĩnh duy nhất, đề tài xây dựng kiến trúc kết hợp: YOLO đóng vai trò trích xuất chuỗi đặc trưng hình học, trong khi LSTM đảm nhiệm phân loại chuỗi thời gian.
+	
+	\subsubsection{Tổng quan về YOLO}
+	
+	YOLO là một trong những kiến trúc mạng nơ-ron tích chập (CNN) mang tính đột phá nhất trong lĩnh vực Thị giác máy tính, được giới thiệu lần đầu bởi Joseph Redmon và cộng sự vào năm 2015\cite{Redmon2015YouOL}. Trước khi YOLO ra đời, các hệ thống phát hiện vật thể hàng đầu như R-CNN hoặc DPM thường sử dụng các đường ống xử lý rời rạc\cite{Redmon2015YouOL}. Cụ thể, các hệ thống cũ phải dùng một thuật toán để tạo ra hàng ngàn vùng đề xuất tiềm năng trên ảnh, sau đó mới chạy một bộ phân loại trên từng vùng đó\cite{Redmon2015YouOL}. Cách tiếp cận này tuy chính xác nhưng cực kỳ chậm chạp và khó tối ưu hóa toàn cục\cite{Redmon2015YouOL}.
+	
+	YOLO đã tái định hình bài toán phát hiện vật thể từ một bài toán phân loại đa bước thành một bài toán hồi quy duy nhất\cite{Redmon2015YouOL}. Đặc trưng cốt lõi của YOLO nằm ở chỗ nó coi toàn bộ bức ảnh là một mạng lưới ô vuông ($S \times S$ grid)\cite{Redmon2015YouOL}. Bằng cách quét qua bức ảnh "chỉ một lần" với một mạng nơ-ron duy nhất, hệ thống có thể đồng thời dự đoán các hộp giới hạn, vị trí không gian, và xác suất của các lớp đối tượng ngay tại đầu ra của mạng\cite{Redmon2015YouOL}. 
+	
+	\paragraph{Tại sao YOLO lại phù hợp cho bài toán Giao thông?}
+	Quyết định sử dụng họ mô hình YOLO làm tầng nhận thức nền tảng trong nghiên cứu này dựa trên các ưu điểm lý thuyết sau:
+	\begin{itemize}
+		\item \textbf{Tốc độ thời gian thực:} Do loại bỏ hoàn toàn cơ chế đề xuất vùng phức tạp, mạng YOLO cơ bản có thể xử lý hình ảnh với tốc độ từ 45 đến 155 FPS\cite{Redmon2015YouOL}. Đây là điều kiện tiên quyết để xây dựng hệ thống cảnh báo ADAS, nơi độ trễ tính bằng mili-giây có thể quyết định sự an toàn của tài xế.
+		\item \textbf{Tư duy tổng thể:} Khác với các kỹ thuật cửa sổ trượt chỉ nhìn thấy một phần nhỏ của ảnh, YOLO quan sát toàn bộ bức ảnh trong quá trình huấn luyện và dự đoán\cite{Redmon2015YouOL}. Điều này giúp mạng tự động mã hóa được các thông tin ngữ cảnh xung quanh đối tượng, nhờ đó giảm đáng kể tỷ lệ nhận diện sai phần nền so với các phương pháp Fast R-CNN\cite{Redmon2015YouOL}.
+		\item \textbf{Sự hội tụ của Hồi quy Đặc trưng Không gian:} YOLO xuất ra trực tiếp một tensor chứa thông tin không gian (tọa độ tâm, chiều rộng, chiều cao)\cite{Redmon2015YouOL}. Khả năng hồi quy ổn định này tạo ra luồng dữ liệu đầu vào vô cùng hoàn hảo để huấn luyện cho mạng LSTM ở giai đoạn phân loại ý định tiếp theo.
+	\end{itemize}
 	
 	\subsubsection{Mạng Trích xuất Đặc trưng Không gian (YOLO26n)}
 	
-	Việc lựa chọn backbone phù hợp là yếu tố then chốt để đảm bảo khả năng vận hành thời gian thực. Dựa trên phân tích so sánh chuyên sâu \cite{Hidayatullah2025YOLOv8TY}, nghiên cứu tiến hành thực nghiệm đối chiếu giữa hai biến thể:
+	Đầu vào của quá trình nhận thức ý định là việc định vị chính xác vị trí và hình dáng của phương tiện. Tiếp nối triết lý của YOLO nguyên bản, nghiên cứu sử dụng biến thể hiện đại YOLO26n làm bộ trích xuất đặc trưng không gian.
+	
+	Về mặt lý thuyết học sâu, các lớp tích chập đầu tiên của YOLO sẽ quét qua mảng pixel của bức ảnh để trích xuất các đặc trưng mức thấp như cạnh, viền, và góc cắt. Khi đi sâu vào các lớp mạng, thông qua các hàm kích hoạt phi tuyến và cơ chế gộp, mạng sẽ tổng hợp các đặc trưng này thành các biểu diễn mức cao như hình dáng toàn vẹn của một chiếc xe máy hay ô tô.
+	
+	Việc lựa chọn biến thể backbone phù hợp là yếu tố then chốt để đảm bảo khả năng vận hành thời gian thực. Dựa trên phân tích so sánh chuyên sâu\cite{Sapkota2025UltralyticsYE, Hidayatullah2025YOLOv8TY, yolo26_ultralytics}, nghiên cứu tiến hành thực nghiệm đối chiếu giữa hai biến thể:
 	\begin{itemize}
-		\item \textbf{YOLO26n}: Là một mô hình đầu cuối (end-to-end) thiết kế đặc biệt cho thiết bị biên. Kiến trúc này loại bỏ hoàn toàn lớp hậu xử lý NMS và tối ưu hóa thuật toán MuSGD, giúp mô hình ổn định và hội tụ nhanh hơn \cite{yolo26_ultralytics}.
 		\item \textbf{YOLOv10n}: Phiên bản YOLO cải tiến từ YOLOv8, được tối ưu cho phát hiện thời gian thực với kiến trúc gọn hơn.
+		\item \textbf{YOLO26n}: Là một mô hình đầu cuối thiết kế đặc biệt cho thiết bị biên. Kế thừa tư duy hồi quy trực tiếp của YOLO gốc, kiến trúc này tiến thêm một bước khi loại bỏ hoàn toàn lớp hậu xử lý NMS\cite{yolo26_ultralytics}. Về mặt lý thuyết, NMS dựa trên các thuật toán Heuristic cứng nhắc để loại bỏ các hộp giới hạn trùng lặp, gây ra hiện tượng nút thắt cổ chai về hiệu năng trên CPU. Việc loại bỏ NMS giúp kiến trúc YOLO26n duy trì luồng tính toán song song hoàn toàn bằng ma trận Tensor, tối ưu hóa độ trễ suy luận.
 	\end{itemize}
 	
 	\begin{table}[h]
