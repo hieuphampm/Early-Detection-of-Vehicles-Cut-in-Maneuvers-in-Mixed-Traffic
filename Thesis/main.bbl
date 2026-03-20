@@ -1,83 +1,146 @@
 \begin{thebibliography}{10}
 
 \bibitem{Sapkota2025UltralyticsYE}
-R.~Sapkota and M.~Karkee, ``Ultralytics yolo evolution: An overview of yolo26, yolo11, yolov8 and yolov5 object detectors for computer vision and pattern recognition,'' {\em ArXiv}, vol.~abs/2510.09653, 2025.
+R.~Sapkota and M.~Karkee, ``Ultralytics yolo evolution: An overview of yolo26,
+  yolo11, yolov8 and yolov5 object detectors for computer vision and pattern
+  recognition,'' {\em ArXiv}, vol.~abs/2510.09653, 2025.
 
 \bibitem{Hidayatullah2025YOLOv8TY}
-P.~Hidayatullah, N.~Syakrani, M.~R. Sholahuddin, T.~Gelar, and R.~Tubagus, ``Yolov8 to yolo11: A comprehensive architecture in-depth comparative review,'' {\em ArXiv}, vol.~abs/2501.13400, 2025.
+P.~Hidayatullah, N.~Syakrani, M.~R. Sholahuddin, T.~Gelar, and R.~Tubagus,
+  ``Yolov8 to yolo11: A comprehensive architecture in-depth comparative
+  review,'' {\em ArXiv}, vol.~abs/2501.13400, 2025.
 
 \bibitem{Lv2023DETRsBY}
-W.~Lv, S.~Xu, Y.~Zhao, G.~Wang, J.~Wei, C.~Cui, Y.~Du, Q.~Dang, and Y.~Liu, ``Detrs beat yolos on real-time object detection,'' {\em 2024 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, pp.~16965--16974, 2023.
+W.~Lv, S.~Xu, Y.~Zhao, G.~Wang, J.~Wei, C.~Cui, Y.~Du, Q.~Dang, and Y.~Liu,
+  ``Detrs beat yolos on real-time object detection,'' {\em 2024 IEEE/CVF
+  Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pp.~16965--16974, 2023.
 
 \bibitem{Lefvre2014ASO}
-S.~Lef{\`e}vre, D.~Vasquez, and C.~Laugier, ``A survey on motion prediction and risk assessment for intelligent vehicles,'' {\em ROBOMECH Journal}, vol.~1, 2014.
+S.~Lef{\`e}vre, D.~Vasquez, and C.~Laugier, ``A survey on motion prediction and
+  risk assessment for intelligent vehicles,'' {\em ROBOMECH Journal}, vol.~1,
+  2014.
 
 \bibitem{Zeng2025TrajectoryPF}
-L.~Zeng, F.~Chen, J.~Li, H.~Wang, Y.~Li, and Z.~Zhai, ``Trajectory prediction for powered two-wheelers in mixed traffic scenes: An enhanced social-gat approach,'' {\em Systems}, 2025.
+L.~Zeng, F.~Chen, J.~Li, H.~Wang, Y.~Li, and Z.~Zhai, ``Trajectory prediction
+  for powered two-wheelers in mixed traffic scenes: An enhanced social-gat
+  approach,'' {\em Systems}, 2025.
 
 \bibitem{Mozaffari2020DeepLV}
-S.~Mozaffari, O.~Y. Al-Jarrah, M.~Dianati, P.~Jennings, and A.~Mouzakitis, ``Deep learning-based vehicle behavior prediction for autonomous driving applications: A review,'' {\em IEEE Transactions on Intelligent Transportation Systems}, vol.~23, pp.~33--47, 2020.
+S.~Mozaffari, O.~Y. Al-Jarrah, M.~Dianati, P.~Jennings, and A.~Mouzakitis,
+  ``Deep learning-based vehicle behavior prediction for autonomous driving
+  applications: A review,'' {\em IEEE Transactions on Intelligent
+  Transportation Systems}, vol.~23, pp.~33--47, 2020.
 
 \bibitem{Paravarzar2020}
-S.~Paravarzar and B.~Mohammad, ``Motion prediction on self-driving cars: A review,'' {\em arXiv preprint arXiv:2011.03635}, 2020.
+S.~Paravarzar and B.~Mohammad, ``Motion prediction on self-driving cars: A
+  review,'' {\em arXiv preprint arXiv:2011.03635}, 2020.
 
 \bibitem{Lim2018}
-Q.~Lim, Y.~Lim, H.~s. Muhammad, D.~W.~M. Tan, and U.-X. Tan, ``Forward collision warning system for motorcyclist using smart phone sensors based on time-to-collision and trajectory prediction,'' {\em Journal of Engineering}, 2018.
+Q.~Lim, Y.~Lim, H.~s. Muhammad, D.~W.~M. Tan, and U.-X. Tan, ``Forward
+  collision warning system for motorcyclist using smart phone sensors based on
+  time-to-collision and trajectory prediction,'' {\em Journal of Engineering},
+  2018.
 
 \bibitem{Kumar2023}
-S.~Kumar, S.~K. Singh, S.~Varshney, S.~Singh, P.~Kumar, B.-G. Kim, and I.-H. Ra, ``Fusion of deep sort and yolov5 for effective vehicle detection and tracking scheme in real-time traffic management sustainable system,'' {\em Sustainability}, vol.~15, no.~24, p.~16869, 2023.
+S.~Kumar, S.~K. Singh, S.~Varshney, S.~Singh, P.~Kumar, B.-G. Kim, and I.-H.
+  Ra, ``Fusion of deep sort and yolov5 for effective vehicle detection and
+  tracking scheme in real-time traffic management sustainable system,'' {\em
+  Sustainability}, vol.~15, no.~24, p.~16869, 2023.
 
 \bibitem{Ibarra2016}
-M.~Ibarra~Arenado, {\em Detecci{\'o}n y localizaci{\'o}n de veh{\'\i}culos mediante sombras en la carretera basada en visi{\'o}n por computador}.
+M.~Ibarra~Arenado, {\em Detecci{\'o}n y localizaci{\'o}n de veh{\'\i}culos
+  mediante sombras en la carretera basada en visi{\'o}n por computador}.
 \newblock PhD thesis, Universidad de Cantabria, 2016.
 
 \bibitem{Coskun2024}
-A.~Co{\c{s}}kun and S.~Bilicz, ``Data-driven clustering and classification of road vehicle radar scattering characteristics using histogram-based rcs features,'' {\em Electronics}, vol.~13, no.~4, p.~759, 2024.
+A.~Co{\c{s}}kun and S.~Bilicz, ``Data-driven clustering and classification of
+  road vehicle radar scattering characteristics using histogram-based rcs
+  features,'' {\em Electronics}, vol.~13, no.~4, p.~759, 2024.
 
 \bibitem{Pae2018}
-D.~S. Pae, I.~H. Choi, T.~K. Kang, and M.~T. Lim, ``Vehicle detection framework for challenging lighting driving environment based on feature fusion method using adaptive neuro-fuzzy inference system,'' {\em International Journal of Advanced Robotic Systems}, vol.~15, no.~2, 2018.
+D.~S. Pae, I.~H. Choi, T.~K. Kang, and M.~T. Lim, ``Vehicle detection framework
+  for challenging lighting driving environment based on feature fusion method
+  using adaptive neuro-fuzzy inference system,'' {\em International Journal of
+  Advanced Robotic Systems}, vol.~15, no.~2, 2018.
 
 \bibitem{Young2016}
-A.~Young, S.~Marshall, and A.~Gray, ``Outlier and target detection in aerial hyperspectral imagery: A comparison of traditional and percentage occupancy hit or miss transform techniques,'' in {\em Target and Background Signatures II}, vol.~10000, SPIE, 2016.
+A.~Young, S.~Marshall, and A.~Gray, ``Outlier and target detection in aerial
+  hyperspectral imagery: A comparison of traditional and percentage occupancy
+  hit or miss transform techniques,'' in {\em Target and Background Signatures
+  II}, vol.~10000, SPIE, 2016.
 
 \bibitem{Cao2021}
-Q.~Cao, Z.~Zhao, Q.~Zeng, Z.~Wang, and K.~Long, ``Real-time vehicle trajectory prediction for traffic conflict detection at unsignalized intersections,'' {\em Journal of Advanced Transportation}, vol.~2021, pp.~1--15, 2021.
+Q.~Cao, Z.~Zhao, Q.~Zeng, Z.~Wang, and K.~Long, ``Real-time vehicle trajectory
+  prediction for traffic conflict detection at unsignalized intersections,''
+  {\em Journal of Advanced Transportation}, vol.~2021, pp.~1--15, 2021.
 
 \bibitem{Zarei2023}
-N.~Zarei, P.~Moallem, and M.~Shams, ``Real-time vehicle detection using segmentation-based detection network and trajectory prediction,'' {\em IET Computer Vision}, vol.~17, no.~2, pp.~207--220, 2023.
+N.~Zarei, P.~Moallem, and M.~Shams, ``Real-time vehicle detection using
+  segmentation-based detection network and trajectory prediction,'' {\em IET
+  Computer Vision}, vol.~17, no.~2, pp.~207--220, 2023.
 
 \bibitem{Wang2021}
-J.~Wang, P.~Wang, C.~Zhang, K.~Su, and J.~Li, ``Fusion neural network for vehicle trajectory prediction in autonomous driving,'' in {\em ICASSP 2021 - 2021 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP)}, 2021.
+J.~Wang, P.~Wang, C.~Zhang, K.~Su, and J.~Li, ``Fusion neural network for
+  vehicle trajectory prediction in autonomous driving,'' in {\em ICASSP 2021 -
+  2021 IEEE International Conference on Acoustics, Speech and Signal Processing
+  (ICASSP)}, 2021.
 
 \bibitem{Wan2021}
-X.~Wan, S.~Zhou, J.~Wang, and R.~Meng, ``Multiple object tracking by trajectory map regression with temporal priors embedding,'' in {\em Proceedings of the 29th ACM International Conference on Multimedia}, pp.~1--9, 2021.
+X.~Wan, S.~Zhou, J.~Wang, and R.~Meng, ``Multiple object tracking by trajectory
+  map regression with temporal priors embedding,'' in {\em Proceedings of the
+  29th ACM International Conference on Multimedia}, pp.~1--9, 2021.
 
 \bibitem{VectorNet2020}
-J.~Gao, C.~Sun, H.~Zhao, Y.~Shen, D.~Anguelov, C.~Li, and C.~Schmid, ``Vectornet: Encoding hd maps and agent dynamics from vectorized representation,'' in {\em Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2020.
+J.~Gao, C.~Sun, H.~Zhao, Y.~Shen, D.~Anguelov, C.~Li, and C.~Schmid,
+  ``Vectornet: Encoding hd maps and agent dynamics from vectorized
+  representation,'' in {\em Proceedings of the IEEE/CVF Conference on Computer
+  Vision and Pattern Recognition (CVPR)}, 2020.
 
 \bibitem{TNT2020}
-H.~Zhao, J.~Gao, T.~Lan, C.~Sun, and B.~Sapp, ``Tnt: Target-driven trajectory prediction,'' in {\em Conference on Robot Learning (CoRL)}, 2020.
+H.~Zhao, J.~Gao, T.~Lan, C.~Sun, and B.~Sapp, ``Tnt: Target-driven trajectory
+  prediction,'' in {\em Conference on Robot Learning (CoRL)}, 2020.
 
 \bibitem{VisionTrap2024}
-S.~Moon, H.~Woo, H.~Park, H.~Jung, {\em et~al.}, ``Visiontrap: Vision-augmented trajectory prediction guided by textual descriptions,'' {\em arXiv preprint arXiv:2407.12345}, 2024.
+S.~Moon, H.~Woo, H.~Park, H.~Jung, {\em et~al.}, ``Visiontrap: Vision-augmented
+  trajectory prediction guided by textual descriptions,'' {\em arXiv preprint
+  arXiv:2407.12345}, 2024.
 
 \bibitem{Chen2021}
-C.~Chen, J.~Guo, C.~f. Guo, C.~Chen, Y.~Zhang, and J.~Wang, ``Adaptive cruise control for cut-in scenarios based on model predictive control algorithm,'' {\em Applied Sciences}, vol.~11, no.~11, p.~5293, 2021.
+C.~Chen, J.~Guo, C.~f. Guo, C.~Chen, Y.~Zhang, and J.~Wang, ``Adaptive cruise
+  control for cut-in scenarios based on model predictive control algorithm,''
+  {\em Applied Sciences}, vol.~11, no.~11, p.~5293, 2021.
 
 \bibitem{Du2022ImprovedRT}
-L.~Du, X.~Chen, Z.~Pei, D.~Zhang, B.~Liu, and W.~Chen, ``Improved real-time traffic obstacle detection and classification method applied in intelligent and connected vehicles in mixed traffic environment,'' {\em Journal of Advanced Transportation}, 2022.
+L.~Du, X.~Chen, Z.~Pei, D.~Zhang, B.~Liu, and W.~Chen, ``Improved real-time
+  traffic obstacle detection and classification method applied in intelligent
+  and connected vehicles in mixed traffic environment,'' {\em Journal of
+  Advanced Transportation}, 2022.
 
 \bibitem{He2023VehicleDI}
-D.~He, M.~Zhao, and Z.~Wang, ``Vehicle driving intent recognition based on enhanced bidirectional long short-term memory network,'' {\em Journal of Artificial Intelligence Practice}, 2023.
+D.~He, M.~Zhao, and Z.~Wang, ``Vehicle driving intent recognition based on
+  enhanced bidirectional long short-term memory network,'' {\em Journal of
+  Artificial Intelligence Practice}, 2023.
 
 \bibitem{Chen2021AdaptiveCC}
-C.~Chen, J.~Guo, C.~Guo, C.~Chen, Y.~Zhang, and J.~Wang, ``Adaptive cruise control for cut-in scenarios based on model predictive control algorithm,'' {\em Applied Sciences}, 2021.
+C.~Chen, J.~Guo, C.~Guo, C.~Chen, Y.~Zhang, and J.~Wang, ``Adaptive cruise
+  control for cut-in scenarios based on model predictive control algorithm,''
+  {\em Applied Sciences}, 2021.
 
 \bibitem{Branson2010VisualRW}
-S.~Branson, C.~Wah, F.~Schroff, B.~Babenko, P.~Welinder, P.~Perona, and S.~J. Belongie, ``Visual recognition with humans in the loop,'' in {\em European Conference on Computer Vision}, 2010.
+S.~Branson, C.~Wah, F.~Schroff, B.~Babenko, P.~Welinder, P.~Perona, and S.~J.
+  Belongie, ``Visual recognition with humans in the loop,'' in {\em European
+  Conference on Computer Vision}, 2010.
 
 \bibitem{Shneiderman2020HumanCenteredAI}
-B.~Shneiderman, ``Human-centered artificial intelligence: Reliable, safe \& trustworthy,'' {\em International Journal of Human–Computer Interaction}, vol.~36, pp.~495 -- 504, 2020.
+B.~Shneiderman, ``Human-centered artificial intelligence: Reliable, safe \&
+  trustworthy,'' {\em International Journal of Human–Computer Interaction},
+  vol.~36, pp.~495 -- 504, 2020.
+
+\bibitem{Redmon2015YouOL}
+J.~Redmon, S.~K. Divvala, R.~B. Girshick, and A.~Farhadi, ``You only look once:
+  Unified, real-time object detection,'' {\em 2016 IEEE Conference on Computer
+  Vision and Pattern Recognition (CVPR)}, pp.~779--788, 2015.
 
 \bibitem{yolo26_ultralytics}
 G.~Jocher and J.~Qiu, ``Ultralytics yolo26,'' 2026.
