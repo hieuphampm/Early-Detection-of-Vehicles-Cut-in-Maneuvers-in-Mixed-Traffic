@@ -132,6 +132,13 @@
 	
 	Để chuyển đổi từ kết quả nhận diện vật thể sang việc hiểu hành vi, luồng dữ liệu theo dõi từ YOLO26n được đưa vào mạng LSTM để phân loại ý định.
 	
+	\paragraph{Tổng quan về RNN và sự ưu việt của LSTM:}
+	Mạng nơ-ron hồi quy (RNN) là một kiến trúc mạng chứa các nơ-ron kết nối với nhau, bao gồm các nút đầu vào, nút ẩn và nút đầu ra[cite: 10]. RNN có khả năng xử lý dữ liệu theo chuỗi tuần tự bằng cách nhận đầu vào từ trạng thái ẩn trước đó ($S_{t-1}$) và dữ liệu mới ($x_t$) tại thời điểm hiện tại\cite{Ullah2018ActionRI}. Tuy nhiên, do khối lượng tính toán khổng lồ qua nhiều lớp, RNN truyền thống gặp phải vấn đề triệt tiêu đạo hàm (vanishing gradient), khiến tác động của các đầu vào ban đầu trở nên không đáng kể đối với các chuỗi dài trong tương lai\cite{Ullah2018ActionRI}.
+	
+	Để giải quyết triệt để vấn đề này, kiến trúc Bộ nhớ ngắn hạn dài hạn (LSTM) được đưa vào sử dụng\cite{Ullah2018ActionRI}. Ý tưởng cốt lõi của kiến trúc LSTM là một ô nhớ kết hợp với các cổng điều khiển phi tuyến: cổng vào, cổng ra và cổng quên\cite{Ullah2018ActionRI}. Cấu trúc đặc biệt này cho phép LSTM duy trì trạng thái của nó qua thời gian và điều tiết chính xác luồng thông tin nào được đưa vào hay đi ra khỏi ô nhớ\cite{Ullah2018ActionRI}. 
+	
+	Trong bối cảnh của hệ thống đề xuất, mạng CNN (YOLO26n) có nhiệm vụ tìm kiếm các mẫu ẩn trong từng khung hình tĩnh\cite{Ullah2018ActionRI}. Sau đó, LSTM sẽ tiếp nhận chuỗi đặc trưng này để học các thay đổi diễn ra theo tuần tự thời gian\cite{Ullah2018ActionRI}. Khả năng ghi nhớ sự phụ thuộc thời gian dài hạn của LSTM là yếu tố quyết định giúp hệ thống hiểu được sự tiến triển của hành vi lái xe, từ đó phân loại chính xác ý định tạt đầu trước khi hành vi đè vạch hoàn toàn xảy ra.
+	
 	\paragraph{Cấu trúc Vector đầu vào:}
 	Tại mỗi khung hình $t$, hệ thống trích xuất một vector đặc trưng không gian $V_t$ của phương tiện được theo dõi:
 	\begin{equation}
@@ -140,7 +147,7 @@
 	Trong đó, $cx, cy, w, h$ là tọa độ tâm, chiều rộng, chiều cao của Bounding Box đã được chuẩn hóa theo kích thước ảnh, và $conf$ là độ tin cậy. Việc cấp dữ liệu chuỗi $(w_t, h_t)$ liên tục cho LSTM giúp mạng tự động học được các đặc trưng vi phân bậc cao như sự biến thiên tỷ lệ khung hình ($\Delta AR$) và gia tốc ngang -- vốn là các dấu hiệu đặc trưng nhất khi xe máy nghiêng người chuẩn bị tạt đầu.
 	
 	\paragraph{Thiết kế Cửa sổ Thời gian:}
-	Thay vì lấy các khung hình liên tiếp vốn có sự thay đổi quá nhỏ, hệ thống áp dụng kỹ thuật lấy mẫu thưa. Cụ thể, mô hình sử dụng một bộ đệm độ dài cửa sổ trạng thái $N=160$ với bước nhảy $S=3$. Do đó, để tạo ra một chuỗi gồm 10 điểm dữ liệu, hệ thống bao quát một trường nhìn thời gian khoảng 30 khung hình (tương đương $\approx 1$ giây với camera 30 FPS). Thiết kế này giúp mô hình LSTM nắm bắt được bối cảnh chuyển động đủ dài để nhận diện rõ ràng sự thay đổi quỹ đạo, vượt trội hoàn toàn so với việc đánh giá trên khung hình đơn lẻ.
+	Thay vì lấy các khung hình liên tiếp vốn có sự thay đổi quá nhỏ, hệ thống áp dụng kỹ thuật lấy mẫu thưa. Cụ thể, mô hình sử dụng một bộ đệm độ dài cửa sổ trạng thái $N=10$ với bước nhảy $S=3$. Do đó, để tạo ra một chuỗi gồm 10 điểm dữ liệu, hệ thống bao quát một trường nhìn thời gian khoảng 30 khung hình (tương đương $\approx 1$ giây với camera 30 FPS). Thiết kế này giúp mô hình LSTM nắm bắt được bối cảnh chuyển động đủ dài để nhận diện rõ ràng sự thay đổi quỹ đạo, vượt trội hoàn toàn so với việc đánh giá trên khung hình đơn lẻ.
 	
 	\subsection{Cơ chế Huấn luyện Mạng Lai}
 	Quá trình huấn luyện hệ thống được chia làm hai giai đoạn độc lập để tối ưu hóa đặc thù của từng kiến trúc mạng.
