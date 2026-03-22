@@ -28,49 +28,63 @@
 		\item Hậu xử lý Thời gian thực: Ổn định tín hiệu cảnh báo.
 	\end{enumerate}	
 	
-	\subsection{Phương pháp Xây dựng Dữ liệu}
+	\subsection{Phương pháp Xây dựng Dữ liệu và Tiền xử lý}
 	
-	Để giải quyết thách thức về khối lượng dữ liệu lớn và giảm thiểu chi phí nhân lực cho việc gán nhãn thủ công, đề tài đề xuất quy trình xử lý dữ liệu hai giai đoạn theo cơ chế "Human-in-the-loop" \cite{Branson2010VisualRW}. Cách tiếp cận này tận dụng một mô hình máy học sơ khởi ($M_{assist}$) để tự động đề xuất nhãn, chuyển vai trò của con người từ "người dán nhãn" sang "người kiểm định", đảm bảo nguyên tắc AI lấy con người làm trung tâm \cite{Shneiderman2020HumanCenteredAI}.
+	Trong các bài toán thị giác máy tính dựa trên video, việc gán nhãn dữ liệu theo từng khung hình là một thách thức khổng lồ về mặt thời gian và chi phí nhân lực. Khác với ảnh tĩnh, một hành vi tạt đầu kéo dài 2 giây ở mức 30 FPS sẽ đòi hỏi người gán nhãn phải vẽ và theo dõi tới 60 hộp giới hạn liên tiếp cho một đối tượng.
+	
+	Để giải quyết thách thức này, đề tài đề xuất quy trình gán nhãn bán tự động dựa trên triết lý ``Human-in-the-Loop (HITL)'' kết hợp với công cụ mã nguồn mở ``CVAT''.
+	
+	\subsubsection{Cơ sở phương pháp luận: Human-in-the-Loop và CVAT}
+	\paragraph{Phương pháp Human-in-the-Loop:} 
+	Trong lĩnh vực Trí tuệ Nhân tạo, HITL là một mô hình thiết kế hệ thống trong đó quy trình học máy không hoạt động hoàn toàn độc lập mà có sự tương tác liên tục với con người \cite{Branson2010VisualRW}. Thay vì để con người làm công việc chân tay vất vả từ đầu đến cuối, HITL sử dụng một mô hình máy học sơ khởi ($M_{assist}$) để tự động suy luận và đưa ra các "đề xuất gán nhãn". Lúc này, vai trò của con người được nâng cấp từ "người dán nhãn" lên thành "người kiểm định". Con người chỉ can thiệp để sửa các lỗi sai của AI hoặc dán nhãn các trường hợp biên. Hệ thống sau đó sẽ học lại từ các sửa đổi này để ngày càng thông minh hơn. Cách tiếp cận này giúp giảm tới 80\% thời gian xử lý dữ liệu mà vẫn đảm bảo độ chính xác tuyệt đối \cite{Shneiderman2020HumanCenteredAI}.
+	
+	\paragraph{Công cụ gán nhãn CVAT:}
+	CVAT là một nền tảng dán nhãn thị giác máy tính chuyên nghiệp được phát triển bởi OpenCV. Công cụ này được lựa chọn cho nghiên cứu nhờ hai tính năng ưu việt dành riêng cho dữ liệu video:
+	\begin{itemize}
+		\item \textbf{Nội suy quỹ đạo:} Người dùng chỉ cần vẽ hộp giới hạn ở khung hình đầu (Keyframe A) và khung hình cuối (Keyframe B). CVAT sẽ sử dụng thuật toán theo dõi quang học để tự động nội suy tọa độ và kích thước hộp giới hạn cho toàn bộ các khung hình ở giữa.
+		\item \textbf{Tích hợp AI hỗ trợ:} Cho phép nạp trực tiếp trọng số của các mô hình phát hiện vật thể (như YOLO) vào hệ thống để chạy gán nhãn tự động ngay trên trình duyệt.
+	\end{itemize}
 	
 	Quy trình tổng thể được mô tả tại Hình \ref{fig:data_pipeline}, bao gồm hai giai đoạn chính:
 	
-	\begin{figure}[h]
+	\begin{figure}[H]
 		\centering
 		\includegraphics[width=\linewidth]{images/data_pipeline.png}
-		\caption{Sơ đồ tổng quan quy trình xây dựng dữ liệu hai giai đoạn}
+		\caption{Sơ đồ tổng quan quy trình xây dựng dữ liệu dựa trên Human-in-the-Loop}
 		\label{fig:data_pipeline}
 	\end{figure}
 	
-	\subsubsection{Giai đoạn 1: Thiết lập Mô hình Hỗ trợ (Bootstrap Phase)}
-	Mục tiêu của giai đoạn này là giải quyết bài toán Cold Start bằng cách huấn luyện một mô hình sơ khởi từ tập dữ liệu hạt giống ($D_{seed}$).
+	\subsubsection{Giai đoạn 1: Thiết lập Mô hình Hỗ trợ}
+	Mục tiêu của giai đoạn này là giải quyết bài toán khởi động lạnh bằng cách tạo ra một mô hình sơ khởi ($M_{assist}$) đủ tốt để phục vụ việc tự động hóa về sau.
 	
-	\paragraph{Quy trình Tạo tập dữ liệu hạt giống ($D_{seed}$):}
-	Chúng tôi trích xuất ngẫu nhiên khoảng 10-15\% tổng số lượng khung hình từ dữ liệu thô ($D_{raw}$). Các khung hình này được gán nhãn thủ công trên công cụ CVAT tuân thủ nghiêm ngặt các tiêu chuẩn sau:
+	\paragraph{Xây dựng tập dữ liệu hạt giống ($D_{seed}$):}
+	Nghiên cứu trích xuất ngẫu nhiên khoảng 10\%-15\% tổng số lượng khung hình từ bộ dữ liệu thô ($D_{raw}$). Các khung hình này được gán nhãn thủ công 100\% trên CVAT tuân thủ các tiêu chuẩn sau:
 	\begin{itemize}
-		\item \textbf{Định nghĩa Lớp hành vi:} Xác định Bounding Box và phân loại hành vi động (\texttt{lane\_keeping}, \texttt{moving\_away}, \texttt{cut\_in}) như Hình \ref{fig:labeling}.
-		\item \textbf{Định nghĩa Vùng an toàn (Heuristic Approach):} Đối với các nhãn không gian tĩnh (\texttt{Danger Zone}, \texttt{Warning Zone}), thay vì áp dụng cứng nhắc các công thức khoảng cách tiêu chuẩn phương Tây (vốn gây ra cảnh báo rác trong điều kiện giao thông xe máy dày đặc tại Việt Nam), nghiên cứu thiết lập kích thước vùng dựa trên \textit{kinh nghiệm thực tiễn}. Các đa giác được tinh chỉnh dựa trên quan sát góc nhìn thực tế của tài xế, đảm bảo phản ánh đúng không gian cần thiết cho hành vi phanh khẩn cấp trong giao thông nội đô.
+		\item \textbf{Gán nhãn đối tượng động:} Vẽ Bounding Box bao quanh phương tiện và gán ID theo dõi. Định nghĩa rõ ràng 3 lớp trạng thái hành vi: \texttt{lane\_keeping} (giữ làn), \texttt{moving\_away} (di chuyển ra xa), và \texttt{cut\_in} (tạt đầu). Sự kiện \texttt{cut\_in} được đánh dấu từ thời điểm xe máy bắt đầu có góc nghiêng chuyển làn cho đến khi hoàn tất việc cắt ngang đầu xe ô tô (Hình \ref{fig:labeling}).
+		\item \textbf{Thiết lập Vùng rủi ro tĩnh:} Các đa giác ranh giới ảo (\texttt{Danger Zone}, \texttt{Warning Zone}) được thiết lập cố định trên khung hình. Để phù hợp với đặc thù giao thông xe máy dày đặc tại Việt Nam, các đa giác này không dựa trên công thức toán học lý tưởng mà được tinh chỉnh theo kinh nghiệm thực tiễn, bám sát mép mui xe ô tô và góc nhìn của tài xế.
 	\end{itemize}
 	
-	\begin{figure}[!h]
+	\begin{figure}[H]
 		\centering
 		\includegraphics[width=12cm,height=5cm,keepaspectratio]{images/labeling.png}
-		\caption{Minh họa gán nhãn đối tượng}
+		\caption{Minh họa gán nhãn đối tượng và định nghĩa vùng rủi ro trên CVAT}
 		\label{fig:labeling}
 	\end{figure}
 	
-	\paragraph{Cấu hình Mô hình $M_{assist}$:}
-	Mô hình được chọn là YOLOv8 (phiên bản nano) nhờ sự cân bằng giữa tốc độ và độ chính xác \cite{Lv2023DETRsBY}. Chiến lược Transfer Learning từ trọng số COCO được áp dụng để tăng tốc độ hội tụ. Mục tiêu của $M_{assist}$ là tối ưu hóa độ nhạy để hạn chế tối đa việc bỏ sót đối tượng (False Negative).
+	\paragraph{Huấn luyện mô hình $M_{assist}$:}
+	Mô hình YOLOv8n được lựa chọn làm $M_{assist}$ nhờ sự gọn nhẹ và tốc độ huấn luyện nhanh \cite{Lv2023DETRsBY}. Thuật toán học chuyển giao từ tập tạ COCO được áp dụng. Tiêu chí quan trọng nhất của mô hình hỗ trợ là \textbf{tối ưu hóa độ nhạy (Recall)}, chấp nhận cảnh báo nhầm (False Positive) nhưng tuyệt đối không được bỏ sót phương tiện (False Negative) trên khung hình.
 	
-	\paragraph{Tiêu chí Chuyển tiếp (Transition Criteria):}
-	Mô hình $M_{assist}$ chỉ được chấp nhận đưa vào hỗ trợ Giai đoạn 2 khi đạt ngưỡng hiệu suất: mAP@50 $\geq$ 0.9. Ngưỡng này đảm bảo chất lượng gợi ý thị giác đủ tốt để giảm tải thao tác thủ công nhưng vẫn duy trì độ tin cậy \cite{Branson2010VisualRW}.
+	\paragraph{Tiêu chí Chuyển tiếp:}
+	Mô hình $M_{assist}$ chỉ được nghiệm thu và đưa vào hỗ trợ Giai đoạn 2 khi chỉ số độ chính xác trung bình (mAP@50) trên tập kiểm định đạt $\geq$ 0.90. Ngưỡng này đảm bảo chất lượng đề xuất của AI đủ tin cậy để giảm tải thao tác cho con người.
 	
-	\subsubsection{Giai đoạn 2: Quy trình Gán nhãn Bán tự động (Semi-automated Labeling)}
-	Sau khi đạt chuẩn, $M_{assist}$ được áp dụng cho 85-90\% dữ liệu còn lại theo quy trình:
+	\subsubsection{Giai đoạn 2: Quy trình Gán nhãn Bán tự động}
+	Khi $M_{assist}$ đã đạt chuẩn, 85\%-90\% dữ liệu thô còn lại sẽ được đưa vào quy trình HITL với 3 bước lặp lại liên tục:
 	\begin{enumerate}
-		\item \textbf{Tiền gán nhãn:} Mô hình sinh dự đoán bounding box và gán nhãn mặc định \texttt{lane\_keeping} (lớp đa số) cho toàn bộ dữ liệu.
-		\item \textbf{Hiệu chỉnh:} Sử dụng CVAT để tinh chỉnh kích thước box và chỉ cần thay đổi nhãn sự kiện tại các thời điểm phát hiện hành vi bất thường (tạt đầu, rẽ), thay vì vẽ lại từ đầu.
-		\item \textbf{Đóng gói:} Dữ liệu sau hiệu chỉnh được hợp nhất và kiểm tra ngẫu nhiên lần cuối.
+		\item \textbf{AI Tiền gán nhãn:} Hệ thống chạy $M_{assist}$ quét qua toàn bộ các video còn lại. AI tự động vẽ Bounding Box, cấp phát Track ID và gán nhãn mặc định là \texttt{lane\_keeping} (lớp chiếm đa số) cho tất cả các phương tiện.
+		\item \textbf{Con người Kiểm định:} Chúng em tải các video đã được AI gán nhãn lên CVAT. Thay vì phải vẽ lại từ đầu, chúng em chỉ cần lướt qua thanh thời gian. Khi phát hiện một phương tiện thực hiện hành vi chuyển làn, chúng em bấm dừng, chuyển nhãn của phương tiện đó từ \texttt{lane\_keeping} sang \texttt{cut\_in}. Thuật toán nội suy của CVAT sẽ tự động cập nhật nhãn mới cho toàn bộ chuỗi hành vi tiếp theo của chiếc xe đó. Nếu AI vẽ box bị lệch, chúng em chỉ cần chỉnh lại ở một khung hình, CVAT sẽ nắn lại các khung hình lân cận.
+		\item \textbf{Hợp nhất và Kiểm thử chéo:} Dữ liệu sau hiệu chỉnh được lưu lại thành định dạng chuẩn của YOLO. Việc chia tập dữ liệu (Train/Val/Test) được thực hiện ngẫu nhiên để đảm bảo tính khách quan trước khi đưa vào huấn luyện mô hình chính thức.
 	\end{enumerate}
+	Nhờ quy trình HITL, việc xây dựng bộ dữ liệu chuỗi hành vi khổng lồ đã khả thi về mặt tiến độ, đồng thời loại bỏ được các sai sót chủ quan do con người mệt mỏi khi gán nhãn trong thời gian dài.
 	
 	\subsection{Mô hình Nhận thức Hành vi}
 	
@@ -133,11 +147,18 @@
 	Để chuyển đổi từ kết quả nhận diện vật thể sang việc hiểu hành vi, luồng dữ liệu theo dõi từ YOLO26n được đưa vào mạng LSTM để phân loại ý định.
 	
 	\paragraph{Tổng quan về RNN và sự ưu việt của LSTM:}
-	Mạng nơ-ron hồi quy (RNN) là một kiến trúc mạng chứa các nơ-ron kết nối với nhau, bao gồm các nút đầu vào, nút ẩn và nút đầu ra[cite: 10]. RNN có khả năng xử lý dữ liệu theo chuỗi tuần tự bằng cách nhận đầu vào từ trạng thái ẩn trước đó ($S_{t-1}$) và dữ liệu mới ($x_t$) tại thời điểm hiện tại\cite{Ullah2018ActionRI}. Tuy nhiên, do khối lượng tính toán khổng lồ qua nhiều lớp, RNN truyền thống gặp phải vấn đề triệt tiêu đạo hàm (vanishing gradient), khiến tác động của các đầu vào ban đầu trở nên không đáng kể đối với các chuỗi dài trong tương lai\cite{Ullah2018ActionRI}.
+	Mạng nơ-ron hồi quy (RNN) là một kiến trúc mạng đặc biệt được sử dụng để tìm kiếm các mẫu ẩn trong dữ liệu chuỗi tuần tự \cite{Ullah2018ActionRI}. Tuy nhiên, khi huấn luyện với các chuỗi dài, RNN truyền thống gặp phải vấn đề triệt tiêu đạo hàm, khiến tác động của các đầu vào ban đầu trở nên không đáng kể đối với các chuỗi trong tương lai \cite{Ullah2018ActionRI, Mohsen2021Industry4D}.
 	
-	Để giải quyết triệt để vấn đề này, kiến trúc Bộ nhớ ngắn hạn dài hạn (LSTM) được đưa vào sử dụng\cite{Ullah2018ActionRI}. Ý tưởng cốt lõi của kiến trúc LSTM là một ô nhớ kết hợp với các cổng điều khiển phi tuyến: cổng vào, cổng ra và cổng quên\cite{Ullah2018ActionRI}. Cấu trúc đặc biệt này cho phép LSTM duy trì trạng thái của nó qua thời gian và điều tiết chính xác luồng thông tin nào được đưa vào hay đi ra khỏi ô nhớ\cite{Ullah2018ActionRI}. 
+	Để giải quyết triệt để vấn đề này, kiến trúc Bộ nhớ ngắn hạn dài hạn (LSTM) được đưa vào sử dụng \cite{Mohsen2021Industry4D}. Ý tưởng cốt lõi của kiến trúc LSTM là một ô nhớ kết hợp với ba cổng điều khiển: cổng quên quyết định loại bỏ thông tin cũ khỏi trạng thái tế bào, cổng vào quyết định thông tin mới nào sẽ được lưu trữ, và cổng ra tính toán trạng thái ẩn tiếp theo để chuyển đến tế bào kế tiếp \cite{Mohsen2021Industry4D}. Cấu trúc đặc biệt này cho phép LSTM duy trì trạng thái của nó qua nhiều khoảng thời gian tùy ý và điều tiết chính xác luồng thông tin nào được đưa vào hay đi ra khỏi ô nhớ \cite{Ullah2018ActionRI}. 
 	
-	Trong bối cảnh của hệ thống đề xuất, mạng CNN (YOLO26n) có nhiệm vụ tìm kiếm các mẫu ẩn trong từng khung hình tĩnh\cite{Ullah2018ActionRI}. Sau đó, LSTM sẽ tiếp nhận chuỗi đặc trưng này để học các thay đổi diễn ra theo tuần tự thời gian\cite{Ullah2018ActionRI}. Khả năng ghi nhớ sự phụ thuộc thời gian dài hạn của LSTM là yếu tố quyết định giúp hệ thống hiểu được sự tiến triển của hành vi lái xe, từ đó phân loại chính xác ý định tạt đầu trước khi hành vi đè vạch hoàn toàn xảy ra.
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=8cm,height=8cm,keepaspectratio]{images/LSTM_pipeline.png}
+		\caption{Kiến trúc mạng LSTM \cite{Mohsen2021Industry4D}}
+		\label{fig:LSTM_pipeline}
+	\end{figure}
+	
+	Trong bối cảnh của hệ thống đề xuất, mạng CNN (YOLO26n) có nhiệm vụ trích xuất các đặc trưng không gian trong từng khung hình tĩnh \cite{Ullah2018ActionRI}. Sau đó, mạng LSTM (Hình \ref{fig:LSTM_pipeline}) - với thế mạnh vượt trội trong việc xử lý dữ liệu chuỗi thời gian (time series data) \cite{Mohsen2021Industry4D} - sẽ tiếp nhận chuỗi đặc trưng này để học các thay đổi động học diễn ra theo tuần tự. Khả năng ghi nhớ sự phụ thuộc thời gian dài hạn của LSTM là yếu tố quyết định giúp hệ thống hiểu được sự tiến triển của hành vi lái xe, từ đó phân loại chính xác ý định tạt đầu trước khi hành vi đè vạch hoàn toàn xảy ra.
 	
 	\paragraph{Cấu trúc Vector đầu vào:}
 	Tại mỗi khung hình $t$, hệ thống trích xuất một vector đặc trưng không gian $V_t$ của phương tiện được theo dõi:
