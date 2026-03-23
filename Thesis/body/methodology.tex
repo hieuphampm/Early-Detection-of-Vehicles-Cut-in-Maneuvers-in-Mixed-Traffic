@@ -1,15 +1,15 @@
 \section{PHƯƠNG PHÁP NGHIÊN CỨU}
-	\subsection{Cơ sở Lý thuyết và Tổng quan Kiến trúc Hệ thống}
+	\subsection{Cơ sở lý thuyết và tổng quan kiến trúc hệ thống}
 	
-	\subsubsection{Khung lý thuyết về Ý định và Hành vi lái xe}
+	\subsubsection{Khung lý thuyết về ý định và hành vi lái xe}
 	Trong lĩnh vực xe tự hành và hệ thống hỗ trợ người lái tiên tiến (ADAS), quá trình ra quyết định của một phương tiện tham gia giao thông được mô hình hóa qua hai cấp độ: ``Ý định'' và ``Hành vi''. 
 	Theo mô hình nhận thức của tài xế (Human Driver Model), "ý định" là một trạng thái tâm lý tiềm ẩn (latent state) diễn ra bên trong não bộ của người điều khiển (ví dụ: muốn vượt xe, muốn rẽ phải) trước khi các thao tác cơ học được thực thi. Trạng thái tiềm ẩn này sau đó sẽ chuyển hóa thành "hành vi" quan sát được trên không gian vật lý (như tăng tốc, đánh lái, thay đổi góc nghiêng) và cuối cùng hình thành nên quỹ đạo (trajectory) của phương tiện. Do đó, việc dự đoán "ý định" mang tính chất đi trước thời gian (proactive) và cung cấp cảnh báo sớm hơn đáng kể so với việc chỉ theo dõi "hành vi" đè vạch hay hồi quy quỹ đạo tọa độ thuần túy.
 	
-	\subsubsection{Đặc tính Động lực học trong Giao thông Hỗn hợp}
+	\subsubsection{Đặc tính động lực học trong giao thông hỗn hợp}
 	Giao thông hỗn hợp tại Việt Nam đặc trưng bởi sự thống trị của xe gắn máy hai bánh (Powered Two-Wheelers - PTWs). Khác với ô tô vốn bị ràng buộc khắt khe bởi tính vật lý phi toàn hướng và thường di chuyển theo luồng tuyến tính, xe máy sở hữu đặc tính động lực học phức tạp hơn nhiều. 
 	Xe máy có kích thước nhỏ, tỷ lệ công suất trên trọng lượng lớn, biên độ đánh lái rộng và đặc biệt là khả năng ``di chuyển phi làn đường''. Trong môi trường ùn tắc, người điều khiển xe máy thường xuyên thực hiện các hành vi phi tuyến tính như lách qua khe hẹp, điền vào chỗ trống, và tạt đầu ngoặt nghèo ở cự ly cực ngắn. Sự linh hoạt này khiến các mô hình dự đoán dựa trên định luật vật lý động học tiêu chuẩn (như Vận tốc không đổi - CV, hay Gia tốc không đổi - CA) hoàn toàn thất bại về mặt lý thuyết, buộc hệ thống phải chuyển sang phương pháp học máy thống kê.
 	
-	\subsubsection{Đề xuất Kiến trúc Lai}
+	\subsubsection{Đề xuất kiến trúc lai}
 	Các phương pháp truyền thống trong dự đoán chuyển động thường tách biệt bài toán thành hai giai đoạn rời rạc: phát hiện vật thể và hồi quy quỹ đạo tương lai, như đã được tổng hợp trong các khảo sát của nhóm Lefèvre \cite{Lefvre2014ASO} và nhóm Mozaffari \cite{Mozaffari2020DeepLV}. Tuy nhiên, trong môi trường giao thông hỗn hợp với mật độ cao, độ trễ tích lũy giữa các module này có thể làm giảm hiệu quả cảnh báo thời gian thực.
 	
 	Để khắc phục, nghiên cứu đề xuất kiến trúc End-to-End Risk Awareness. Hệ thống sử dụng Mạng nơ-ron tích chập (CNN) để trích xuất đặc trưng không gian và Mạng bộ nhớ ngắn hạn dài hạn (LSTM) để giải mã chuỗi thời gian, từ đó phân loại trực tiếp ý định tạt đầu trước khi hành vi thực sự diễn ra.
@@ -23,12 +23,12 @@
 	\end{figure}
 	
 	\begin{enumerate}
-		\item Xây dựng Dữ liệu: Sử dụng quy trình bán tự động Human-in-the-loop.
-		\item Mô hình Nhận thức Hành vi: Sử dụng kiến trúc YOLO tinh chỉnh.
-		\item Hậu xử lý Thời gian thực: Ổn định tín hiệu cảnh báo.
+		\item Xây dựng dữ liệu: Sử dụng quy trình bán tự động Human-in-the-loop.
+		\item Mô hình nhận thức hành vi: Sử dụng kiến trúc YOLO tinh chỉnh.
+		\item Hậu xử lý thời gian thực: Ổn định tín hiệu cảnh báo.
 	\end{enumerate}	
 	
-	\subsection{Phương pháp Xây dựng Dữ liệu và Tiền xử lý}
+	\subsection{Phương pháp xây dựng dữ liệu và tiền xử lý}
 	
 	Trong các bài toán thị giác máy tính dựa trên video, việc gán nhãn dữ liệu theo từng khung hình là một thách thức khổng lồ về mặt thời gian và chi phí nhân lực. Khác với ảnh tĩnh, một hành vi tạt đầu kéo dài 2 giây ở mức 30 FPS sẽ đòi hỏi người gán nhãn phải vẽ và theo dõi tới 60 hộp giới hạn liên tiếp cho một đối tượng.
 	
@@ -54,14 +54,14 @@
 		\label{fig:data_pipeline}
 	\end{figure}
 	
-	\subsubsection{Giai đoạn 1: Thiết lập Mô hình Hỗ trợ}
+	\subsubsection{Giai đoạn 1: Thiết lập mô hình hỗ trợ}
 	Mục tiêu của giai đoạn này là giải quyết bài toán khởi động lạnh bằng cách tạo ra một mô hình sơ khởi ($M_{assist}$) đủ tốt để phục vụ việc tự động hóa về sau.
 	
 	\paragraph{Xây dựng tập dữ liệu hạt giống ($D_{seed}$):}
 	Nghiên cứu trích xuất ngẫu nhiên khoảng 10\%-15\% tổng số lượng khung hình từ bộ dữ liệu thô ($D_{raw}$). Các khung hình này được gán nhãn thủ công 100\% trên CVAT tuân thủ các tiêu chuẩn sau:
 	\begin{itemize}
 		\item \textbf{Gán nhãn đối tượng động:} Vẽ Bounding Box bao quanh phương tiện và gán ID theo dõi. Định nghĩa rõ ràng 3 lớp trạng thái hành vi: \texttt{lane\_keeping} (giữ làn), \texttt{moving\_away} (di chuyển ra xa), và \texttt{cut\_in} (tạt đầu). Sự kiện \texttt{cut\_in} được đánh dấu từ thời điểm xe máy bắt đầu có góc nghiêng chuyển làn cho đến khi hoàn tất việc cắt ngang đầu xe ô tô (Hình \ref{fig:labeling}).
-		\item \textbf{Thiết lập Vùng rủi ro tĩnh:} Các đa giác ranh giới ảo (\texttt{Danger Zone}, \texttt{Warning Zone}) được thiết lập cố định trên khung hình. Để phù hợp với đặc thù giao thông xe máy dày đặc tại Việt Nam, các đa giác này không dựa trên công thức toán học lý tưởng mà được tinh chỉnh theo kinh nghiệm thực tiễn, bám sát mép mui xe ô tô và góc nhìn của tài xế.
+		\item \textbf{Thiết lập vùng rủi ro tĩnh:} Các đa giác ranh giới ảo (\texttt{Danger Zone}, \texttt{Warning Zone}) được thiết lập cố định trên khung hình. Để phù hợp với đặc thù giao thông xe máy dày đặc tại Việt Nam, các đa giác này không dựa trên công thức toán học lý tưởng mà được tinh chỉnh theo kinh nghiệm thực tiễn, bám sát mép mui xe ô tô và góc nhìn của tài xế.
 	\end{itemize}
 	
 	\begin{figure}[H]
@@ -74,19 +74,19 @@
 	\paragraph{Huấn luyện mô hình $M_{assist}$:}
 	Mô hình YOLOv8n được lựa chọn làm $M_{assist}$ nhờ sự gọn nhẹ và tốc độ huấn luyện nhanh \cite{Lv2023DETRsBY}. Thuật toán học chuyển giao từ tập tạ COCO được áp dụng. Tiêu chí quan trọng nhất của mô hình hỗ trợ là \textbf{tối ưu hóa độ nhạy (Recall)}, chấp nhận cảnh báo nhầm (False Positive) nhưng tuyệt đối không được bỏ sót phương tiện (False Negative) trên khung hình.
 	
-	\paragraph{Tiêu chí Chuyển tiếp:}
+	\paragraph{Tiêu chí chuyển tiếp:}
 	Mô hình $M_{assist}$ chỉ được nghiệm thu và đưa vào hỗ trợ Giai đoạn 2 khi chỉ số độ chính xác trung bình (mAP@50) trên tập kiểm định đạt $\geq$ 0.90. Ngưỡng này đảm bảo chất lượng đề xuất của AI đủ tin cậy để giảm tải thao tác cho con người.
 	
-	\subsubsection{Giai đoạn 2: Quy trình Gán nhãn Bán tự động}
+	\subsubsection{Giai đoạn 2: Quy trình gán nhãn bán tự động}
 	Khi $M_{assist}$ đã đạt chuẩn, 85\%-90\% dữ liệu thô còn lại sẽ được đưa vào quy trình HITL với 3 bước lặp lại liên tục:
 	\begin{enumerate}
-		\item \textbf{AI Tiền gán nhãn:} Hệ thống chạy $M_{assist}$ quét qua toàn bộ các video còn lại. AI tự động vẽ Bounding Box, cấp phát Track ID và gán nhãn mặc định là \texttt{lane\_keeping} (lớp chiếm đa số) cho tất cả các phương tiện.
-		\item \textbf{Con người Kiểm định:} Chúng em tải các video đã được AI gán nhãn lên CVAT. Thay vì phải vẽ lại từ đầu, chúng em chỉ cần lướt qua thanh thời gian. Khi phát hiện một phương tiện thực hiện hành vi chuyển làn, chúng em bấm dừng, chuyển nhãn của phương tiện đó từ \texttt{lane\_keeping} sang \texttt{cut\_in}. Thuật toán nội suy của CVAT sẽ tự động cập nhật nhãn mới cho toàn bộ chuỗi hành vi tiếp theo của chiếc xe đó. Nếu AI vẽ box bị lệch, chúng em chỉ cần chỉnh lại ở một khung hình, CVAT sẽ nắn lại các khung hình lân cận.
-		\item \textbf{Hợp nhất và Kiểm thử chéo:} Dữ liệu sau hiệu chỉnh được lưu lại thành định dạng chuẩn của YOLO. Việc chia tập dữ liệu (Train/Val/Test) được thực hiện ngẫu nhiên để đảm bảo tính khách quan trước khi đưa vào huấn luyện mô hình chính thức.
+		\item \textbf{AI tiền gán nhãn:} Hệ thống chạy $M_{assist}$ quét qua toàn bộ các video còn lại. AI tự động vẽ Bounding Box, cấp phát Track ID và gán nhãn mặc định là \texttt{lane\_keeping} (lớp chiếm đa số) cho tất cả các phương tiện.
+		\item \textbf{Con người kiểm định:} Chúng em tải các video đã được AI gán nhãn lên CVAT. Thay vì phải vẽ lại từ đầu, chúng em chỉ cần lướt qua thanh thời gian. Khi phát hiện một phương tiện thực hiện hành vi chuyển làn, chúng em bấm dừng, chuyển nhãn của phương tiện đó từ \texttt{lane\_keeping} sang \texttt{cut\_in}. Thuật toán nội suy của CVAT sẽ tự động cập nhật nhãn mới cho toàn bộ chuỗi hành vi tiếp theo của chiếc xe đó. Nếu AI vẽ box bị lệch, chúng em chỉ cần chỉnh lại ở một khung hình, CVAT sẽ nắn lại các khung hình lân cận.
+		\item \textbf{Hợp nhất và kiểm thử chéo:} Dữ liệu sau hiệu chỉnh được lưu lại thành định dạng chuẩn của YOLO. Việc chia tập dữ liệu (Train/Val/Test) được thực hiện ngẫu nhiên để đảm bảo tính khách quan trước khi đưa vào huấn luyện mô hình chính thức.
 	\end{enumerate}
 	Nhờ quy trình HITL, việc xây dựng bộ dữ liệu chuỗi hành vi khổng lồ đã khả thi về mặt tiến độ, đồng thời loại bỏ được các sai sót chủ quan do con người mệt mỏi khi gán nhãn trong thời gian dài.
 	
-	\subsection{Mô hình Nhận thức Hành vi}
+	\subsection{Mô hình nhận thức hành vi}
 	
 	Thay vì yêu cầu mạng YOLO phải trực tiếp nhận diện một hành vi mang tính quá trình như "cắt mặt" trên một khung hình tĩnh duy nhất, đề tài xây dựng kiến trúc kết hợp: YOLO đóng vai trò trích xuất chuỗi đặc trưng hình học, trong khi LSTM đảm nhiệm phân loại chuỗi thời gian.
 	
@@ -96,15 +96,15 @@
 	
 	YOLO đã tái định hình bài toán phát hiện vật thể từ một bài toán phân loại đa bước thành một bài toán hồi quy duy nhất\cite{Redmon2015YouOL}. Đặc trưng cốt lõi của YOLO nằm ở chỗ nó coi toàn bộ bức ảnh là một mạng lưới ô vuông ($S \times S$ grid)\cite{Redmon2015YouOL}. Bằng cách quét qua bức ảnh "chỉ một lần" với một mạng nơ-ron duy nhất, hệ thống có thể đồng thời dự đoán các hộp giới hạn, vị trí không gian, và xác suất của các lớp đối tượng ngay tại đầu ra của mạng\cite{Redmon2015YouOL}. 
 	
-	\paragraph{Tại sao YOLO lại phù hợp cho bài toán Giao thông?}
+	\paragraph{Tại sao YOLO lại phù hợp cho bài toán giao thông?}
 	Quyết định sử dụng họ mô hình YOLO làm tầng nhận thức nền tảng trong nghiên cứu này dựa trên các ưu điểm lý thuyết sau:
 	\begin{itemize}
 		\item \textbf{Tốc độ thời gian thực:} Do loại bỏ hoàn toàn cơ chế đề xuất vùng phức tạp, mạng YOLO cơ bản có thể xử lý hình ảnh với tốc độ từ 45 đến 155 FPS\cite{Redmon2015YouOL}. Đây là điều kiện tiên quyết để xây dựng hệ thống cảnh báo ADAS, nơi độ trễ tính bằng mili-giây có thể quyết định sự an toàn của tài xế.
 		\item \textbf{Tư duy tổng thể:} Khác với các kỹ thuật cửa sổ trượt chỉ nhìn thấy một phần nhỏ của ảnh, YOLO quan sát toàn bộ bức ảnh trong quá trình huấn luyện và dự đoán\cite{Redmon2015YouOL}. Điều này giúp mạng tự động mã hóa được các thông tin ngữ cảnh xung quanh đối tượng, nhờ đó giảm đáng kể tỷ lệ nhận diện sai phần nền so với các phương pháp Fast R-CNN\cite{Redmon2015YouOL}.
-		\item \textbf{Sự hội tụ của Hồi quy Đặc trưng Không gian:} YOLO xuất ra trực tiếp một tensor chứa thông tin không gian (tọa độ tâm, chiều rộng, chiều cao)\cite{Redmon2015YouOL}. Khả năng hồi quy ổn định này tạo ra luồng dữ liệu đầu vào vô cùng hoàn hảo để huấn luyện cho mạng LSTM ở giai đoạn phân loại ý định tiếp theo.
+		\item \textbf{Sự hội tụ của hồi quy đặc trưng không gian:} YOLO xuất ra trực tiếp một tensor chứa thông tin không gian (tọa độ tâm, chiều rộng, chiều cao)\cite{Redmon2015YouOL}. Khả năng hồi quy ổn định này tạo ra luồng dữ liệu đầu vào vô cùng hoàn hảo để huấn luyện cho mạng LSTM ở giai đoạn phân loại ý định tiếp theo.
 	\end{itemize}
 	
-	\subsubsection{Mạng Trích xuất Đặc trưng Không gian (YOLO26n)}
+	\subsubsection{Mạng trích xuất đặc trưng không gian (YOLO26n)}
 	
 	Đầu vào của quá trình nhận thức ý định là việc định vị chính xác vị trí và hình dáng của phương tiện. Tiếp nối triết lý của YOLO nguyên bản, nghiên cứu sử dụng biến thể hiện đại YOLO26n làm bộ trích xuất đặc trưng không gian.
 	
@@ -142,7 +142,7 @@
 		\label{fig:core_arch_yolo26}
 	\end{figure}
 	
-	\subsubsection{Mạng Nhận thức Ý định Chuỗi Thời gian (LSTM)}
+	\subsubsection{Mạng nhận thức ý định chuỗi thời gian (LSTM)}
 	
 	Để chuyển đổi từ kết quả nhận diện vật thể sang việc hiểu hành vi, luồng dữ liệu theo dõi từ YOLO26n được đưa vào mạng LSTM để phân loại ý định.
 	
@@ -160,26 +160,26 @@
 	
 	Trong bối cảnh của hệ thống đề xuất, mạng CNN (YOLO26n) có nhiệm vụ trích xuất các đặc trưng không gian trong từng khung hình tĩnh \cite{Ullah2018ActionRI}. Sau đó, mạng LSTM (Hình \ref{fig:LSTM_pipeline}) - với thế mạnh vượt trội trong việc xử lý dữ liệu chuỗi thời gian (time series data) \cite{Mohsen2021Industry4D} - sẽ tiếp nhận chuỗi đặc trưng này để học các thay đổi động học diễn ra theo tuần tự. Khả năng ghi nhớ sự phụ thuộc thời gian dài hạn của LSTM là yếu tố quyết định giúp hệ thống hiểu được sự tiến triển của hành vi lái xe, từ đó phân loại chính xác ý định tạt đầu trước khi hành vi đè vạch hoàn toàn xảy ra.
 	
-	\paragraph{Cấu trúc Vector đầu vào:}
+	\paragraph{Cấu trúc vector đầu vào:}
 	Tại mỗi khung hình $t$, hệ thống trích xuất một vector đặc trưng không gian $V_t$ của phương tiện được theo dõi:
 	\begin{equation}
 		V_t = [cx_t, cy_t, w_t, h_t, conf_t]
 	\end{equation}
 	Trong đó, $cx, cy, w, h$ là tọa độ tâm, chiều rộng, chiều cao của Bounding Box đã được chuẩn hóa theo kích thước ảnh, và $conf$ là độ tin cậy. Việc cấp dữ liệu chuỗi $(w_t, h_t)$ liên tục cho LSTM giúp mạng tự động học được các đặc trưng vi phân bậc cao như sự biến thiên tỷ lệ khung hình ($\Delta AR$) và gia tốc ngang -- vốn là các dấu hiệu đặc trưng nhất khi xe máy nghiêng người chuẩn bị tạt đầu.
 	
-	\paragraph{Thiết kế Cửa sổ Thời gian:}
+	\paragraph{Thiết kế cửa sổ thời gian:}
 	Thay vì lấy các khung hình liên tiếp vốn có sự thay đổi quá nhỏ, hệ thống áp dụng kỹ thuật lấy mẫu thưa. Cụ thể, mô hình sử dụng một bộ đệm độ dài cửa sổ trạng thái $N=10$ với bước nhảy $S=3$. Do đó, để tạo ra một chuỗi gồm 10 điểm dữ liệu, hệ thống bao quát một trường nhìn thời gian khoảng 30 khung hình (tương đương $\approx 1$ giây với camera 30 FPS). Thiết kế này giúp mô hình LSTM nắm bắt được bối cảnh chuyển động đủ dài để nhận diện rõ ràng sự thay đổi quỹ đạo, vượt trội hoàn toàn so với việc đánh giá trên khung hình đơn lẻ.
 	
-	\subsection{Cơ chế Huấn luyện Mạng Lai}
+	\subsection{Cơ chế huấn luyện mạng lai}
 	Quá trình huấn luyện hệ thống được chia làm hai giai đoạn độc lập để tối ưu hóa đặc thù của từng kiến trúc mạng.
 	
-	\paragraph{1. Huấn luyện Bộ trích xuất Không gian (YOLO26n):}
+	\paragraph{1. Huấn luyện bộ trích xuất không gian (YOLO26n):}
 	Mô hình được huấn luyện trên cấu hình GPU Tesla T4, sử dụng bộ tối ưu hóa lai \textbf{MuSGD} kết hợp với chiến lược STAL (Spatio-Temporal Assignment Learning). Kiến trúc loại bỏ DFL (Distribution Focal Loss) và NMS giúp tối giản hóa quá trình hội tụ. Bên cạnh đó, việc sử dụng các kỹ thuật tăng cường dữ liệu từ Albumentations (CLAHE, Blur, ToGray) giúp mô hình thích nghi mạnh mẽ với điều kiện môi trường giao thông phức tạp.
 	
-	\paragraph{2. Huấn luyện Bộ phân loại Ý định (LSTM):}
+	\paragraph{2. Huấn luyện bộ phân loại ý định (LSTM):}
 	Sau khi mô hình YOLO đã ổn định, hệ thống tiến hành trích xuất quỹ đạo Bounding Box của tập dữ liệu huấn luyện để tạo thành các tensor chuỗi kích thước $(Batch, N, 5)$. Mạng LSTM gồm 2 lớp ẩn (Hidden size = 64, Dropout = 0.2) được huấn luyện bằng hàm mất mát CrossEntropyLoss kết hợp bộ tối ưu hóa Adam. Mạng thực hiện bài toán phân loại nhị phân (0: An toàn, 1: Có ý định cắt mặt) tại bước thời gian cuối cùng của chuỗi.
 	
-	\subsection{Hậu xử lý \& Logic Cảnh báo Đa tầng}
+	\subsection{Hậu xử lý \& logic cảnh báo đa tầng}
 	
 	Hệ thống kết hợp sức mạnh dự đoán sớm của mạng LSTM với sự chắc chắn về không gian của Luật tĩnh (Rule-based Zones) để tạo ra cơ chế Quyết định Lai (Hybrid Decision Making), đảm bảo tính an toàn tối đa.
 	
@@ -187,7 +187,7 @@
 	
 	\begin{itemize}
 		\item \textbf{Cấp độ 1 (An toàn):} Phương tiện nằm ngoài các vùng rủi ro và mạng LSTM dự đoán ý định là 0 (Đi thẳng). Trạng thái theo dõi bình thường.
-		\item \textbf{Cấp độ 2 (Theo dõi Ý định):} Mạng LSTM phát tín hiệu 1 (Có ý định tạt đầu), nhưng phương tiện vẫn còn ở xa, chưa chạm vào bất kỳ Zone cảnh báo nào. Hệ thống đánh dấu phương tiện nhưng chưa phát âm thanh.
+		\item \textbf{Cấp độ 2 (Theo dõi ý định):} Mạng LSTM phát tín hiệu 1 (Có ý định tạt đầu), nhưng phương tiện vẫn còn ở xa, chưa chạm vào bất kỳ Zone cảnh báo nào. Hệ thống đánh dấu phương tiện nhưng chưa phát âm thanh.
 		\item \textbf{Cấp độ 3 (Cảnh báo):} Phương tiện đã giao cắt vào \texttt{Warning Zone} VÀ đồng thời LSTM phát tín hiệu 1. Tại đây, rủi ro cắt mặt đã rất rõ ràng, hệ thống kích hoạt cảnh báo mức độ trung bình (Cam).
 		\item \textbf{Cấp độ 4 (Khẩn cấp - Danger Override):} Phương tiện tiến sâu và giao cắt với \texttt{Danger Zone}. Hệ thống bỏ qua mọi dự đoán của AI (Override) và kích hoạt cảnh báo Đỏ ngay lập tức do rủi ro va chạm vật lý là tất yếu.
 	\end{itemize}
