@@ -1,3 +1,10 @@
 \babel@toc {vietnamese}{}\relax 
-\contentsline {table}{\numberline {1}{\ignorespaces So sánh thông số kỹ thuật các biến thể YOLO (Phiên bản Nano) trên độ phân giải $640 \times 640$.}}{14}{table.caption.5}%
-\contentsline {table}{\numberline {2}{\ignorespaces So sánh thông số sau khi huấn luyện}}{21}{table.caption.16}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces So sánh thông số kỹ thuật các biến thể YOLO (Phiên bản Nano) trên độ phân giải $640 \times 640$, số liệu Inference được đo trên T4 GPU (TensorRT FP16) theo công bố của Ultralytics.}}{11}{table.caption.8}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{\ignorespaces So sánh thông số sau khi huấn luyện}}{18}{table.caption.19}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
