@@ -1,0 +1,58 @@
+\chapter{TỔNG QUAN}
+	\section{Bối cảnh và đặt vấn đề}
+	Sự phát triển nhanh chóng của các hệ thống giao thông thông minh (ITS) và công nghệ xe tự hành đang đặt ra những yêu cầu khắt khe về khả năng nhận thức và dự đoán rủi ro. Mặc dù các hệ thống hỗ trợ lái xe (ADAS) hiện đại đã hoạt động hiệu quả trên đường cao tốc quy chuẩn, việc áp dụng chúng vào môi trường giao thông hỗn hợp vẫn gặp nhiều trở ngại \cite{Lefvre2014ASO}. Đặc thù tại các nước đang phát triển như Việt Nam là sự chiếm ưu thế tuyệt đối của xe máy (PTWs).
+	
+	Khác với ô tô, xe máy có kích thước nhỏ, tính động lực học linh hoạt và thường xuyên di chuyển "phi làn đường". Trong dòng chảy giao thông hỗn loạn này, hành vi tạt đầu của xe máy là nguyên nhân hàng đầu gây ra va chạm, đòi hỏi hệ thống phải có khả năng phát hiện và cảnh báo ngay lập tức \cite{Zeng2025TrajectoryPF}. Tuy nhiên, để một hệ thống ADAS hoạt động hiệu quả trong bối cảnh này, nó phải giải quyết đồng thời hai bài toán khó: (1) Nhận diện vật thể chính xác với tốc độ cực nhanh và (2) Dự đoán hành vi phức tạp trước khi nó xảy ra.
+	\section{Nghiên cứu liên quan}
+	\subsection{Nhóm 1: Phương pháp dựa trên mô hình vật lý và đặc trưng truyền thống}
+
+	Nhóm phương pháp này tiếp cận bài toán dự đoán và nhận diện dựa trên các định luật vật lý rõ ràng hoặc các mô hình toán học được định nghĩa trước. Đặc điểm chung của nhóm này là tính minh bạch cao nhưng phụ thuộc lớn vào các giả định lý tưởng về môi trường và chuyển động.
+
+	\textbf{Kinematic Models:}
+	Đây là nền tảng cổ điển nhất cho bài toán dự đoán quỹ đạo. Theo tổng quan của Paravarzar và Mohammad \cite{Paravarzar2020}, các mô hình như Vận tốc không đổi (CV), Gia tốc không đổi (CA) đóng vai trò thiết yếu trong giai đoạn đầu của xe tự hành nhờ chi phí tính toán thấp. Các mô hình này thường kết hợp với Bộ lọc Kalman để ước lượng trạng thái tương lai.
+	Điển hình cho hướng tiếp cận này là nghiên cứu của Lim và cộng sự \cite{Lim2018} về hệ thống cảnh báo va chạm cho xe máy. Nhóm tác giả sử dụng bộ lọc Kalman lồng nhau để tính toán quỹ đạo và thời gian va chạm (TTC), chứng minh hiệu quả cao trong các tình huống xe di chuyển ổn định. Ngay cả trong các hệ thống hiện đại như DeepSORT, nghiên cứu của Kumar \cite{Kumar2023} cũng chỉ ra rằng bộ lọc Kalman vẫn là thành phần cốt lõi để duy trì định danh đối tượng dựa trên quán tính chuyển động khi việc nhận diện bị gián đoạn.
+
+	\textbf{Mô hình dựa trên đặc trưng vật lý và thống kê:}
+	Bên cạnh động học, các phương pháp truyền thống còn khai thác các đặc trưng vật lý của tín hiệu và hình ảnh để nhận diện phương tiện. Ibarra Arenado \cite{Ibarra2016} đã đề xuất sử dụng đặc tính quang học của bóng đổ (shadows) trên mặt đường để định vị chính xác vị trí tiếp xúc của bánh xe, giải quyết bài toán ước lượng khoảng cách trong thị giác máy tính đơn mắt. Tương tự, Coskun và Bilicz \cite{Coskun2024} khai thác đặc tính tán xạ vật lý của sóng radar (RCS) để phân loại phương tiện, cho thấy sự phụ thuộc chặt chẽ vào mô hình vật lý của tín hiệu phản xạ.
+	Đối với các điều kiện môi trường khắc nghiệt, Pae và cộng sự \cite{Pae2018} đã phát triển khung nhận diện dựa trên sự kết hợp các đặc trưng thủ công (HOG, LBP) để xử lý các biến thiên ánh sáng phức tạp. Ngoài ra, các kỹ thuật thống kê truyền thống như khoảng cách Mahalanobis cũng được Young và cộng sự \cite{Young2016} áp dụng để phát hiện các đối tượng ngoại lai dựa trên sự sai lệch so với phân phối nền chuẩn.
+
+	\textbf{Hạn chế chung:}
+	Điểm yếu chí tử của nhóm phương pháp này là sự cứng nhắc. Các mô hình động học (Lim \cite{Lim2018}, Paravarzar \cite{Paravarzar2020}) thất bại khi xe máy thực hiện hành vi phi tuyến tính như "tạt đầu". Các mô hình dựa trên đặc trưng vật lý (Ibarra \cite{Ibarra2016}, Pae \cite{Pae2018}) thường kém bền vững khi môi trường thay đổi quá nhanh (ví dụ: giao thông hỗn loạn tại Việt Nam) do các quy luật vật lý được định nghĩa thủ công không còn bao quát được hết các biến thể thực tế. Điều này thúc đẩy sự chuyển dịch sang các phương pháp học sâu có khả năng tự học các đặc trưng hành vi phức tạp hơn.
+    
+	\subsection{Nhóm 2: Phương pháp hồi quy quỹ đạo}
+
+	Khác với nhóm phương pháp vật lý, nhóm phương pháp Hồi quy Quỹ đạo tiếp cận bài toán dưới góc độ học sâu, coi việc dự đoán là một bài toán ánh xạ phi tuyến từ dữ liệu lịch sử sang chuỗi tọa độ liên tục $(x, y)$ trong tương lai. Mục tiêu cốt lõi của nhóm này là cung cấp đầu vào chính xác cho các hệ thống điều khiển tự động.
+
+	\textbf{Hồi quy dựa trên mạng nơ-ron hồi quy (RNN/LSTM):}
+	Các nghiên cứu nền tảng thường sử dụng kiến trúc Encoder-Decoder với LSTM để nắm bắt sự phụ thuộc thời gian của chuỗi vị trí. Cao và cộng sự \cite{Cao2021} đã áp dụng mô hình này để dự đoán xung đột giao thông tại các giao lộ, minh chứng cho khả năng học các mẫu di chuyển phức tạp mà mô hình vật lý bỏ qua.
+	Đáng chú ý, Zarei và cộng sự \cite{Zarei2023} đã đề xuất một kiến trúc tích hợp chặt chẽ giữa nhận thức và dự đoán. Hệ thống sử dụng mạng YOLO cải tiến với module phân đoạn để định vị xe, sau đó đưa kết quả vào mạng đệ quy để hồi quy vị trí tiếp theo. Điểm sáng của nghiên cứu này là việc sử dụng thông tin phân loại hành vi lái xe để hỗ trợ quá trình hồi quy, giúp giảm sai số trong các tình huống chuyển làn.
+
+	Tiếp nối hướng tiếp cận lai, Wang và cộng sự \cite{Wang2021} giới thiệu mạng F-Net, kết hợp CNN trích xuất đặc trưng hình ảnh không gian và LSTM xử lý dữ liệu hành trình thời gian. Wan và cộng sự \cite{Wan2021} mở rộng tư duy này sang bài toán theo dõi đa đối tượng (MOT), sử dụng hồi quy bản đồ quỹ đạo để duy trì định danh đối tượng ổn định hơn.
+
+	\textbf{Hồi quy có cấu trúc và hướng mục tiêu (Structured \& Target-driven):}
+	Để khắc phục nhược điểm tính toán trên dữ liệu pixel, Gao và cộng sự \cite{VectorNet2020} đề xuất VectorNet, sử dụng Mạng nơ-ron đồ thị (GNN) để biểu diễn tương tác giữa các xe dưới dạng vector thưa. Trong khi đó, để giải quyết vấn đề đa hướng đi, Zhao và cộng sự \cite{TNT2020} phát triển mô hình TNT, chia nhỏ bài toán thành dự đoán điểm đích trước khi hồi quy quỹ đạo chi tiết. Gần đây, Moon và cộng sự \cite{VisionTrap2024} còn tích hợp mô hình ngôn ngữ thị giác (VLM) để tận dụng các mô tả văn bản ngữ nghĩa trong việc định hướng quỹ đạo.
+
+	\textbf{Vai trò và hạn chế trong kịch bản Cut-in:}
+	Tầm quan trọng của hồi quy quỹ đạo được thể hiện rõ trong các hệ thống kiểm soát hành trình thích ứng (ACC). Chen và cộng sự \cite{Chen2021} đã chứng minh rằng để một bộ điều khiển dự báo mô hình (MPC) xử lý an toàn tình huống xe tạt đầu, nó cần một chuỗi dự đoán quỹ đạo có độ chính xác cao làm đầu vào tối ưu hóa.
+	Tuy nhiên, chính yêu cầu về "độ chính xác tọa độ" này lại là điểm yếu khi áp dụng vào bài toán cảnh báo sớm. Việc hồi quy chính xác vị trí $(x, y)$ cho 3-5 giây tiếp theo đòi hỏi mô hình phải quan sát một chuỗi lịch sử đủ dài, gây ra độ trễ không mong muốn. Trong tình huống tạt đầu nguy hiểm, thông tin quan trọng nhất là "ý định" (ví dụ: xe đang lao vào làn) chứ không phải là tọa độ chính xác từng cm. Do đó, xu hướng nghiên cứu đang chuyển dịch sang bài toán Phân loại ý định để đạt được khả năng cảnh báo tức thời.
+
+	\subsection{Nhóm 3: Phân loại ý định và nhận thức trong giao thông hỗn hợp}
+	Khác với các phương pháp vật lý hay hồi quy quỹ đạo thuần túy, xu hướng nghiên cứu hiện đại chuyển dịch sang việc kết hợp nhận thức thị giác máy tính với phân loại hành vi để giải quyết bài toán độ trễ và độ phức tạp trong môi trường thực tế.
+	
+	Đầu tiên, nền tảng của bài toán dự đoán là khả năng nhận diện vật thể chính xác và nhanh chóng trong môi trường giao thông hỗn hợp, nơi có mật độ phương tiện cao và đa dạng chủng loại. Giải quyết vấn đề này, Du và cộng sự \cite{Du2022ImprovedRT} đã đề xuất phương pháp phát hiện chướng ngại vật thời gian thực dựa trên kiến trúc YOLO cải tiến (YOLOv4-tiny). Bằng cách thay thế hàm kích hoạt và tối ưu hóa anchor box bằng thuật toán K-means++, nghiên cứu đã chứng minh các mạng nơ-ron tích chập nhẹ hoàn toàn có thể đạt độ chính xác cao (mAP 80.39\%) với tốc độ xử lý 22.5928 FPS ngay cả trong các điều kiện giao thông phức tạp. Kết quả này củng cố tính khả thi của việc sử dụng các mô hình họ YOLO làm tầng nhận thức đầu vào cho các hệ thống cảnh báo sớm trên thiết bị biên.
+	
+	Dựa trên dữ liệu nhận thức, bài toán tiếp theo là giải mã chuỗi hành vi để xác định ý định. Các phương pháp máy học truyền thống (như SVM, HMM) thường gặp khó khăn trong việc ghi nhớ các phụ thuộc dài hạn. Để khắc phục, He và các cộng sự \cite{He2023VehicleDI} đã áp dụng mô hình Học sâu với mạng bộ nhớ ngắn hạn dài hạn hai chiều (Enhanced Bi-LSTM) kết hợp cơ chế chú ý. Nghiên cứu chỉ ra rằng việc mô hình hóa bài toán dưới dạng phân loại ý định, ví dụ như ý định chuyển làn sẽ giúp hệ thống đạt độ ổn định cao hơn so với hồi quy, với độ chính xác thực nghiệm lên tới 97.5\% trên tập dữ liệu NGSIM. Điều này khẳng định vai trò chủ đạo của LSTM trong việc trích xuất đặc trưng thời gian từ chuỗi dữ liệu hành trình.
+	
+	Cuối cùng, đối với kịch bản cụ thể là xe tạt đầu, việc định lượng rủi ro không chỉ dựa vào AI mà còn cần các ràng buộc hình học. Chen và cộng sự \cite{Chen2021AdaptiveCC} đã phát triển thuật toán kiểm soát hành trình thích ứng cho tình huống cut-in dựa trên xác suất. Điểm đáng chú ý là họ sử dụng các đặc trưng logic như khoảng cách phương ngang và góc hướng di chuyển để tính toán xác suất xâm nhập làn đường. Cách tiếp cận này cho thấy việc kết hợp giữa dự đoán ý định và các tham số hình học (như $dx, dy$) là phương án tối ưu để phát hiện sớm các pha tạt đầu nguy hiểm trước khi va chạm xảy ra.
+
+	\section{Hạn chế của các phương pháp hiện hành}
+	Về mặt dự đoán chuyển động, các phương pháp truyền thống dựa trên vật lý như Constant Velocity hay Constant Acceleration thường được sử dụng vì tính đơn giản \cite{Lefvre2014ASO}. Tuy nhiên, nhược điểm chí tử của nhóm phương pháp này là chúng chỉ hiệu quả trong ngắn hạn (dưới 1 giây) và không thể mô tả được các chuyển động phi tuyến tính. Khi xe máy thực hiện hành vi tạt đầu, các giả định vật lý ổn định bị phá vỡ, dẫn đến độ trễ lớn trong cảnh báo.
+	
+	Về mặt nhận diện thị giác, các mô hình CNN truyền thống tuy có độ chính xác cao nhưng thường đòi hỏi tài nguyên tính toán lớn, khó triển khai trên các thiết bị camera hành trình nhỏ gọn. Sự thiếu hụt một cơ chế nhận diện tốc độ cao làm nền tảng đầu vào đã kìm hãm khả năng ứng dụng thực tế của các thuật toán dự đoán hành vi tiên tiến \cite{Mozaffari2020DeepLV}.
+	
+	\section{Tính cấp thiết và giải pháp đề xuất}
+	Để khắc phục các hạn chế trên, xu hướng nghiên cứu hiện đại đang chuyển dịch sang phương pháp dựa trên hành vi, tập trung nhận diện ý định của người lái thay vì chỉ hồi quy quỹ đạo đơn thuần \cite{Zeng2025TrajectoryPF}.
+	
+	Các nghiên cứu tổng quan về Deep Learning khẳng định rằng mạng nơ-ron hồi quy, đặc biệt là LSTM có khả năng vượt trội trong việc học các đặc trưng chuỗi thời gian của hành vi lái xe \cite{Mozaffari2020DeepLV}.
+	
+	Xuất phát từ thực tiễn đó, đề tài "Phát hiện sớm hành vi tạt đầu của xe máy trong giao thông hỗn hợp sử dụng dự đoán ý định dựa trên Camera hành trình" đề xuất một kiến trúc Hybrid Architecture. Hệ thống sử dụng mô hình YOLO làm nền tảng nhận thức thị giác cốt lõi để đảm bảo khả năng phát hiện và theo dõi xe máy theo thời gian thực với độ trễ thấp \cite{Hidayatullah2025YOLOv8TY}. Dữ liệu từ YOLO sau đó được trích xuất thành các đặc trưng logic hình học để đưa vào mạng LSTM phân loại ý định. Sự kết hợp giữa tốc độ của YOLO và khả năng ghi nhớ chuỗi của LSTM kỳ vọng sẽ giải quyết được bài toán cảnh báo sớm trong môi trường giao thông phức tạp.
