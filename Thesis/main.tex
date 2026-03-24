@@ -198,16 +198,15 @@
 	\input{body/conclusions}
 	
 	% ================== REFERENCES =================
-	\newpage 
-	\chapter{DANH MỤC TÀI LIỆU TRÍCH DẪN}
+	\clearpage
+	
+	\renewcommand{\bibname}{DANH MỤC TÀI LIỆU THAM KHẢO}
+	
+	\addcontentsline{toc}{chapter}{DANH MỤC TÀI LIỆU THAM KHẢO}
+	
 	\begingroup
-		\raggedright 
-		\renewcommand{\section}[2]{}
-		\bibliographystyle{ieeetr}
-		\bibliography{docs/references}
+	\raggedright
+	\input{docs/references}
 	\endgroup
 	
-	\newpage 
-	\chapter{DANH MỤC TÀI LIỆU THAM KHẢO}
-	\input{docs/idea_refs}
 \end{document}
