@@ -8,7 +8,13 @@
 	
 	Kết quả thực nghiệm trên các kịch bản thực tế đã khẳng định tính ưu việt của hệ thống. Thông qua việc phân tích động học vi phân của Bounding Box (đặc biệt là tỷ lệ Aspect Ratio $\Delta AR$), AI có khả năng phát hiện ý định tạt đầu sớm từ 0.5 đến 1.0 giây trước khi xe đè vạch. Đồng thời, việc kết hợp linh hoạt giữa dự đoán của AI và luật tĩnh (Rule-based Zones) tạo ra cơ chế cảnh báo đa tầng, đảm bảo tính an toàn tuyệt đối khi có xâm nhập vật lý ở cự ly gần. 
 	
-	Tóm lại, nghiên cứu đã hoàn thành xuất sắc các mục tiêu đề ra, cung cấp một bản thử nghiệm khái niệm khả thi, độ trễ thấp và có tiềm năng ứng dụng cao cho các hệ thống hỗ trợ lái xe tiên tiến (ADAS) tại các quốc gia đang phát triển.
+	Nghiên cứu đã hoàn thành xuất sắc các mục tiêu đề ra, cung cấp một bản thử nghiệm khái niệm khả thi, độ trễ thấp và có tiềm năng ứng dụng cao cho các hệ thống hỗ trợ lái xe tiên tiến (ADAS) tại các quốc gia đang phát triển.
+
+	Việc thực hiện thành công đề tài này không chỉ dừng lại ở các con số thống kê mà còn mang lại những đóng góp cụ thể về mặt kỹ thuật cho cộng đồng nghiên cứu ADAS:
+	\begin{itemize}
+    	\item \textbf{Khẳng định năng lực của kiến trúc nhận thức lai:} Kết quả thực nghiệm cho thấy việc tách biệt bài toán nhận diện không gian (YOLO26n) và hiểu hành vi thời gian (LSTM) giúp hệ thống đạt được sự cân bằng tối ưu giữa độ chính xác và tài nguyên tính toán. Hiệu suất đạt được chứng minh rằng các mô hình học sâu hiện đại hoàn toàn có thể triển khai thực tế trên các thiết bị biên có cấu hình giới hạn.
+    	\item \textbf{Giá trị của đặc trưng vi phân:} Nghiên cứu đã chứng minh rằng việc tập trung vào sự biến thiên hình học ($\Delta AR$) là một hướng đi đúng đắn, cho phép hệ thống nhận diện được "ý định" — một trạng thái tiềm ẩn — thay vì chỉ phản ứng lại các "hành vi" đã rồi, từ đó kéo dài thời gian phản ứng quý giá cho tài xế.
+	\end{itemize}
 	
 	\section{Hạn chế của nghiên cứu}
 	Mặc dù hệ thống đã đạt được độ chính xác cao trong việc nhận diện hành vi tạt đầu và bước đầu chứng minh được hiệu quả của kiến trúc nhận thức lai, nghiên cứu này vẫn mang tính chất của một bản thử nghiệm khái niệm do không sử dụng cảm biến chiều sâu chuyên dụng. Cụ thể, hệ thống còn tồn tại hai hạn chế cốt lõi về mặt không gian và hình học:
@@ -19,6 +25,12 @@
 		\item \textbf{Độ trễ nhận diện do sai lệch phối cảnh:} Trong thực tế triển khai, camera hành trình thường được lắp đặt ở các vị trí cao và lệch tâm (ví dụ: phía sau gương chiếu hậu), tạo ra một góc chéo nhất định so với phương chuyển động vật lý của mũi xe. Sự bất đồng nhất giữa trục quang học của camera và trục dọc của phương tiện gây ra hiện tượng méo phối cảnh. Hệ quả là, trong các tình huống phương tiện tạt đầu ở cự ly cực gần với góc cắt chéo hẹp, sự biến thiên hình học của Bounding Box (đặc biệt là tỷ lệ $\Delta AR$) trên mặt phẳng ảnh 2D bị che khuất hoặc thay đổi không rõ rệt ở những mili-giây đầu tiên. Do thiếu hụt lượng thông tin vi phân cục bộ này, mạng LSTM buộc phải tiêu tốn thêm một vài khung hình để tích lũy đủ đặc trưng chuỗi thời gian, dẫn đến việc cảnh báo bị trễ (delay) một nhịp ngắn so với diễn biến thực tế trong không gian 3D.
 	\end{itemize}
 	
+	Ngoài ra, một số yếu tố ngoại cảnh khác cũng gây ảnh hưởng đến độ tin cậy của hệ thống:
+	\begin{itemize}
+    	\item \textbf{Sự phụ thuộc vào điều kiện thời tiết:} Do hệ thống dựa hoàn toàn vào camera đơn nhãn, trong các điều kiện tầm nhìn kém như mưa lớn hoặc sương mù dày đặc, chất lượng hình ảnh đầu vào bị suy giảm nghiêm trọng. Điều này dẫn đến việc Bounding Box bị rung lắc (jitter), gây nhiễu cho chuỗi dữ liệu đầu vào của LSTM và có thể dẫn đến các cảnh báo sai.
+    	\item \textbf{Vấn đề che khuất (Occlusion):} Trong môi trường giao thông mật độ cực cao, các phương tiện xe máy thường xuyên bị che khuất một phần bởi các phương tiện lớn hơn (xe buýt, xe tải). Khi diện tích quan sát được của đối tượng nhỏ hơn ngưỡng nhận diện, hệ thống sẽ bị mất dấu (Track ID), làm đứt gãy chuỗi dữ liệu hành vi và đòi hỏi thời gian để tái thiết lập theo dõi.
+	\end{itemize}
+
 	\section{Hướng phát triển tương lai}
 	Mặc dù hệ thống hiện tại đã chứng minh được tính khả thi trong việc nhận diện sớm ý định tạt đầu của phương tiện, nghiên cứu vẫn mang tính chất của một PoC. Để tiến tới thương mại hóa và triển khai trên các hệ thống Hỗ trợ Lái xe Tiên tiến (ADAS) thực tế, đề tài đề xuất các hướng phát triển trọng tâm sau:
 	
@@ -34,3 +46,9 @@
 	
 	\subsection{Tối ưu hóa triển khai biên:}
 	Tiếp tục khai thác thế mạnh của cấu trúc loại bỏ NMS trên YOLO26n, đề tài hướng tới việc biên dịch và tối ưu hóa mô hình bằng TensorRT. Mục tiêu là đóng gói toàn bộ pipeline (YOLO + Rule-based Zones) để triển khai trực tiếp trên các vi xử lý nhúng công suất thấp (như NVIDIA Jetson Nano hoặc Rockchip NPU) tích hợp thẳng vào Dashcam, đảm bảo tốc độ khung hình > 30 FPS với độ trễ phản hồi dưới 50ms mà không cần kết nối Internet.
+
+	\subsection{Xây dựng hệ sinh thái dữ liệu cộng đồng:}
+	Để mô hình ngày càng hoàn thiện, một hướng đi quan trọng là tích hợp cơ chế thu thập dữ liệu tự động từ người dùng. Khi hệ thống phát hiện một tình huống "suýt va chạm" (near-miss) hoặc một trường hợp AI dự đoán sai mà con người phải can thiệp phanh, đoạn video đó sẽ được tự động trích xuất và gửi về máy chủ trung tâm. Thông qua quy trình Human-in-the-Loop đã xây dựng, bộ dữ liệu sẽ liên tục được mở rộng với các trường hợp biên (edge cases) thực tế, giúp tái huấn luyện mô hình và nâng cao độ chính xác theo thời gian.
+
+	\subsection{Cảnh báo đa phương thức (Multi-modal Warning):}
+	Nghiên cứu dự kiến sẽ phát triển giao diện người máy (HMI) trực quan hơn, không chỉ dừng lại ở cảnh báo hình ảnh trên màn hình. Các tín hiệu cảnh báo có thể được chuyển đổi thành âm thanh vòm (phát ra từ hướng có xe tạt đầu) hoặc rung vô lăng. Sự đa dạng trong hình thức cảnh báo sẽ giúp giảm thời gian nhận thức của tài xế, đặc biệt là trong các tình huống lái xe mất tập trung.

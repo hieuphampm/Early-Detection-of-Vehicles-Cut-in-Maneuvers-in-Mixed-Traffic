@@ -8,18 +8,18 @@
 \contentsline {figure}{\numberline {3.4}{\ignorespaces Kiến trúc YOLO26 \cite {Sapkota2025UltralyticsYE}}}{14}{figure.caption.9}%
 \contentsline {figure}{\numberline {3.5}{\ignorespaces Kiến trúc mạng LSTM \cite {Mohsen2021Industry4D}}}{15}{figure.caption.10}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Biểu đồ phân bổ dữ liệu cho các tập Huấn luyện, Kiểm định và Kiểm thử}}{18}{figure.caption.11}%
-\contentsline {figure}{\numberline {4.2}{\ignorespaces Phân bố số lượng đối tượng theo từng lớp hành vi và vùng không gian}}{19}{figure.caption.12}%
-\contentsline {figure}{\numberline {4.3}{\ignorespaces Các chỉ số hàm mất mát trên tập huấn luyện}}{20}{figure.caption.13}%
-\contentsline {figure}{\numberline {4.4}{\ignorespaces Các chỉ số hàm mất mát trên tập kiểm định}}{21}{figure.caption.14}%
-\contentsline {figure}{\numberline {4.5}{\ignorespaces Biểu đồ mAP@50 của mô hình $M_{assist}$ qua các epoch}}{22}{figure.caption.15}%
-\contentsline {figure}{\numberline {4.6}{\ignorespaces Ma trận nhầm lẫn của mô hình sơ khởi $M_{assist}$}}{22}{figure.caption.16}%
-\contentsline {figure}{\numberline {4.7}{\ignorespaces Các chỉ số hàm mất mát trên tập huấn luyện của YOLO26n}}{23}{figure.caption.18}%
-\contentsline {figure}{\numberline {4.8}{\ignorespaces Các chỉ số hàm mất mát trên tập kiểm định của YOLO26n}}{24}{figure.caption.19}%
-\contentsline {figure}{\numberline {4.9}{\ignorespaces Biểu đồ mAP@50 của YOLO26n qua các epoch}}{24}{figure.caption.20}%
-\contentsline {figure}{\numberline {4.10}{\ignorespaces Ma trận nhầm lẫn của mô hình YOLO26n}}{25}{figure.caption.21}%
-\contentsline {figure}{\numberline {4.11}{\ignorespaces Biểu đồ Hàm mất mát và Độ chính xác của mạng LSTM qua 50 epochs}}{26}{figure.caption.23}%
-\contentsline {figure}{\numberline {4.12}{\ignorespaces Thực nghiệm trong điều kiện giao thông bình thường}}{27}{figure.caption.24}%
-\contentsline {figure}{\numberline {4.13}{\ignorespaces Thực nghiệm năng lực cảnh báo sớm ý định tạt đầu}}{28}{figure.caption.25}%
-\contentsline {figure}{\numberline {4.14}{\ignorespaces Thực nghiệm khi phương tiện tạt đầu vào vùng nguy hiểm}}{29}{figure.caption.26}%
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Biểu đồ phân bổ dữ liệu cho các tập Huấn luyện, Kiểm định và Kiểm thử}}{19}{figure.caption.11}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Phân bố số lượng đối tượng theo từng lớp hành vi và vùng không gian}}{20}{figure.caption.12}%
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Các chỉ số hàm mất mát trên tập huấn luyện}}{21}{figure.caption.13}%
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Các chỉ số hàm mất mát trên tập kiểm định}}{22}{figure.caption.14}%
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Biểu đồ mAP@50 của mô hình $M_{assist}$ qua các epoch}}{23}{figure.caption.15}%
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Ma trận nhầm lẫn của mô hình sơ khởi $M_{assist}$}}{23}{figure.caption.16}%
+\contentsline {figure}{\numberline {4.7}{\ignorespaces Các chỉ số hàm mất mát trên tập huấn luyện của YOLO26n}}{24}{figure.caption.18}%
+\contentsline {figure}{\numberline {4.8}{\ignorespaces Các chỉ số hàm mất mát trên tập kiểm định của YOLO26n}}{25}{figure.caption.19}%
+\contentsline {figure}{\numberline {4.9}{\ignorespaces Biểu đồ mAP@50 của YOLO26n qua các epoch}}{25}{figure.caption.20}%
+\contentsline {figure}{\numberline {4.10}{\ignorespaces Ma trận nhầm lẫn của mô hình YOLO26n}}{26}{figure.caption.21}%
+\contentsline {figure}{\numberline {4.11}{\ignorespaces Biểu đồ Hàm mất mát và Độ chính xác của mạng LSTM qua 50 epochs}}{28}{figure.caption.24}%
+\contentsline {figure}{\numberline {4.12}{\ignorespaces Thực nghiệm trong điều kiện giao thông bình thường}}{29}{figure.caption.25}%
+\contentsline {figure}{\numberline {4.13}{\ignorespaces Thực nghiệm năng lực cảnh báo sớm ý định tạt đầu}}{30}{figure.caption.26}%
+\contentsline {figure}{\numberline {4.14}{\ignorespaces Thực nghiệm khi phương tiện tạt đầu vào vùng nguy hiểm}}{31}{figure.caption.27}%
 \addvspace {10\p@ }

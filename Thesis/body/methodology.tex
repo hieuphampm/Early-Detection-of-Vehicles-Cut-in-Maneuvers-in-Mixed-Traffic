@@ -116,6 +116,13 @@
 		\item \textbf{YOLO26n}: Là một mô hình đầu cuối thiết kế đặc biệt cho thiết bị biên. Kế thừa tư duy hồi quy trực tiếp của YOLO gốc, kiến trúc này tiến thêm một bước khi loại bỏ hoàn toàn lớp hậu xử lý NMS\cite{yolo26_ultralytics}. Về mặt lý thuyết, NMS dựa trên các thuật toán Heuristic cứng nhắc để loại bỏ các hộp giới hạn trùng lặp, gây ra hiện tượng nút thắt cổ chai về hiệu năng trên CPU. Việc loại bỏ NMS giúp kiến trúc YOLO26n duy trì luồng tính toán song song hoàn toàn bằng ma trận Tensor, tối ưu hóa độ trễ suy luận.
 	\end{itemize}
 	
+	Kiến trúc của YOLO26n được tối ưu hóa theo triết lý thiết kế hướng biên (edge-centric design), tập trung vào việc giảm thiểu các phép tính dư thừa nhưng vẫn duy trì khả năng trích xuất đặc trưng đa quy mô. Cụ thể:
+
+	\begin{itemize}
+    	\item \textbf{Cấu trúc Backbone và Neck:} Backbone sử dụng các khối tích chập hiệu quả để trích xuất đặc trưng từ mức độ thấp (cạnh, màu sắc) đến mức độ cao (hình dáng phương tiện). Tầng Neck tích hợp cơ chế Lightweight Feature Fusion giúp kết hợp các bản đồ đặc trưng (feature maps) từ nhiều độ phân giải khác nhau, đảm bảo các phương tiện xe máy ở cự ly xa (kích thước nhỏ) vẫn được định vị chính xác.
+    	\item \textbf{Cơ chế loại bỏ NMS (Non-Maximum Suppression):} Đây là cải tiến quan trọng nhất của YOLO26n. Trong các phiên bản truyền thống, NMS là một thuật toán hậu xử lý chạy trên CPU để loại bỏ các hộp giới hạn trùng lặp, tạo ra nút thắt cổ chai về tốc độ. YOLO26n chuyển bài toán này thành một phần của mạng nơ-ron thông qua cơ chế Dual-label Assignment trong quá trình huấn luyện, cho phép mô hình dự đoán duy nhất một hộp giới hạn cho mỗi thực thể. Việc này giúp luồng dữ liệu truyền thẳng từ GPU/NPU đến bộ nhớ mà không bị ngắt quãng, tối ưu hóa độ trễ phản hồi xuống mức dưới 10ms.
+	\end{itemize}
+
 	\begin{table}[h]
 		\centering
 		\caption{So sánh thông số kỹ thuật các biến thể YOLO (Phiên bản Nano) trên độ phân giải $640 \times 640$, số liệu Inference được đo trên T4 GPU (TensorRT FP16) theo công bố của Ultralytics.}
@@ -157,6 +164,29 @@
 		\label{fig:LSTM_pipeline}
 	\end{figure}
 	
+	Về mặt toán học, năng lực ghi nhớ dài hạn của LSTM được thực thi thông qua một trạng thái tế bào (cell state) $C_t$ và ba cổng logic vận hành bằng hàm kích hoạt Sigmoid ($\sigma$) và Tanh. Các phép toán cốt lõi diễn ra tại mỗi bước thời gian $t$ bao gồm:
+
+	\begin{itemize}
+    	\item \textbf{Cổng quên (Forget Gate):} Xác định thông tin nào từ quá khứ ($h_{t-1}$) và hiện tại ($x_t$) sẽ bị loại bỏ.
+   		\begin{equation}
+        	f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f)
+    	\end{equation}
+    	\item \textbf{Cổng vào (Input Gate):} Quyết định giá trị mới nào sẽ được cập nhật vào trạng thái tế bào.
+    	\begin{equation}
+        	i_t = \sigma(W_i \cdot [h_{t-1}, x_t] + b_i); \quad \tilde{C}_t = \tanh(W_C \cdot [h_{t-1}, x_t] + b_C)
+    	\end{equation}
+    	\item \textbf{Cập nhật trạng thái tế bào:} Kết hợp thông tin cũ và mới để hình thành $C_t$.
+    	\begin{equation}
+        	C_t = f_t * C_{t-1} + i_t * \tilde{C}_t
+    	\end{equation}
+    	\item \textbf{Cổng ra (Output Gate):} Tính toán trạng thái ẩn $h_t$ dựa trên trạng thái tế bào đã được lọc.
+    	\begin{equation}
+        	o_t = \sigma(W_o \cdot [h_{t-1}, x_t] + b_o); \quad h_t = o_t * \tanh(C_t)
+    	\end{equation}
+	\end{itemize}
+
+	Nhờ các cổng này, khi xe máy thực hiện các chuyển động lắt léo, mạng LSTM có thể giữ lại các dấu hiệu quan trọng (như góc nghiêng xe thay đổi đột ngột) và lờ đi các nhiễu từ sự rung lắc nhẹ của camera, giúp việc phân loại ý định đạt độ ổn định cao hơn so với các mạng nơ-ron truyền thống.
+
 	Trong bối cảnh của hệ thống đề xuất, mạng CNN (YOLO26n) có nhiệm vụ trích xuất các đặc trưng không gian trong từng khung hình tĩnh \cite{Ullah2018ActionRI}. Sau đó, mạng LSTM (Hình \ref{fig:LSTM_pipeline}) - với thế mạnh vượt trội trong việc xử lý dữ liệu chuỗi thời gian (time series data) \cite{Mohsen2021Industry4D} - sẽ tiếp nhận chuỗi đặc trưng này để học các thay đổi động học diễn ra theo tuần tự. Khả năng ghi nhớ sự phụ thuộc thời gian dài hạn của LSTM là yếu tố quyết định giúp hệ thống hiểu được sự tiến triển của hành vi lái xe, từ đó phân loại chính xác ý định tạt đầu trước khi hành vi đè vạch hoàn toàn xảy ra.
 	
 	\subsubsection{Cấu trúc vector đầu vào:}
@@ -166,6 +196,12 @@
 	\end{equation}
 	Trong đó, $cx, cy, w, h$ là tọa độ tâm, chiều rộng, chiều cao của Bounding Box đã được chuẩn hóa theo kích thước ảnh, và $conf$ là độ tin cậy. Việc cấp dữ liệu chuỗi $(w_t, h_t)$ liên tục cho LSTM giúp mạng tự động học được các đặc trưng vi phân bậc cao như sự biến thiên tỷ lệ khung hình ($\Delta AR$) và gia tốc ngang -- vốn là các dấu hiệu đặc trưng nhất khi xe máy nghiêng người chuẩn bị tạt đầu.
 	
+	Trong số các tham số đầu vào, sự biến thiên tỷ lệ khung hình ($\Delta AR$) đóng vai trò là "chữ ký hình học" then chốt. Tỷ lệ khung hình được tính bằng:
+	\begin{equation}
+    	AR_t = \frac{w_t}{h_t}
+	\end{equation}
+	Khi một xe máy di chuyển thẳng, $AR$ duy trì trạng thái ổn định. Tuy nhiên, khi tài xế nghiêng mình để chuẩn bị thực hiện pha tạt đầu (cut-in), chiều rộng hộp giới hạn ($w$) sẽ có xu hướng tăng đột ngột do góc nhìn phối cảnh thay đổi, trong khi chiều cao ($h$) giảm nhẹ. Mạng LSTM được huấn luyện để nhạy bén với sự biến thiên vi phân $\Delta AR = AR_t - AR_{t-1}$ này, cho phép hệ thống phát hiện ý định tạt đầu ngay từ giai đoạn chuẩn bị, trước khi xe thực sự đè vạch làn đường.
+
 	\subsubsection{Thiết kế cửa sổ thời gian:}
 	Thay vì lấy các khung hình liên tiếp vốn có sự thay đổi quá nhỏ, hệ thống áp dụng kỹ thuật lấy mẫu thưa. Cụ thể, mô hình sử dụng một bộ đệm độ dài cửa sổ trạng thái $N=10$ với bước nhảy $S=3$. Do đó, để tạo ra một chuỗi gồm 10 điểm dữ liệu, hệ thống bao quát một trường nhìn thời gian khoảng 30 khung hình (tương đương $\approx 1$ giây với camera 30 FPS). Thiết kế này giúp mô hình LSTM nắm bắt được bối cảnh chuyển động đủ dài để nhận diện rõ ràng sự thay đổi quỹ đạo, vượt trội hoàn toàn so với việc đánh giá trên khung hình đơn lẻ.
 	
@@ -181,6 +217,8 @@
 	\section{Hậu xử lý \& logic cảnh báo đa tầng}
 	
 	Hệ thống kết hợp sức mạnh dự đoán sớm của mạng LSTM với sự chắc chắn về không gian của Luật tĩnh (Rule-based Zones) để tạo ra cơ chế Quyết định Lai (Hybrid Decision Making), đảm bảo tính an toàn tối đa.
+
+	Để loại bỏ hiện tượng cảnh báo chập chờn (flickering) do sai số tức thời của AI, nghiên cứu áp dụng thuật toán làm mượt dựa trên cửa sổ trượt (Sliding Window Voting). Tín hiệu đầu ra của LSTM không được phát ngay lập tức mà phải đi qua một bộ đệm độ dài $K=5$. Cảnh báo chỉ chính thức được kích hoạt khi có ít nhất 4/5 khung hình liên tiếp đồng nhất dự đoán là \texttt{cut\_in}. Cơ chế này giúp bộ lọc logic lọc bỏ các điểm nhiễu (outliers) khi phương tiện bị che khuất tạm thời hoặc ánh sáng thay đổi đột ngột.
 	
 	Logic cảnh báo được phân cấp dựa trên sự giao cắt giữa Bounding Box của phương tiện và đa giác ranh giới (\texttt{Danger Zone}, \texttt{Warning Zone}) kết hợp với tín hiệu ý định:
 	
