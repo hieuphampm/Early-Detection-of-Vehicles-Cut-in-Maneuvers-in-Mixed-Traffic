@@ -45,13 +45,25 @@
 
 \renewcommand{\contentsname}{MỤC LỤC}
 \renewcommand{\listtablename}{DANH MỤC CÁC BẢNG}
-\renewcommand{\listfigurename}{DANH MỤC HÌNH VẼ}
+\renewcommand{\listfigurename}{DANH MỤC CÁC HÌNH}
+
+\renewcommand{\tablename}{Bảng}
+\renewcommand{\figurename}{Hình}
+\renewcommand{\thetable}{\thechapter.\arabic{table}}
+\renewcommand{\thefigure}{\thechapter.\arabic{figure}}
+
+\captionsetup{
+	font=normalsize,     
+	labelfont=it,        
+	textfont=normalfont, 
+	labelsep=colon        
+}
 
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{Khóa luận tốt nghiệp}
 \fancyhead[R]{\nouppercase{\leftmark}}
-\fancyfoot[L]{Phạm Phước Minh Hiếu - Công nghệ Thông tin - Khoa Công nghệ}
+\fancyfoot[L]{Phạm Phước Minh Hiếu, Cao Sỹ Siêu - Công nghệ Thông tin - Khoa Công nghệ}
 \fancyfoot[R]{\thepage/\pageref{LastPage}}
 
 % ========================================================
