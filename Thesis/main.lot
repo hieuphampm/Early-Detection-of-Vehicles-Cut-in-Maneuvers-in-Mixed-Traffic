@@ -2,8 +2,8 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.1}{\ignorespaces So sánh thông số kỹ thuật các biến thể YOLO (Phiên bản Nano) trên độ phân giải $640 \times 640$, số liệu Inference được đo trên T4 GPU (TensorRT FP16) theo công bố của Ultralytics.}}{11}{table.caption.8}%
+\contentsline {table}{\numberline {3.1}{\ignorespaces So sánh thông số kỹ thuật các biến thể YOLO (Phiên bản Nano) trên độ phân giải $640 \times 640$, số liệu Inference được đo trên T4 GPU (TensorRT FP16) theo công bố của Ultralytics.}}{13}{table.caption.8}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces Cấu hình siêu tham số huấn luyện mô hình YOLO26n}}{18}{table.caption.17}%
-\contentsline {table}{\numberline {4.2}{\ignorespaces So sánh thông số sau khi huấn luyện}}{20}{table.caption.22}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces Cấu hình siêu tham số huấn luyện mô hình YOLO26n}}{23}{table.caption.17}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces So sánh thông số sau khi huấn luyện}}{25}{table.caption.22}%
 \addvspace {10\p@ }
