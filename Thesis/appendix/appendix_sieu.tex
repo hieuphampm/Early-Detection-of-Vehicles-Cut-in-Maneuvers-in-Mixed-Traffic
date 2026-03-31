@@ -1,0 +1,236 @@
+\documentclass[12pt,a4paper]{report}
+
+% ================== ENCODING & LANGUAGE ==================
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+
+% ================== FONT ==================
+\usepackage{mathptmx} 
+
+% ================== PAGE ==================
+\usepackage{geometry}
+\geometry{
+	left=3cm,
+	right=2cm,
+	top=2cm,
+	bottom=2cm
+}
+
+% ================== GRAPHICS & DRAW ==================
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{amssymb}
+\usepackage{amsmath}	
+
+% ================== OTHER ==================
+\usepackage{indentfirst}
+\setlength{\parindent}{15pt}
+\usepackage{booktabs}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{longtable}
+
+% ================== FORMAT ==================
+\usepackage{setspace}
+\usepackage{titlesec}
+\titleformat{name=\section,numberless}
+{\centering\bfseries\Large}
+{}{0pt}{}
+
+\renewcommand{\contentsname}{MỤC LỤC}
+\renewcommand{\listtablename}{DANH MỤC CÁC BẢNG}
+\renewcommand{\listfigurename}{DANH MỤC CÁC HÌNH}
+
+\renewcommand{\tablename}{Bảng}
+\renewcommand{\figurename}{Hình}
+\renewcommand{\thetable}{\thechapter.\arabic{table}}
+\renewcommand{\thefigure}{\thechapter.\arabic{figure}}
+
+\captionsetup{
+	font=normalsize,     
+	labelfont=it,        
+	textfont=normalfont, 
+	labelsep=colon        
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{Khóa luận tốt nghiệp}
+\fancyhead[R]{\nouppercase{\leftmark}}
+\fancyfoot[L]{Phạm Phước Minh Hiếu - Công nghệ Thông tin - Khoa Công nghệ}
+\fancyfoot[R]{\thepage/\pageref{LastPage}}
+
+% ========================================================
+\begin{document}
+	\thispagestyle{empty}
+	
+	% ================== BORDER ==================
+	\begin{tikzpicture}[remember picture, overlay]
+		% Viền ngoài
+		\draw[line width=1pt]
+		($(current page.north west)+(1.5cm,-1.5cm)$)
+		rectangle
+		($(current page.south east)+(-1.5cm,1.5cm)$);
+		
+		% Viền trong
+		\draw[line width=0.5pt]
+		($(current page.north west)+(1.7cm,-1.7cm)$)
+		rectangle
+		($(current page.south east)+(-1.7cm,1.7cm)$);
+	\end{tikzpicture}
+	
+	\vspace*{1cm}
+	
+	% ================== CONTENT ==================
+	\begin{center}
+		
+		% ---------- LOGO ----------
+		\includegraphics[width=3cm]{images/logo.png}\\[0.8cm]
+		
+		% ---------- UNIVERSITY ----------
+		{\bfseries
+			TRƯỜNG ĐẠI HỌC QUẢN LÝ VÀ CÔNG NGHỆ\\
+			THÀNH PHỐ HỒ CHÍ MINH
+		}\\[0.5cm]
+		
+		{\bfseries KHOA CÔNG NGHỆ}\\[2cm]
+		
+		% ---------- TYPE ----------
+		{\bfseries\fontsize{25}{30}\selectfont
+		BÁO CÁO CÔNG VIỆC
+		}\\[1.5cm]
+		
+		% ---------- TITLE ----------
+		{\bfseries\fontsize{16}{20}\selectfont
+			DỰ ĐOÁN Ý ĐỊNH VÀ PHÁT HIỆN SỚM HÀNH VI\\
+			CHUYỂN LÀN CẮT MẶT CỦA PHƯƠNG TIỆN\\
+			THAM GIA GIAO THÔNG TỪ DỮ LIỆU\\
+			CAMERA HÀNH TRÌNH
+		}\\[2cm]
+		
+	\end{center}
+	
+	% ---------- INFO ----------
+	\hspace{2.5cm}
+	\begin{tabular}{l l}
+		\textbf{Họ và tên sinh viên} & : PHẠM PHƯỚC MINH HIẾU \\[0.2cm]
+		\textbf{Mã số sinh viên}     & : 2201700085 \\[0.2cm]
+		\textbf{Ngành đào tạo}      & : CÔNG NGHỆ THÔNG TIN \\[0.2cm]
+		\textbf{Khóa}               & : K2022 \\[0.2cm]
+		\textbf{Giảng viên hướng dẫn} & : ThS. Huỳnh Lê Phú Trung
+	\end{tabular}
+	
+	\vfill
+	
+	% ---------- FOOT ----------
+	\begin{center}
+		\textit{Thành phố Hồ Chí Minh, tháng \dots\ năm 2026}
+	\end{center}
+% ------------------------------------------------------------------------------
+% PHIẾU CỦA SINH VIÊN 1
+% ------------------------------------------------------------------------------
+\newpage
+
+\textbf{I. THÔNG TIN CHUNG}
+\begin{itemize}
+	\item \textbf{Họ và tên:} Cao Sỹ Siêu \hspace{1cm} \textbf{MSSV:} 2201700170
+	\item \textbf{Vai trò:} Sinh viên thực hiện chính (Xây dựng Dữ liệu \& Triển khai), Thực hiện gán nhãn, Thiết lập logic cảnh báo \& Viết báo cáo.
+	\item \textbf{Tỷ lệ đóng góp:} 50\%
+\end{itemize}
+
+\textbf{II. TỔNG QUAN NHIỆM VỤ ĐƯỢC GIAO}
+\begin{itemize}
+	\item Nghiên cứu tổng quan đề tài, tìm kiếm dataset, tìm hiểu kiến trúc YOLO và thuật toán theo dõi đối tượng (Deep SORT/ByteTrack).
+	\item Lập trình phát triển công cụ hỗ trợ gán nhãn (Labeling tool bằng Python) và tham gia gán nhãn thủ công.
+	\item Huấn luyện mô hình YOLO, thiết kế mạng phân loại ý định (LSTM) và cài đặt hệ thống luật cảnh báo tĩnh (Rule-based).
+	\item Đánh giá thực nghiệm, xuất dữ liệu, soạn thảo quyển báo cáo đồ án và thiết kế slide thuyết trình.
+\end{itemize}
+
+\textbf{III. NHẬT KÝ CHI TIẾT}
+
+\begin{center}
+	\renewcommand{\arraystretch}{1.5} 
+	\begin{longtable}{|>{\centering\arraybackslash}p{2.5cm}|p{6.5cm}|p{5cm}|}
+		\hline
+		\textbf{Lần} & \multicolumn{1}{c|}{\textbf{Nội dung công việc thực hiện}} & \multicolumn{1}{c|}{\textbf{Kết quả / Minh chứng}} \\
+		\hline
+		\endfirsthead
+		
+		\multicolumn{3}{c}{\textit{(Tiếp tục từ trang trước)}} \\
+		\hline
+		\textbf{Lần} & \multicolumn{1}{c|}{\textbf{Nội dung công việc thực hiện}} & \multicolumn{1}{c|}{\textbf{Kết quả / Minh chứng}} \\
+		\hline
+		\endhead
+		
+		\hline
+		\endfoot
+		\endlastfoot
+		
+		% --- NHẬP NỘI DUNG NHẬT KÝ VÀO ĐÂY ---
+		Lần 1 - 2 \newline (08/01-14/01)  & 
+		- Khảo sát tổng quan đề tài, tìm kiếm và thu thập Dataset. \newline
+		- Đọc hiểu lý thuyết kiến trúc YOLO và thuật toán Deep SORT/ByteTrack. & 
+		- Tài liệu tham khảo \newline
+		- Bộ dữ liệu thô (Raw Data) \\
+		\hline
+		
+		Lần 3-4 \newline (22/01-29/01)  & 
+		- Lập trình xây dựng công cụ hỗ trợ gán nhãn (Labeling tool) bằng ngôn ngữ Python. \newline
+		- Phối hợp gán nhãn thủ công cho tập dữ liệu khởi tạo. & 
+		- Source code Labeling tool \newline
+		- Tập dữ liệu mồi đã gán nhãn \\
+		\hline
+		
+		Lần 5-6 \newline (06/02-12/02)  & 
+		- Huấn luyện mô hình YOLO trên tập dữ liệu. \newline
+		- Tích hợp và thử nghiệm cơ chế gán ID (Track ID). \newline
+		- Tìm hiểu lý thuyết mạng LSTM và các luật cảnh báo. & 
+		- Trọng số YOLO \newline
+		- Mã nguồn luồng Tracking \\
+		\hline
+		
+		Lần 7-8 \newline (28/02-15/03)  & 
+		- Lập trình module Nhận thức hành vi (Action Recognition) với mạng LSTM. \newline
+		- Cài đặt hệ thống luật cảnh báo rủi ro tĩnh (Rules). \newline
+		- Kiểm thử kết quả (Test result) và xuất dữ liệu. & 
+		- Source code mô hình lai \newline
+		- Dữ liệu kết quả thực nghiệm \\
+		\hline
+		
+		Lần 9 \newline (15/03)  & 
+		- Viết quyển báo cáo đồ án và tổng hợp kết quả nghiên cứu. \newline
+		- Thiết kế Slide bảo vệ đồ án. \newline
+		- Báo cáo tiến độ hoàn thiện với GVHD. & 
+		- File LaTeX báo cáo \newline
+		- Slide thuyết trình PPTX \\
+		\hline
+	\end{longtable}
+\end{center}
+
+\textbf{IV. KÝ XÁC NHẬN}
+\vspace{0.5cm}
+
+\noindent
+\begin{minipage}{0.5\textwidth}
+	\centering
+	\textbf{Xác nhận của thành viên nhóm} \\
+	\textit{(Ký và ghi rõ họ tên)} \\
+	\vspace{2cm}
+	Phạm Phước Minh Hiếu
+\end{minipage}%
+\begin{minipage}{0.5\textwidth}
+	\centering
+	\textbf{Người báo cáo} \\
+	\textit{(Ký và ghi rõ họ tên)} \\
+	\vspace{2cm}
+	Cao Sỹ Siêu
+\end{minipage}
+
+\end{document}
