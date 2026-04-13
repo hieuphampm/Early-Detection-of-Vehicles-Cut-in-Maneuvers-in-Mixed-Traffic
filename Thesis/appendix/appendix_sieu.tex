@@ -64,7 +64,7 @@
 \fancyhf{}
 \fancyhead[L]{Khóa luận tốt nghiệp}
 \fancyhead[R]{\nouppercase{\leftmark}}
-\fancyfoot[L]{Phạm Phước Minh Hiếu - Công nghệ Thông tin - Khoa Công nghệ}
+\fancyfoot[L]{Cao Sỹ Siêu - Công nghệ Thông tin - Khoa Công nghệ}
 \fancyfoot[R]{\thepage/\pageref{LastPage}}
 
 % ========================================================
@@ -92,7 +92,7 @@
 	\begin{center}
 		
 		% ---------- LOGO ----------
-		\includegraphics[width=3cm]{images/logo.png}\\[0.8cm]
+		\includegraphics[width=3cm]{../images/logo.png}\\[0.8cm]
 		
 		% ---------- UNIVERSITY ----------
 		{\bfseries
@@ -120,8 +120,8 @@
 	% ---------- INFO ----------
 	\hspace{2.5cm}
 	\begin{tabular}{l l}
-		\textbf{Họ và tên sinh viên} & : PHẠM PHƯỚC MINH HIẾU \\[0.2cm]
-		\textbf{Mã số sinh viên}     & : 2201700085 \\[0.2cm]
+		\textbf{Họ và tên sinh viên} & : CAO SỸ SIÊU \\[0.2cm]
+		\textbf{Mã số sinh viên}     & : 2201700170 \\[0.2cm]
 		\textbf{Ngành đào tạo}      & : CÔNG NGHỆ THÔNG TIN \\[0.2cm]
 		\textbf{Khóa}               & : K2022 \\[0.2cm]
 		\textbf{Giảng viên hướng dẫn} & : ThS. Huỳnh Lê Phú Trung
@@ -147,72 +147,62 @@
 
 \textbf{II. TỔNG QUAN NHIỆM VỤ ĐƯỢC GIAO}
 \begin{itemize}
-	\item Nghiên cứu tổng quan đề tài, tìm kiếm dataset, tìm hiểu kiến trúc YOLO và thuật toán theo dõi đối tượng (Deep SORT/ByteTrack).
-	\item Lập trình phát triển công cụ hỗ trợ gán nhãn (Labeling tool bằng Python) và tham gia gán nhãn thủ công.
-	\item Huấn luyện mô hình YOLO, thiết kế mạng phân loại ý định (LSTM) và cài đặt hệ thống luật cảnh báo tĩnh (Rule-based).
-	\item Đánh giá thực nghiệm, xuất dữ liệu, soạn thảo quyển báo cáo đồ án và thiết kế slide thuyết trình.
+    \item Xây dựng quy trình gán nhãn dữ liệu video dựa trên phương pháp Human-in-the-Loop (HITL) và nền tảng CVAT.
+    \item Thiết lập và chuẩn hóa bộ dữ liệu thực nghiệm bao gồm 22.780 ảnh và 90.457 nhãn đối tượng mang đặc thù giao thông hỗn hợp.
+    \item Huấn luyện mô hình hỗ trợ $M_{assist}$ và thực hiện tiền gán nhãn tự động để tối ưu hóa hiệu suất xây dựng dữ liệu.
+    \item Thực hiện thực nghiệm, đánh giá độ trễ hệ thống trên thiết bị biên và phân tích các trường hợp sai lỗi (Error Analysis) của mô hình.
+    \item Soạn thảo nội dung kỹ thuật, tổng hợp kết quả nghiên cứu vào báo cáo khóa luận và thiết kế tài liệu thuyết trình.
 \end{itemize}
 
 \textbf{III. NHẬT KÝ CHI TIẾT}
 
-\begin{center}
-	\renewcommand{\arraystretch}{1.5} 
-	\begin{longtable}{|>{\centering\arraybackslash}p{2.5cm}|p{6.5cm}|p{5cm}|}
-		\hline
-		\textbf{Lần} & \multicolumn{1}{c|}{\textbf{Nội dung công việc thực hiện}} & \multicolumn{1}{c|}{\textbf{Kết quả / Minh chứng}} \\
-		\hline
-		\endfirsthead
-		
-		\multicolumn{3}{c}{\textit{(Tiếp tục từ trang trước)}} \\
-		\hline
-		\textbf{Lần} & \multicolumn{1}{c|}{\textbf{Nội dung công việc thực hiện}} & \multicolumn{1}{c|}{\textbf{Kết quả / Minh chứng}} \\
-		\hline
-		\endhead
-		
-		\hline
-		\endfoot
-		\endlastfoot
-		
-		% --- NHẬP NỘI DUNG NHẬT KÝ VÀO ĐÂY ---
-		Lần 1 - 2 \newline (08/01-14/01)  & 
-		- Khảo sát tổng quan đề tài, tìm kiếm và thu thập Dataset. \newline
-		- Đọc hiểu lý thuyết kiến trúc YOLO và thuật toán Deep SORT/ByteTrack. & 
-		- Tài liệu tham khảo \newline
-		- Bộ dữ liệu thô (Raw Data) \\
-		\hline
-		
-		Lần 3-4 \newline (22/01-29/01)  & 
-		- Lập trình xây dựng công cụ hỗ trợ gán nhãn (Labeling tool) bằng ngôn ngữ Python. \newline
-		- Phối hợp gán nhãn thủ công cho tập dữ liệu khởi tạo. & 
-		- Source code Labeling tool \newline
-		- Tập dữ liệu mồi đã gán nhãn \\
-		\hline
-		
-		Lần 5-6 \newline (06/02-12/02)  & 
-		- Huấn luyện mô hình YOLO trên tập dữ liệu. \newline
-		- Tích hợp và thử nghiệm cơ chế gán ID (Track ID). \newline
-		- Tìm hiểu lý thuyết mạng LSTM và các luật cảnh báo. & 
-		- Trọng số YOLO \newline
-		- Mã nguồn luồng Tracking \\
-		\hline
-		
-		Lần 7-8 \newline (28/02-15/03)  & 
-		- Lập trình module Nhận thức hành vi (Action Recognition) với mạng LSTM. \newline
-		- Cài đặt hệ thống luật cảnh báo rủi ro tĩnh (Rules). \newline
-		- Kiểm thử kết quả (Test result) và xuất dữ liệu. & 
-		- Source code mô hình lai \newline
-		- Dữ liệu kết quả thực nghiệm \\
-		\hline
-		
-		Lần 9 \newline (15/03)  & 
-		- Viết quyển báo cáo đồ án và tổng hợp kết quả nghiên cứu. \newline
-		- Thiết kế Slide bảo vệ đồ án. \newline
-		- Báo cáo tiến độ hoàn thiện với GVHD. & 
-		- File LaTeX báo cáo \newline
-		- Slide thuyết trình PPTX \\
-		\hline
-	\end{longtable}
-\end{center}
+\renewcommand{\arraystretch}{1.5} 
+\centering
+\begin{longtable}{|>{\centering\arraybackslash}p{2.5cm}|p{6.5cm}|p{5cm}|}
+    \hline
+    \textbf{Lần} & \multicolumn{1}{c|}{\textbf{Nội dung công việc thực hiện}} & \multicolumn{1}{c|}{\textbf{Kết quả / Minh chứng}} \\
+    \hline
+    \endfirsthead
+    
+    \multicolumn{3}{c}{\textit{(Tiếp tục từ trang trước)}} \\
+    \hline
+    \textbf{Lần} & \multicolumn{1}{c|}{\textbf{Nội dung công việc thực hiện}} & \multicolumn{1}{c|}{\textbf{Kết quả / Minh chứng}} \\
+    \hline
+    \endhead
+    
+    \hline
+    \endfoot
+    \endlastfoot
+
+    Tuần 1 - 2 \newline (01/01-14/01) & 
+    - Thu thập và chọn lọc 57 đoạn video Dashcam thực tế tại Việt Nam. \newline
+    - Thực hiện cắt xén và trích xuất khung hình từ dữ liệu thô. & 
+    - Bộ dữ liệu thô (Raw Data) \\ \hline
+
+    Tuần 3 - 5 \newline (15/01-05/02) & 
+    - Nghiên cứu quy trình HITL và triển khai dự án gán nhãn trên nền tảng CVAT. \newline
+    - Gán nhãn thủ công 100\% tập dữ liệu hạt giống ($D_{seed}$) để làm tiền đề huấn luyện. & 
+    - Tài khoản dự án CVAT \newline
+    - Tập dữ liệu hạt giống ($D_{seed}$) \\ \hline
+
+    Tuần 6 - 8 \newline (06/02-28/02) & 
+    - Huấn luyện mô hình hỗ trợ $M_{assist}$ (YOLOv8n) đạt độ chính xác cao. \newline
+    - Vận hành quy trình gán nhãn bán tự động và kiểm định chéo cho 22.780 ảnh. & 
+    - Trọng số mô hình $M_{assist}$ \newline
+    - 22.780 ảnh đã gán nhãn \\ \hline
+
+    Tuần 9 - 10 \newline (01/03-15/03) & 
+    - Thống kê phân bổ lớp (Class Distribution) và thực hiện Inference xuất video thực nghiệm. \newline
+    - Phân tích các trường hợp lỗi bỏ sót đối tượng và sai lệch phối cảnh ảnh hưởng đến độ trễ. & 
+    - Biểu đồ phân bổ dữ liệu \newline
+    - Video demo các kịch bản \\ \hline
+
+    Lần cuối \newline (15/03) & 
+    - Hoàn thiện các chương nội dung trong báo cáo khóa luận (đặc biệt là Chương phương pháp và Kết quả). \newline
+    - Tổng hợp kết quả và chuẩn bị slide bảo vệ khóa luận. & 
+    - Tệp khóa luận PDF \newline
+    - Slide thuyết trình (PPTX) \\ \hline
+\end{longtable}
 
 \textbf{IV. KÝ XÁC NHẬN}
 \vspace{0.5cm}
