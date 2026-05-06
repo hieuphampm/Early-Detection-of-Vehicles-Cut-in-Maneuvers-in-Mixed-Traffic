@@ -148,6 +148,52 @@
 		\label{fig:core_arch_yolo26}
 	\end{figure}
 	
+	\subsubsection{Hàm mất mát trên tập huấn luyện}
+	
+	Để tối ưu hóa quá trình trích xuất đặc trưng không gian và định vị đối tượng, kiến trúc YOLO áp dụng hàm mất mát đa nhiệm bao gồm ba thành phần chính: sai số phân loại (\texttt{train/cls\_loss}), sai số hộp giới hạn (\texttt{train/box\_loss}), và sai số phân phối trọng tâm (\texttt{train/dfl\_loss}). Tổng hàm mất mát được định nghĩa như sau:
+	
+	\begin{equation}
+		L_{total} = \lambda_{cls} L_{cls} + \lambda_{box} L_{box} + \lambda_{dfl} L_{dfl}
+	\end{equation}
+	
+	Trong đó, $\lambda_{cls}, \lambda_{box}, \lambda_{dfl}$ là các hệ số trọng lượng tương ứng nhằm cân bằng tầm quan trọng của từng hàm mất mát. Cụ thể từng thành phần:
+	
+	\begin{itemize}
+		\item \textbf{Sai số phân loại (\texttt{train/cls\_loss}):} Sử dụng hàm Binary Cross-Entropy (BCE) để đánh giá độ chính xác của việc phân loại các nhóm trạng thái/hành vi trên từng bounding box dự đoán. Hàm này phạt nặng các dự đoán sai có độ tin cậy cao.
+		\begin{equation}
+			L_{cls} = - \frac{1}{N} \sum_{i=1}^{N} \left[ y_i \log(p_i) + (1 - y_i) \log(1 - p_i) \right]
+		\end{equation}
+		Với $N$ là tổng số lượng đối tượng, $y_i \in \{0, 1\}$ là nhãn thực tế, và $p_i$ là xác suất dự đoán của mô hình.
+		
+		\item \textbf{Sai số vị trí (\texttt{train/box\_loss}):} Đánh giá độ lệch về tọa độ và kích thước giữa Bounding Box dự đoán và nhãn thực tế (Ground Truth). Kiến trúc sử dụng hàm mất mát CIoU (Complete Intersection over Union) để bao quát đồng thời ba yếu tố hình học: diện tích chồng lấp, khoảng cách tâm và tỷ lệ khung hình.
+		\begin{equation}
+			L_{box} = 1 - CIoU = 1 - \left( IoU - \frac{\rho^2(b, b^{gt})}{c^2} - \alpha v \right)
+		\end{equation}
+		Trong đó, $\rho(\cdot)$ là khoảng cách Euclidean giữa hai tâm hộp giới hạn, $c$ là độ dài đường chéo của hộp bao quanh nhỏ nhất chứa cả hai, và tham số $v$ đo lường sự nhất quán về tỷ lệ khung hình.
+		
+		\item \textbf{Sai số phân phối (\texttt{train/dfl\_loss}):} Distribution Focal Loss (DFL) được sử dụng để tinh chỉnh độ sắc nét của các cạnh Bounding Box. Thay vì hồi quy một giá trị tọa độ rời rạc, DFL giúp mô hình học cách phân phối xác suất liên tục xung quanh các tọa độ viền, từ đó định vị chính xác hơn trong các trường hợp đối tượng bị che khuất một phần.
+		\begin{equation}
+			L_{dfl} = - \left( (y_{i+1} - y) \log(S_i) + (y - y_i) \log(S_{i+1}) \right)
+		\end{equation}
+		Với $y$ là nhãn tọa độ liên tục thực tế, $y_i$ và $y_{i+1}$ là hai vị trí nguyên lân cận gần nhất, và $S$ là phân phối xác suất đầu ra của hàm Softmax tại các vị trí đó.
+	\end{itemize}
+	
+	\subsubsection{Hàm mất mát trên tập kiểm định }
+	
+	Về mặt cấu trúc toán học, các chỉ số mất mát trên tập kiểm định bao gồm \texttt{val/cls\_loss}, \texttt{val/box\_loss}, và \texttt{val/dfl\_loss} sử dụng hoàn toàn cùng một công thức với quá trình huấn luyện. Điểm khác biệt cốt lõi là các hàm này được tính toán trên tập dữ liệu kiểm định $D_{val}$ (những hình ảnh hệ thống chưa từng được học) và không thực hiện lan truyền ngược (Backpropagation) để cập nhật trọng số mạng nơ-ron.
+	
+	Hàm mất mát tổng quát trên tập kiểm định được biểu diễn như sau:
+	\begin{equation}
+		L_{val} = \frac{1}{M} \sum_{j=1}^{M} \left( \lambda_{cls} L_{cls}(p_j, y_j) + \lambda_{box} L_{box}(b_j, b^{gt}_j) + \lambda_{dfl} L_{dfl}(S_j, y_j) \right)
+	\end{equation}
+	
+	Trong đó, $M$ là tổng số lượng đối tượng trong tập kiểm định $D_{val}$. Việc giám sát chặt chẽ 3 chỉ số này đóng vai trò quyết định trong việc đánh giá năng lực tổng quát hóa của hệ thống:
+	\begin{itemize}
+		\item \textbf{\texttt{val/cls\_loss}:} Đánh giá khả năng mô hình phân biệt chính xác 3 lớp hành vi (\texttt{lane\_keeping, cut\_in, moving\_away}) đối với các phương tiện có hình dáng và góc độ lạ. Nếu chỉ số \texttt{train/cls\_loss} liên tục giảm nhưng \texttt{val/cls\_loss} có dấu hiệu tăng ngược trở lại, hệ thống đang rơi vào trạng thái học vẹt (Overfitting).
+		\item \textbf{\texttt{val/box\_loss}:} Đo lường độ giao trùm (CIoU) giữa Bounding Box dự đoán và nhãn thực tế trên dữ liệu mới. Chỉ số này phản ánh năng lực định vị tọa độ ổn định của mạng YOLO khi gặp điều kiện ánh sáng hoặc góc camera chưa từng xuất hiện trong tập huấn luyện.
+		\item \textbf{\texttt{val/dfl\_loss}:} Đánh giá độ sắc nét của viền hộp giới hạn trên tập kiểm định. Chỉ số này đảm bảo mô hình vẫn duy trì khả năng phân phối xác suất chính xác ở các biên vật thể ngay cả khi gặp hiện tượng che khuất (Occlusion) thực tế.
+	\end{itemize}
+	
 	\subsection{Mạng nhận thức ý định chuỗi thời gian (LSTM)}
 	
 	Để chuyển đổi từ kết quả nhận diện vật thể sang việc hiểu hành vi, luồng dữ liệu theo dõi từ YOLO26n được đưa vào mạng LSTM để phân loại ý định.
